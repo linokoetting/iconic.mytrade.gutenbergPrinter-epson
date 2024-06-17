@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>iconic.mytrade.gutenberg</groupId>
+  <artifactId>gutenbergPrinter</artifactId>
+  <version>${printer.version}</version>
+  <name>gutenbergPrinter</name>
+  
+  <properties>
+  	<jpos113-systemPath>/home/lino/workspaceGit/mytrade30R/home/lib/jpos113.jar</jpos113-systemPath>
+  	<jpos191-systemPath>/home/lino/workspaceGit/mytrade30R/home/lib/jpos191.jar</jpos191-systemPath>
+    
+    <printer.version>31.0.1-SNAPSHOT</printer.version>
+  </properties>  
+  
+  <dependencies>     
+		<dependency>
+		    <groupId>com.jpos</groupId>
+		    <artifactId>jpos113</artifactId>
+		    <version>1.0</version>
+		    <scope>system</scope>
+	    	<systemPath>${jpos113-systemPath}</systemPath>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.jpos</groupId>
+		    <artifactId>jpos191</artifactId>
+		    <version>1.0</version>
+		    <scope>system</scope>
+	    	<systemPath>${jpos191-systemPath}</systemPath>
+		</dependency>
+		
+		<dependency>
+			<groupId>iconic.mytrade.gutenberg</groupId>
+			<artifactId>gutenbergInterface</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>iconic.mytrade.gutenberg</groupId>
+			<artifactId>gutenbergCommon</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+  </dependencies>
+    
+</project>

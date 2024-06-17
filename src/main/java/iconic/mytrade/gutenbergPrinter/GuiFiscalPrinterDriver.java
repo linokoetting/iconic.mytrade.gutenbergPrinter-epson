@@ -5,21 +5,16 @@ import java.util.GregorianCalendar;
 import iconic.mytrade.gutenberg.jpos.printer.service.PleaseDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
+import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
 import iconic.mytrade.gutenbergGuiPrinter.PrinterGUI;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
-import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
-import jpos.FiscalPrinter;
 import jpos.JposException;
-import jpos.events.DirectIOListener;
 import jpos.events.ErrorListener;
 import jpos.events.OutputCompleteListener;
 import jpos.events.StatusUpdateListener;
-import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
 
 public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.FiscalPrinterControl17 {
 

@@ -2,7 +2,6 @@ package iconic.mytrade.gutenbergPrinter;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -15,7 +14,6 @@ import java.util.Date;
 import java.util.StringTokenizer;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.Beeping;
-import iconic.mytrade.gutenberg.jpos.printer.service.Company;
 import iconic.mytrade.gutenberg.jpos.printer.service.FiscalPrinterDataInformation;
 import iconic.mytrade.gutenberg.jpos.printer.service.MessageBox;
 import iconic.mytrade.gutenberg.jpos.printer.service.PleaseDisplay;
@@ -24,13 +22,14 @@ import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
+import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
+import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
+import iconic.mytrade.gutenberg.jpos.printer.service.utils.String13Fix;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
-import iconic.mytrade.gutenbergPrinter.lottery.LotteryReceiptStatus;
-import iconic.mytrade.gutenbergPrinter.lottery.LotteryStatus;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
 import jpos.FiscalPrinter;
 import jpos.FiscalPrinterConst;
@@ -40,9 +39,6 @@ import jpos.events.ErrorListener;
 import jpos.events.OutputCompleteListener;
 import jpos.events.StatusUpdateEvent;
 import jpos.events.StatusUpdateListener;
-import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
-import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
-import iconic.mytrade.gutenberg.jpos.printer.service.utils.String13Fix;
 
 public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusUpdateListener {
 
@@ -80,7 +76,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     private static double SMTKfw = 999;
     private static double ILotteryfw = 999;
     private static boolean fwLotteryenabled = false;
-    private static boolean fwRT2enabled = false;	// abilita/disabilita i comandi in modalità RT2
     private static boolean fwSMTKenabled = false;	// abilita/disabilita i comandi per SmartTicket
     private static boolean fwILotteryenabled = false;
     

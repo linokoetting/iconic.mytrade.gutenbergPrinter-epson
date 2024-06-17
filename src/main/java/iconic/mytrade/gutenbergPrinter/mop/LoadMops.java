@@ -2,9 +2,7 @@ package iconic.mytrade.gutenbergPrinter.mop;
 
 import java.util.ArrayList;
 
-import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.mop.MediaInfo;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 
@@ -18,25 +16,12 @@ public class LoadMops {
     public static int    NOPAID_TYPE	= -1;
     public static int    DSCONPAY_TYPE = -1;
     
-	//private static IPosEngine posEngine = null;
-	//private static IMediaInfoLookup mediaLookup = null;	
-
 	public LoadMops()
 	{
 		
 	}
 	
 	private static void init() {
-/*		try {
-			if (posEngine == null) {
-				posEngine = GlobalDeposit.getPO();
-			}
-			if (mediaLookup == null) {
-				mediaLookup = (IMediaInfoLookup) posEngine.getSupportObject("MediaInfoLookup");
-			}
-		}catch (Exception e) {
-			System.out.println("LoadMops - init - errore:"+e);
-		}*/
 	}
 	
     public static ArrayList<Mop> Mops = null;		// method of payment

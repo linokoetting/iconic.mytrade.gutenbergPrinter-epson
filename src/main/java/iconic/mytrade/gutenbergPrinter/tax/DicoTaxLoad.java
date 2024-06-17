@@ -16,16 +16,22 @@ public class DicoTaxLoad
     
     private static int BENI = TaxData.getBeni();
     
+    private static boolean RT2enabled = false;
+	
+	public static boolean isRT2enabled() {
+		return RT2enabled;
+	}
+	
+	public static boolean isRT2disabled() {
+		return (!isRT2enabled());
+	}
+	
+	public static void setRT2enabled(boolean rT2enabled) {
+		System.out.println("RT2 - setRT2enabled : "+rT2enabled);
+		RT2enabled = rT2enabled;
+	}
+	
 	private static void init() {
-/*		try {
-			if (posEngine == null) {
-			 posEngine = GlobalDeposit.getPO();
-			}
-			if (taxInfoLookup == null) {
-			 taxInfoLookup = (ITaxInfoLookup)posEngine.getSupportObject("TaxInfoLookup");
-			}
-		}catch (Exception e) {
-		}*/
 	}
 	
 	public static int DicoTaxSize()
@@ -157,18 +163,4 @@ public class DicoTaxLoad
 		return ( -1 );
 	}
 	
-    private static boolean RT2enabled = false;
-	
-	public static boolean isRT2enabled() {
-		return RT2enabled;
-	}
-	
-	public static boolean isRT2disabled() {
-		return (!isRT2enabled());
-	}
-	
-	public static void setRT2enabled(boolean rT2enabled) {
-		System.out.println("RT2 - setRT2enabled : "+rT2enabled);
-		RT2enabled = rT2enabled;
-	}	
 }

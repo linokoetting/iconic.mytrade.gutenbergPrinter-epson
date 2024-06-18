@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
-import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTLottery;
 import iconic.mytrade.gutenberg.jpos.printer.service.mop.MediaInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;

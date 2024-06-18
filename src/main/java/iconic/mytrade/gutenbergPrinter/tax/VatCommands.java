@@ -9,11 +9,11 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.AtecoInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
-import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import iconic.mytrade.gutenbergPrinter.ateco.AtecoCommands;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 import jpos.JposException;
 import iconic.mytrade.gutenbergPrinter.RTStatus;
+import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 
 public class VatCommands extends PrinterCommands {
 	
@@ -25,11 +25,11 @@ public class VatCommands extends PrinterCommands {
 	}
 
 	public void resetVATtable(){
-		if (!(PrinterType.isEpsonModel() && SharedPrinterFields.isfwRT2enabled()))
+		if (!(PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()))
 			return;
 		
 		int MaxVatRates = 9;
-		if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.isfwRT2disabled())	// con fw RT2 seguiamo il modello Epson anche se più restrittivo del fw RT2 Rch
+		if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2disabled())	// con fw RT2 seguiamo il modello Epson anche se più restrittivo del fw RT2 Rch
 			MaxVatRates = 7;
 		
 		if ( DicoTaxLoad.isIvaAllaPrinter() ){
@@ -111,12 +111,12 @@ public class VatCommands extends PrinterCommands {
 	}
 	
 	private void SetVatValue(String taxnumber, String vatrate, int atecoid) throws JposException {
-		if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.isfwRT2enabled()) {
+		if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 			SetVatAtecoValue(taxnumber, vatrate, atecoid);
 			return;
 		}
 		
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.isfwRT2enabled()) {
+		if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 			// usiamo directIO perchè il fw preferisce così
 			
 			String vatid = Sprint.f("%02d", taxnumber);
@@ -145,11 +145,11 @@ public class VatCommands extends PrinterCommands {
 	}
 	
 	private void SetVatTable() throws JposException {
-		if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.isfwRT2enabled()) {
+		if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 			return;
 		}
 		
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.isfwRT2enabled()) {
+		if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 			// usiamo directIO perchè il fw preferisce così
 			return;
 		}
@@ -158,7 +158,7 @@ public class VatCommands extends PrinterCommands {
 	}
 	
 	private void SetVatAtecoValue(String taxnumber, String vatrate, int atecoid) throws JposException {
-		if (SharedPrinterFields.isfwRT2disabled())
+		if (fiscalPrinterDriver.isfwRT2disabled())
 			return;
 
 		if (PrinterType.isRCHPrintFModel())
@@ -198,7 +198,7 @@ public class VatCommands extends PrinterCommands {
 
 	public boolean setVATtable(){
 		int MaxVatRates = 9;
-		if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.isfwRT2disabled())	// con fw RT2 seguiamo il modello Epson anche se più restrittivo del fw RT2 Rch
+		if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2disabled())	// con fw RT2 seguiamo il modello Epson anche se più restrittivo del fw RT2 Rch
 			MaxVatRates = 7;
 		
 		int taxinput[] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -319,7 +319,7 @@ public class VatCommands extends PrinterCommands {
 				        }
 				        else if (Integer.parseInt(VATRate) == 0) {
 							System.out.println("setVATtable - setVatValue idx="+quellodellaprinter+" VATRate="+VATRate+" getPrinterTaxnumber="+oo.getPrinterTaxnumber());
-							if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.isfwRT2enabled()) {
+							if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 								SetVatValue(oo.getPrinterTaxnumber(), VATRate, oo.getAtecoId());
 							}
 							
@@ -352,7 +352,7 @@ public class VatCommands extends PrinterCommands {
 										  atecoIndex);
 				        }
 				        else {
-				        	if (SharedPrinterFields.isRT2On())
+				        	if (isRT2On())
 				        		System.out.println("setVATtable - WARNING scartato per ERRORE - getTaxnumber:"+oo.getTaxnumber()+" - type="+oo.getType()+" - getPrinterTaxnumber:"+oo.getPrinterTaxnumber()+" - getPrinterDeptnumber:"+oo.getPrinterDeptnumber());
 				        }
 					}
@@ -385,7 +385,7 @@ public class VatCommands extends PrinterCommands {
 					System.out.println("setVATtable - getVatEntry error: "+e.getMessage());
 				}
 			}
-			if (SharedPrinterFields.isfwRT2enabled())
+			if (fiscalPrinterDriver.isfwRT2enabled())
 				System.out.println("setVATtable - IvaVentilata: "+IvaVentilata);
 			else {
 				System.out.println("setVATtable - IvaVentilata: "+"NON SIGNIFICATIVO");
@@ -417,7 +417,7 @@ public class VatCommands extends PrinterCommands {
 		StringBuffer sbcmd = new StringBuffer("");
 		
 		if (PrinterType.isEpsonModel()){
-			if (SharedPrinterFields.isfwRT2disabled()) {
+			if (fiscalPrinterDriver.isfwRT2disabled()) {
 				salesType = "";
 				salesAttribute = "";
 				atecoIndex = "";
@@ -436,7 +436,7 @@ public class VatCommands extends PrinterCommands {
 		}
 		else if (PrinterType.isRCHPrintFModel()){
 			String type = "";
-			if (SharedPrinterFields.isfwRT2enabled()) {
+			if (fiscalPrinterDriver.isfwRT2enabled()) {
 				type = ","+Integer.parseInt(salesType);
 			}
 			System.out.println("SetDepartment - command = executeRTDirectIo(5200,"+Integer.parseInt(dept)+",'"+new StringBuffer(""+Integer.parseInt(VATGroup)+type).toString()+"')");

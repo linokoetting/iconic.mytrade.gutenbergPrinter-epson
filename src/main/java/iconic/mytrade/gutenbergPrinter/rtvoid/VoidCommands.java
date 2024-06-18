@@ -46,7 +46,7 @@ public class VoidCommands extends PrinterCommands {
 				String mydate = date.substring(0, 4) + date.substring(6, 8);
 				date = mydate;
 				StringBuffer command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId));
-				if (SharedPrinterFields.isfwRT2enabled())
+				if (fiscalPrinterDriver.isfwRT2enabled())
 					command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId) + "," + printerId + "," + "0");
 		      	System.out.println("isVoidableDocument - command : " + command.toString());
 		      	int result = fiscalPrinterDriver.executeRTDirectIo(6001, 1, command);
@@ -103,7 +103,7 @@ public class VoidCommands extends PrinterCommands {
 				String mydate = date.substring(0, 4) + date.substring(6, 8);
 				date = mydate;
 				StringBuffer command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId));
-				if (SharedPrinterFields.isfwRT2enabled())
+				if (fiscalPrinterDriver.isfwRT2enabled())
 					command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId) + "," + printerId + "," + "0");
 		      	System.out.println("VoidDocument - command : " + command.toString());
 		      	fiscalPrinterDriver.executeRTDirectIo(6001, 0, command);
@@ -158,7 +158,7 @@ public class VoidCommands extends PrinterCommands {
         }
         s = doc[0]+" N. "+z+"-"+n;
         ForFiscalEJFile.writeToFile("\t\t"+s);
-        LastTicket.setDocnum(SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-s.length())/2))+s);
+        LastTicket.setDocnum(ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-s.length())/2))+s);
         
 		ForFiscalEJFile.writeToFile("\t\t"+barre);
 		

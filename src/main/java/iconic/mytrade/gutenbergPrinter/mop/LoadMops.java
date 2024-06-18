@@ -168,12 +168,12 @@ public class LoadMops {
 		return "";
 	}
 	
-	public static boolean isNonRiscosso(ArrayList Mops, String srtdescription)
+	public static boolean isNonRiscosso(ArrayList Mops, String srtdescription, boolean isRT2On)
 	{
 		for (int i = 0; i < Mops.size(); i++){
 			Mop mop = (Mop) Mops.get(i);
 			if (mop.getSrtdescription() != null && mop.getSrtdescription().equalsIgnoreCase(srtdescription)){
-				if ((SRTPrinterExtension.isSRT() || SRTPrinterExtension.isPRT()) && SharedPrinterFields.isRT2On()) {
+				if ((SRTPrinterExtension.isSRT() || SRTPrinterExtension.isPRT()) && isRT2On) {
 					return ((mop.getType() == NOPAY1_TYPE) || 
 							(mop.getType() == NOPAY2_TYPE) || 
 							(mop.getType() == TICKETWN_TYPE) || 
@@ -224,16 +224,16 @@ public class LoadMops {
 		return(getSrtDescription(description, Mops));
 	}
 
-	public static boolean isNonRiscosso(String srtdescr){
+	public static boolean isNonRiscosso(String srtdescr, boolean isRT2On){
 		loadMops();
 		
-		return isNonRiscosso(Mops, srtdescr);
+		return isNonRiscosso(Mops, srtdescr, isRT2On);
 	}
 
-	public static String getPrefixPayment(String description){
+	public static String getPrefixPayment(String description, boolean fwRT2disabled){
 		loadMops();
 		
-		return(getPrefixPayment(description, Mops, SharedPrinterFields.isfwRT2disabled()));
+		return(getPrefixPayment(description, Mops, fwRT2disabled));
 	}
 	
 	public static String getRCHPrefixPayment(String description){

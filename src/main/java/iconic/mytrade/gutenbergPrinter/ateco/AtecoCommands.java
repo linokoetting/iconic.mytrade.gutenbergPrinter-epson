@@ -21,7 +21,7 @@ public class AtecoCommands extends PrinterCommands {
     }
     
 	public void resetATECOtable(int TodayFiscalTicket){
-		if (SharedPrinterFields.isfwRT2disabled())
+		if (fiscalPrinterDriver.isfwRT2disabled())
 			return;
 
 		DicoTaxLoad.setIvaAllaPrinter();
@@ -56,7 +56,7 @@ public class AtecoCommands extends PrinterCommands {
 	}
 
 	public static void setATECOtable(int... args){
-		if (SharedPrinterFields.isfwRT2disabled())
+		if (fiscalPrinterDriver.isfwRT2disabled())
 			return;
 
 		DicoTaxLoad.setIvaAllaPrinter();

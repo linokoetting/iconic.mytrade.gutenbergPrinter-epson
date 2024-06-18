@@ -48,7 +48,7 @@ public class RefundCommands extends PrinterCommands {
 				String mydate = date.substring(0, 4) + date.substring(6, 8);
 				date = mydate;
 				StringBuffer command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId));
-				if (SharedPrinterFields.isfwRT2enabled()) {
+				if (fiscalPrinterDriver.isfwRT2enabled()) {
 					command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId) + "," + printerId + "," + "0");
 			      	System.out.println("isRefundableDocument - manual refund");
 				}
@@ -112,7 +112,7 @@ public class RefundCommands extends PrinterCommands {
 				String mydate = date.substring(0, 4) + date.substring(6, 8);
 				date = mydate;
 				StringBuffer command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId));
-				if (SharedPrinterFields.isfwRT2enabled()) {
+				if (fiscalPrinterDriver.isfwRT2enabled()) {
 					command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId) + "," + printerId + "," + "0");
 					if (!freeRefund) {
 						// Se fai un reso manuale si, non è necessario verificarne la rendibilità, in quanto non può ovviamente farlo

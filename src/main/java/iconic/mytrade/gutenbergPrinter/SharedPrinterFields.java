@@ -32,44 +32,6 @@ public class SharedPrinterFields {
 	
 	public static int INDEX_A = 0;
 	
-	private static boolean flagsVoidTicket = false;
-	
-	protected static boolean isFlagsVoidTicket() 
-	{
-		return flagsVoidTicket;
-	}
-	
-	protected static void setFlagsVoidTicket(boolean flagsvoidticket) 
-	{
-		flagsVoidTicket = flagsvoidticket;
-	}
-	
-    private static boolean fwRT2enabled = false;	// abilita/disabilita i comandi in modalità RT2
-    
-	public static boolean isfwRT2enabled() {
-		return fwRT2enabled;
-	}
-	
-	public static boolean isfwRT2disabled() {
-		return (!isfwRT2enabled());
-	}
-	
-	static void setfwRT2enabled(boolean fwrT2enabled) {
-		System.out.println("RT2 - setfwRT2enabled : "+fwrT2enabled);
-		fwRT2enabled = fwrT2enabled;
-		DicoTaxLoad.setRT2enabled(fwRT2enabled);
-	}
-	
-	public static boolean isRT2On() {
-		if (SRTPrinterExtension.isPRT()) {
-			return (isfwRT2enabled() && DicoTaxLoad.isRT2enabled());
-		}
-		else if (SRTPrinterExtension.isSRT()){
-			return (Extra.isServerRt20() && DicoTaxLoad.isRT2enabled());
-		}
-		return (false);
-	}
-	
     public static RTLottery Lotteria = null;
     
 	public static HashMap<String, TaxInfo> taxInfoMap = new HashMap<String, TaxInfo>();
@@ -78,14 +40,6 @@ public class SharedPrinterFields {
 	public static HashMap<String, AtecoInfo> atecoInfoMap = new HashMap<String, AtecoInfo>();
 	
 	public static boolean inException;
-	
-	public static final String	LOGO_FOLDER	=	"/bs2coop/pos/image/header/";
-	static final String	LOGO_FILE			=	"MyLogo.bmp";
-	static final String	TRAILER_LOGO_FILE	=	"MyTrailerLogo.bmp";
-	static final int	LOGO_NUMBER			=	1;
-	static final int	TRAILER_LOGO_NUMBER	=	2;
-	
-	public static final String ALINER = "                                         ";
 	
 	public static String KEY_LOCK	= "=C0";
     public static String KEY_REG	= "=C1";
@@ -124,16 +78,6 @@ public class SharedPrinterFields {
 	
     public static HashMap<String, Double> lineePagamento = null;
     
-    private static boolean CFcliente = false;
-    
-    static boolean isCFcliente() {
- 		return CFcliente;
- 	}
-
- 	public static void setCFcliente(boolean cFcliente) {
- 		CFcliente = cFcliente;
- 	}
- 	
 	public static String lastticket = "/bs2coop/pos/LastTicket.out";
 	
 	public static boolean	inRetryFiscal;

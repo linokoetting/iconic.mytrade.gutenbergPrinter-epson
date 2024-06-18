@@ -221,7 +221,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //	    	setfwILotteryenabled(fw >= getILotteryfw());
 //	    }
     	setfwLotteryenabled(true);
-    	SharedPrinterFields.setfwRT2enabled(true);
+    	setfwRT2enabled(true);
     	//setfwSMTKenabled(true);
     	setfwILotteryenabled(true);
 	    

@@ -30,6 +30,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketPrope
 import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.service.utils.String13Fix;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
+import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
 import jpos.FiscalPrinter;
 import jpos.FiscalPrinterConst;
@@ -71,16 +72,170 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     private static int RT_PRESERVICE = 2;
     private static String PRINTERRTOFF = "  STAMPANTE RT OFF  ";
     
-    private static double Lotteryfw = 999;
+	private static int FPRT_RT_POSTVOID_NUMBER = 28; 
+	private static int FPRT_RT_REFUND_NUMBER = 29;
+	
     private static double RT2fw = 999;
+    private static double Lotteryfw = 999;
     private static double SMTKfw = 999;
     private static double ILotteryfw = 999;
+    private static boolean fwRT2enabled = false;	// abilita/disabilita i comandi in modalità RT2
     private static boolean fwLotteryenabled = false;
     private static boolean fwSMTKenabled = false;	// abilita/disabilita i comandi per SmartTicket
     private static boolean fwILotteryenabled = false;
     
-	private static int FPRT_RT_POSTVOID_NUMBER = 28; 
-	private static int FPRT_RT_REFUND_NUMBER = 29;
+	private static double getRT2fw() {
+		System.out.println("RT2 - getRT2fw : "+RT2fw);
+		return RT2fw;
+	}
+	
+	private void setRT2fw(String rttype) {
+		if (PrinterType.isEpsonModel())
+		{
+			if (rttype.equalsIgnoreCase("M"))
+				RT2fw = Double.parseDouble(Rt2Fw_Epson_M);
+			else if (rttype.equalsIgnoreCase("I"))
+				RT2fw = Double.parseDouble(Rt2Fw_Epson_I);
+			else if (rttype.equalsIgnoreCase("S"))
+				RT2fw = Double.parseDouble(Rt2Fw_Epson_S);
+		}
+		if (PrinterType.isRCHPrintFModel())
+		{
+			RT2fw = Double.parseDouble(Rt2Fw_Rch);
+		}
+		if (PrinterType.isDieboldRTOneModel())
+		{
+			RT2fw = Double.parseDouble(Rt2Fw_Diebold);
+		}
+		System.out.println("RT2 - setRT2fw : "+RT2fw);
+	}
+	
+	private static double getLotteryfw() {
+		System.out.println("RT2 - getLotteryfw : "+Lotteryfw);
+		return Lotteryfw;
+	}
+	
+	private void setLotteryfw(String rttype) {
+		if (PrinterType.isEpsonModel())
+		{
+			if (rttype.equalsIgnoreCase("M"))
+				Lotteryfw = 10.02;
+			else if (rttype.equalsIgnoreCase("I"))
+				Lotteryfw = 6.02;
+		}
+		if (PrinterType.isRCHPrintFModel())
+		{
+			Lotteryfw = 7.0;
+		}
+		if (PrinterType.isDieboldRTOneModel())
+		{
+			Lotteryfw = 7.0;
+		}
+		System.out.println("RT2 - setLotteryfw : "+Lotteryfw);
+	}
+	
+	private static double getSMTKfw() {
+		System.out.println("SMTK - getSMTKfw : "+SMTKfw);
+		return SMTKfw;
+	}
+	
+	private void setSMTKfw(String rttype) {
+		if (PrinterType.isEpsonModel())
+		{
+			if (rttype.equalsIgnoreCase("M"))
+				SMTKfw = 999;													// non possibile con le Epson Modificate
+			else if (rttype.equalsIgnoreCase("I"))
+				SMTKfw = 9;
+			else if (rttype.equalsIgnoreCase("S"))
+				SMTKfw = Double.parseDouble(Rt2Fw_Epson_S);	// ininfluente
+		}
+		if (PrinterType.isRCHPrintFModel())
+		{
+			SMTKfw = 9;
+		}
+		if (PrinterType.isDieboldRTOneModel())
+		{
+			SMTKfw = 9;
+		}
+		System.out.println("SMTK - setSMTKfw : "+SMTKfw);
+	}
+	
+	private static double getILotteryfw() {
+		System.out.println("RT2 - getILotteryfw : "+ILotteryfw);
+		return ILotteryfw;
+	}
+	
+	private void setILotteryfw(String rttype) {
+		if (PrinterType.isEpsonModel())
+		{
+			if (rttype.equalsIgnoreCase("M"))
+				ILotteryfw = 12.00;
+			else if (rttype.equalsIgnoreCase("I"))
+				ILotteryfw = 10.00;
+		}
+		if (PrinterType.isRCHPrintFModel())
+		{
+			ILotteryfw = 9.00;
+		}
+		if (PrinterType.isDieboldRTOneModel())
+		{
+			ILotteryfw = 10.00;
+		}
+		System.out.println("RT2 - setILotteryfw : "+ILotteryfw);
+	}
+	
+	public static boolean isfwRT2enabled() {
+		return fwRT2enabled;
+	}
+	
+	public static boolean isfwRT2disabled() {
+		return (!isfwRT2enabled());
+	}
+	
+	static void setfwRT2enabled(boolean fwrT2enabled) {
+		System.out.println("RT2 - setfwRT2enabled : "+fwrT2enabled);
+		fwRT2enabled = fwrT2enabled;
+		DicoTaxLoad.setRT2enabled(fwRT2enabled);
+	}
+
+	public static boolean isfwLotteryenabled() {
+		return fwLotteryenabled;
+	}
+	
+	public static boolean isfwLotterydisabled() {
+		return (!isfwLotteryenabled());
+	}
+	
+	protected static void setfwLotteryenabled(boolean fwlotteryenabled) {
+		System.out.println("RT2 - setfwLotteryenabled : "+fwlotteryenabled);
+		fwLotteryenabled = fwlotteryenabled;
+	}
+	
+	public static boolean isfwSMTKenabled() {
+		return fwSMTKenabled;
+	}
+	
+	public static boolean isfwSMTKdisabled() {
+		return (!isfwSMTKenabled());
+	}
+	
+	protected static void setfwSMTKenabled(boolean fwsMTKenabled) {
+		System.out.println("SMTK - setfwSMTKenabled : "+fwsMTKenabled);
+		fwSMTKenabled = fwsMTKenabled;
+	}
+	
+	public static boolean isfwILotteryenabled() {
+		return fwILotteryenabled;
+	}
+	
+	public static boolean isfwILotterydisabled() {
+		return (!isfwILotteryenabled());
+	}
+	
+	protected static void setfwILotteryenabled(boolean fwilotteryenabled) {
+		System.out.println("RT2 - setfwILotteryenabled : "+fwilotteryenabled);
+		fwILotteryenabled = fwilotteryenabled;
+	}
 	
 	private String fwBuildNumber = "";
     
@@ -135,145 +290,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	
 	private void setExpiredCertificate(boolean expiredCertificate) {
 		ExpiredCertificate = expiredCertificate;
-	}
-	
-	private static double getLotteryfw() {
-		System.out.println("RT2 - getLotteryfw : "+Lotteryfw);
-		return Lotteryfw;
-	}
-	
-	private void setLotteryfw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				Lotteryfw = 10.02;
-			else if (rttype.equalsIgnoreCase("I"))
-				Lotteryfw = 6.02;
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			Lotteryfw = 7.0;
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			Lotteryfw = 7.0;
-		}
-		System.out.println("RT2 - setLotteryfw : "+Lotteryfw);
-	}
-	
-	public static boolean isfwLotteryenabled() {
-		return fwLotteryenabled;
-	}
-	
-	public static boolean isfwLotterydisabled() {
-		return (!isfwLotteryenabled());
-	}
-	
-	protected static void setfwLotteryenabled(boolean fwlotteryenabled) {
-		System.out.println("RT2 - setfwLotteryenabled : "+fwlotteryenabled);
-		fwLotteryenabled = fwlotteryenabled;
-	}
-	
-	private static double getILotteryfw() {
-		System.out.println("RT2 - getILotteryfw : "+ILotteryfw);
-		return ILotteryfw;
-	}
-	
-	public static boolean isfwILotteryenabled() {
-		return fwILotteryenabled;
-	}
-	
-	public static boolean isfwILotterydisabled() {
-		return (!isfwILotteryenabled());
-	}
-	
-	protected static void setfwILotteryenabled(boolean fwilotteryenabled) {
-		System.out.println("RT2 - setfwILotteryenabled : "+fwilotteryenabled);
-		fwILotteryenabled = fwilotteryenabled;
-	}
-	
-	private static double getRT2fw() {
-		System.out.println("RT2 - getRT2fw : "+RT2fw);
-		return RT2fw;
-	}
-	
-	private void setRT2fw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				RT2fw = Double.parseDouble(Rt2Fw_Epson_M);
-			else if (rttype.equalsIgnoreCase("I"))
-				RT2fw = Double.parseDouble(Rt2Fw_Epson_I);
-			else if (rttype.equalsIgnoreCase("S"))
-				RT2fw = Double.parseDouble(Rt2Fw_Epson_S);
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			RT2fw = Double.parseDouble(Rt2Fw_Rch);
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			RT2fw = Double.parseDouble(Rt2Fw_Diebold);
-		}
-		System.out.println("RT2 - setRT2fw : "+RT2fw);
-	}
-	
-	private void setILotteryfw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				ILotteryfw = 12.00;
-			else if (rttype.equalsIgnoreCase("I"))
-				ILotteryfw = 10.00;
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			ILotteryfw = 9.00;
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			ILotteryfw = 10.00;
-		}
-		System.out.println("RT2 - setILotteryfw : "+ILotteryfw);
-	}
-	
-	private static double getSMTKfw() {
-		System.out.println("SMTK - getSMTKfw : "+SMTKfw);
-		return SMTKfw;
-	}
-	
-	private void setSMTKfw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				SMTKfw = 999;													// non possibile con le Epson Modificate
-			else if (rttype.equalsIgnoreCase("I"))
-				SMTKfw = 9;
-			else if (rttype.equalsIgnoreCase("S"))
-				SMTKfw = Double.parseDouble(Rt2Fw_Epson_S);	// ininfluente
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			SMTKfw = 9;
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			SMTKfw = 9;
-		}
-		System.out.println("SMTK - setSMTKfw : "+SMTKfw);
-	}
-	
-	public static boolean isfwSMTKenabled() {
-		return fwSMTKenabled;
-	}
-	
-	public static boolean isfwSMTKdisabled() {
-		return (!isfwSMTKenabled());
-	}
-	
-	protected static void setfwSMTKenabled(boolean fwsMTKenabled) {
-		System.out.println("SMTK - setfwSMTKenabled : "+fwsMTKenabled);
-		fwSMTKenabled = fwsMTKenabled;
 	}
 	
 	int getOpenTimeout() {
@@ -465,7 +481,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    	fw = Double.parseDouble(as[0].trim());
 			System.out.println("RT2 - fw : "+fw);
 	    	setfwLotteryenabled(fw >= getLotteryfw());
-	    	SharedPrinterFields.setfwRT2enabled(fw >= getRT2fw());
+	    	setfwRT2enabled(fw >= getRT2fw());
 	    	setfwSMTKenabled(fw >= getSMTKfw());
 	    	setfwILotteryenabled(fw >= getILotteryfw());
 	    }
@@ -473,7 +489,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    	fw = Double.parseDouble((as[0].substring(0, as[0].lastIndexOf((int)'.'))).trim());
 			System.out.println("RT2 - fw : "+fw);
 	    	setfwLotteryenabled(fw >= getLotteryfw());
-	    	SharedPrinterFields.setfwRT2enabled(fw >= getRT2fw());
+	    	setfwRT2enabled(fw >= getRT2fw());
 	    	setfwSMTKenabled(fw >= getSMTKfw());
 	    	setfwILotteryenabled(fw >= getILotteryfw());
 	    }
@@ -531,7 +547,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     		SMTKsetReceiptType(SmartTicket.ERECEIPT_PAPER, SmartTicket.ERECEIPT_VALIDITY_ALL);
 	    }
 	    
-		LogPrinterLevel(SharedPrinterFields.RTPrinterId, fw, isfwLotteryenabled(), SharedPrinterFields.isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
+		LogPrinterLevel(SharedPrinterFields.RTPrinterId, fw, isfwLotteryenabled(), isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();
 		
 		return fw;
@@ -1495,7 +1511,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			   
 	private void setLocalAccessControl()
 	{
-		if (SharedPrinterFields.isfwRT2disabled())
+		if (isfwRT2disabled())
 			return;
 		
 		if (PrinterType.isEpsonModel()) {

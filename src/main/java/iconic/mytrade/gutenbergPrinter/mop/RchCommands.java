@@ -78,12 +78,12 @@ public class RchCommands extends PrinterCommands {
 								if (typeIndex == LoadMops.EFT_TYPE){
 								}
 								if (typeIndex == LoadMops.NOPAY2_TYPE){
-									if (SharedPrinterFields.isfwRT2disabled())
+									if (fiscalPrinterDriver.isfwRT2disabled())
 										NonRiscosso = 1;
 									Ticket = 1;
 								}
 								if (typeIndex == LoadMops.TICKETWN_TYPE){
-									if (SharedPrinterFields.isfwRT2disabled())
+									if (fiscalPrinterDriver.isfwRT2disabled())
 										NonRiscosso = 1;
 									Ticket = 1;
 								}
@@ -91,14 +91,14 @@ public class RchCommands extends PrinterCommands {
 									if (mop.getInd() == 0)
 										NonRiscosso = NonRiscossoBeni;
 									else if (mop.getInd() == 4)
-										NonRiscosso = (SharedPrinterFields.isfwRT2enabled() ? NonRiscossoFatture : NonRiscossoBeni);
+										NonRiscosso = (fiscalPrinterDriver.isfwRT2enabled() ? NonRiscossoFatture : NonRiscossoBeni);
 									else if (mop.getInd() == 5)
-										NonRiscosso = (SharedPrinterFields.isfwRT2enabled() ? NonRiscossoDCRaSSN : NonRiscossoBeni);
+										NonRiscosso = (fiscalPrinterDriver.isfwRT2enabled() ? NonRiscossoDCRaSSN : NonRiscossoBeni);
 									else
-										NonRiscosso = (SharedPrinterFields.isfwRT2enabled() ? mop.getInd() : NonRiscossoBeni);
+										NonRiscosso = (fiscalPrinterDriver.isfwRT2enabled() ? mop.getInd() : NonRiscossoBeni);
 								}
 								if (typeIndex == LoadMops.DSCONPAY_TYPE){
-									NonRiscosso = (SharedPrinterFields.isfwRT2enabled() ? ScontoPagare : NonRiscossoBeni);
+									NonRiscosso = (fiscalPrinterDriver.isfwRT2enabled() ? ScontoPagare : NonRiscossoBeni);
 									isScontoAPagare = true;
 								}
 								

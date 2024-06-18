@@ -82,6 +82,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	static int staticMsgLen = 0;
 	
+	public static final String	LOGO_FOLDER	=	"/bs2coop/pos/image/header/";
+	static final String	LOGO_FILE			=	"MyLogo.bmp";
+	static final String	TRAILER_LOGO_FILE	=	"MyTrailerLogo.bmp";
+	static final int	LOGO_NUMBER			=	1;
+	static final int	TRAILER_LOGO_NUMBER	=	2;
+	
+	public static final String ALINER = "                                         ";
+	
 	protected static final String	R3_DELETELASTTICKET_R3 = "R3_NEWCMD01_R3";
 	protected static final String	R3_PRINTNORMALLONGER_R3 = "R3_NEWCMD02_R3";
 	private static	 final String	R3_DOUBLE_R3 = "R3double3R";
@@ -109,6 +117,16 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		CFPIvaFlag = cFPIvaFlag;
 	}
     
+    private static boolean CFcliente = false;
+    
+    static boolean isCFcliente() {
+ 		return CFcliente;
+ 	}
+
+ 	public static void setCFcliente(boolean cFcliente) {
+ 		CFcliente = cFcliente;
+ 	}
+ 	
 	private boolean flagVoidRefund = false;
 	
 	protected boolean isFlagVoidRefund(long amt, long adj) 
@@ -119,6 +137,18 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	protected void setFlagVoidRefund(boolean flagVoidRefund) 
 	{
 		this.flagVoidRefund = flagVoidRefund;
+	}
+	
+	private static boolean flagsVoidTicket = false;
+	
+	protected static boolean isFlagsVoidTicket() 
+	{
+		return flagsVoidTicket;
+	}
+	
+	protected static void setFlagsVoidTicket(boolean flagsvoidticket) 
+	{
+		flagsVoidTicket = flagsvoidticket;
 	}
 	
 	private boolean	prtDone;	// printrectotalDone
@@ -228,6 +258,16 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private static File inout = null;		
 	private static FileOutputStream fos = null;
 	private static PrintStream ps = null;
+	
+	public static boolean isRT2On() {
+		if (SRTPrinterExtension.isPRT()) {
+			return (fiscalPrinterDriver.isfwRT2enabled() && DicoTaxLoad.isRT2enabled());
+		}
+		else if (SRTPrinterExtension.isSRT()){
+			return (Extra.isServerRt20() && DicoTaxLoad.isRT2enabled());
+		}
+		return (false);
+	}
 	
 	boolean isFiscalAndSRTModel()
 	{
@@ -355,7 +395,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
             
             s = doc[0]+" N. "+z+"-"+n;
             ForFiscalEJFile.writeToFile("\t\t"+s);
-            LastTicket.setDocnum(SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-s.length())/2))+s);
+            LastTicket.setDocnum(ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-s.length())/2))+s);
             
             intestazione5(false);
             
@@ -535,7 +575,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 		}
 		
-		if (SRTPrinterExtension.isPRT() && PrinterType.isRCHPrintFModel() && TaxData.isOmaggio(jIvaPolipos) && SharedPrinterFields.isfwRT2enabled()) {
+		if (SRTPrinterExtension.isPRT() && PrinterType.isRCHPrintFModel() && TaxData.isOmaggio(jIvaPolipos) && fiscalPrinterDriver.isfwRT2enabled()) {
 			// lo vende automaticamente la printer
 			return;
 		}
@@ -635,7 +675,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		System.out.println ( "MAPOTO-EXEC PRINT VOID" );
 
 		if (SRTPrinterExtension.isPRT())
-			SharedPrinterFields.setFlagsVoidTicket( true );
+			setFlagsVoidTicket( true );
 		
 		setFlagVoidRefund(false);
 		
@@ -665,7 +705,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			switch ( PrinterType.getPrinterModel() )
 			{
 				case PrinterType.TH230_N:
-			        if ( ! SharedPrinterFields.isFlagsVoidTicket() )
+			        if ( ! isFlagsVoidTicket() )
 			        {
 				        printRecMessage(" ");
 				        printRecMessage("--------------------------------------------");
@@ -675,10 +715,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				        printRecMessage("--------------------------------------------");
 				        printRecMessage(" ");
 			        }
-			        SharedPrinterFields.setFlagsVoidTicket( false );
+			        setFlagsVoidTicket( false );
 					break;
 				case PrinterType.NCR7198_N:
-			        if ( ! SharedPrinterFields.isFlagsVoidTicket() )
+			        if ( ! isFlagsVoidTicket() )
 			        {
 				        printRecMessage(" ");
 				        printRecMessage("--------------------------------------------");
@@ -688,10 +728,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				        printRecMessage("--------------------------------------------");
 				        printRecMessage(" ");
 			        }
-			        SharedPrinterFields.setFlagsVoidTicket( false );
+			        setFlagsVoidTicket( false );
 					break;
 				case PrinterType.EP_TMT88:
-			        if ( ! SharedPrinterFields.isFlagsVoidTicket() )
+			        if ( ! isFlagsVoidTicket() )
 			        {
 				        printRecMessage(" ");
 				        printRecMessage("------------------------------------------");
@@ -701,7 +741,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				        printRecMessage("------------------------------------------");
 				        printRecMessage(" ");
 			        }
-			        SharedPrinterFields.setFlagsVoidTicket( false );
+			        setFlagsVoidTicket( false );
 					break;
 			}
 		}
@@ -729,7 +769,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
   	    	LocalTimestamp clts = TransactionSale.getEndData();
   	    	current_dateTime = Sprint.f("%d%02d%02dT%02d%02d%02d",new Integer(clts.getYear()+1900),new Integer(clts.getMonth()+1),new Integer(clts.getDay()),new Integer(clts.getHour()),new Integer(clts.getMinute()),new Integer(clts.getSecond()));
   	    	System.out.println("current_dateTime="+current_dateTime+" previous_dateTime="+DummyServerRT.previous_dateTime);
-  	    	if (!SharedPrinterFields.isFlagsVoidTicket() && (!current_dateTime.equalsIgnoreCase(DummyServerRT.previous_dateTime)))
+  	    	if (!isFlagsVoidTicket() && (!current_dateTime.equalsIgnoreCase(DummyServerRT.previous_dateTime)))
   	    	{
 				xml = new ArrayList();
 				
@@ -780,7 +820,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							DummyServerRT.CurrentDailyAmount = ""+(int)((Double.parseDouble(DummyServerRT.CurrentDailyAmount)+(HardTotals.Totale.getDouble()*100)));
 					}
 					
-					if (SharedPrinterFields.isRT2On()) {
+					if (isRT2On()) {
 //						J14Data.setrsAllTicket(RoungickTax.getCompleteVatTable());	// ???
 					}
 					
@@ -839,7 +879,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				  	    endTicketSRT(DummyServerRT.SRTServerID, DummyServerRT.SRTTillID, DummyServerRT.currentFingerPrint);
 				  	    SharedPrinterFields.resetInTicket();
 						
-				  	    SharedPrinterFields.setFlagsVoidTicket( false );
+				  	    setFlagsVoidTicket( false );
 					    
 						endNonFiscal();
 						
@@ -874,7 +914,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			HardTotals.doEndFiscalSRT(RTTxnType.getTypeTrx());
 			SharedPrinterFields.resetInTicket();	    
 
-			SharedPrinterFields.setFlagsVoidTicket( false );
+			setFlagsVoidTicket( false );
 	        
 			endNonFiscal();
 			
@@ -894,7 +934,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	  	    
 	  	    endTicketSRT(DummyServerRT.SRTServerID, DummyServerRT.SRTTillID, DummyServerRT.currentFingerPrint);
 
-	  	    SharedPrinterFields.setFlagsVoidTicket( false );
+	  	    setFlagsVoidTicket( false );
 		}
 		
 		setFlagVoidRefund(false);
@@ -935,7 +975,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
         }
         
         SharedPrinterFields.resetInTicket();	    
-        SharedPrinterFields.setFlagsVoidTicket( false );
+        setFlagsVoidTicket( false );
         
 		if (SRTPrinterExtension.isPRT() && PrinterType.isEpsonModel() && RTTxnType.isRefundTrx())
 			currentTicket = 0;
@@ -1043,7 +1083,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		setFlagVoidRefund(false);
 		
     	fiscalPrinterDriver.beginNonFiscal( );
-    	PrintLogo(SharedPrinterFields.LOGO_NUMBER);
+    	PrintLogo(LOGO_NUMBER);
 		initTicket();
 	}
 	
@@ -1066,7 +1106,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		setFlagVoidRefund(false);
 		SharedPrinterFields.resetInTicket();
 		resetprtDone();
-    	PrintLogo(SharedPrinterFields.TRAILER_LOGO_NUMBER);
+    	PrintLogo(TRAILER_LOGO_NUMBER);
     	fiscalPrinterDriver.endNonFiscal( );
 		setMonitorState();
 	}
@@ -1261,13 +1301,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 		}
 		
-		if (SRTPrinterExtension.isPRT() && TaxData.isAcconti(iIvaPolipos) && SharedPrinterFields.isfwRT2enabled())
+		if (SRTPrinterExtension.isPRT() && TaxData.isAcconti(iIvaPolipos) && fiscalPrinterDriver.isfwRT2enabled())
 		{
 			printRecAcconto(s, l, iIvaPolipos);
 			return;
 		}
 		
-		if (SRTPrinterExtension.isPRT() && TaxData.isBuonoMonouso(iIvaPolipos) && SharedPrinterFields.isfwRT2enabled())
+		if (SRTPrinterExtension.isPRT() && TaxData.isBuonoMonouso(iIvaPolipos) && fiscalPrinterDriver.isfwRT2enabled())
 		{
 			printRecBMonoUso(s, l, iIvaPolipos);
 			return;
@@ -1596,12 +1636,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		if (SRTPrinterExtension.isPRT()){
 			if (PrinterType.isEpsonModel())
-				arg2 = LoadMops.getPrefixPayment(p+arg2) + arg2;
+				arg2 = LoadMops.getPrefixPayment(p+arg2, fiscalPrinterDriver.isfwRT2disabled()) + arg2;
 			else if (PrinterType.isRCHPrintFModel()) {
 				pd = arg2;
 				arg2 = LoadMops.getRCHPrefixPayment(arg2);
 				System.out.println ( "MAPOTO-EXEC PRINT TOTAL - arg2="+arg2 );
-				if (SharedPrinterFields.isfwRT2enabled()) {
+				if (fiscalPrinterDriver.isfwRT2enabled()) {
 					int t = Integer.parseInt(p.substring(0,1));
 					if (t == LoadMops.TICKETWN_TYPE)
 						arg2 = arg2+","+p.substring(1,3);
@@ -1636,7 +1676,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					
 					LocalTimestamp lts = TransactionSale.getEndData();
 					String date = Sprint.f("%02d-%02d-%d %02d:%02d",new Integer(lts.getDay()),new Integer(lts.getMonth()+1),new Integer(lts.getYear()+1900),new Integer(lts.getHour()),new Integer(lts.getMinute())); 
-					out = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-date.length())/2))+date;
+					out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-date.length())/2))+date;
 					scriviLastTicket(out);
 					
 					out = LastTicket.getDocnum();
@@ -1647,7 +1687,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						scriviLastTicket(out);
 					}
 					
-					out = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-SharedPrinterFields.RTPrinterId.length())/2))+SharedPrinterFields.RTPrinterId;
+					out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-SharedPrinterFields.RTPrinterId.length())/2))+SharedPrinterFields.RTPrinterId;
 					scriviLastTicket(out);
 				} catch (Exception e) {
 					System.out.println("LastTicket error: "+e.getMessage());
@@ -1660,7 +1700,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			String s = arg2;
 			arg2 = LoadMops.getSrtDescription(pd);
 			SharedPrinterFields.getChangeDescription();
-			if (LoadMops.isNonRiscosso(arg2)) {
+			if (LoadMops.isNonRiscosso(arg2, isRT2On())) {
 				totaleNonRiscosso+=arg1;
 			}
 			if (SRTPrinterExtension.isPRT())
@@ -1757,7 +1797,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        }
 	        else{
 	        	// PROVVISORIO
-	        	if (PrinterType.isEpsonModel() && SharedPrinterFields.isfwRT2enabled() && (arg0 == arg1)) {
+	        	if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled() && (arg0 == arg1)) {
 	        		SharedPrinterFields.getChangeDescription();
 	        		if (arg2.equalsIgnoreCase(SharedPrinterFields.ChangeCurrency)) {
 	        			arg0 = 0;
@@ -1767,9 +1807,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        	}
 	        	// PROVVISORIO
 	        	
-	        	if (PrinterType.isEpsonModel() && SharedPrinterFields.isfwRT2enabled()) {
+	        	if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 					if (arg2.length() > 0) {
-						int prefix = Integer.parseInt(LoadMops.getPrefixPayment(arg2));
+						int prefix = Integer.parseInt(LoadMops.getPrefixPayment(arg2, fiscalPrinterDriver.isfwRT2disabled()));
 						if ((prefix / 100) == LoadMops.TICKETWN_TYPE) {
 							int howmany = prefix % 100;
 							if (howmany > 1) {
@@ -1797,7 +1837,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "MAPOTO after driver.printRecTotal");
 			
 			if (enabledLowerRoundedPay == -1) {
-				if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.isfwRT2enabled()) {
+				if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 					progress_amount+=arg1;
 					if (arg2.indexOf(",") >= 0)
 						arg2 = arg2.substring(0, arg2.indexOf(","));
@@ -1822,12 +1862,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					}
 				}
 			}
-			if (PrinterType.isEpsonModel() && SharedPrinterFields.isfwRT2enabled()) {
+			if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()) {
 				progress_amount+=arg1;
 				if (arg2.length() > 0) {
 					if (!arg2.equalsIgnoreCase(SharedPrinterFields.ChangeCurrency))
 						progress_cash = false;
-					if (!((Integer.parseInt(LoadMops.getPrefixPayment(arg2)) / 100) == RTConsts.PAGELETT))
+					if (!((Integer.parseInt(LoadMops.getPrefixPayment(arg2, fiscalPrinterDriver.isfwRT2disabled())) / 100) == RTConsts.PAGELETT))
 						progress_eft = false;
 				}
 				else {
@@ -1975,7 +2015,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					
 					LocalTimestamp lts = TransactionSale.getEndData();
 					String date = Sprint.f("%02d-%02d-%d %02d:%02d",new Integer(lts.getDay()),new Integer(lts.getMonth()+1),new Integer(lts.getYear()+1900),new Integer(lts.getHour()),new Integer(lts.getMinute())); 
-					out = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-date.length())/2))+date;
+					out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-date.length())/2))+date;
 					scriviLastTicket(out);
 					
 					out = LastTicket.getDocnum();
@@ -1993,12 +2033,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						ej.printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, out+R3define.CrLf);
 					}
 					
-					out = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-SharedPrinterFields.RTPrinterId.length())/2))+SharedPrinterFields.RTPrinterId;
+					out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-SharedPrinterFields.RTPrinterId.length())/2))+SharedPrinterFields.RTPrinterId;
 					scriviLastTicket(out);
 					
 					if (RTTxnType.isSaleTrx())
 					{
-						out = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-LastTicket.getPaymdetails().length())/2))+LastTicket.getPaymdetails();
+						out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-LastTicket.getPaymdetails().length())/2))+LastTicket.getPaymdetails();
 						scriviLastTicket(out);
 						
 						for  ( int i = 0; i < SharedPrinterFields.a.size() ; i++ )
@@ -2073,7 +2113,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 		}
 		
-		if (SRTPrinterExtension.isPRT() && TaxData.isOmaggio(kIvaPolipos) && SharedPrinterFields.isfwRT2enabled())
+		if (SRTPrinterExtension.isPRT() && TaxData.isOmaggio(kIvaPolipos) && fiscalPrinterDriver.isfwRT2enabled())
 		{
 			printRecOmaggio(s, l, i, j, l1, kIvaPolipos);
 			return;
@@ -2380,7 +2420,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		  	  }
 			  if ((PrinterType.isTH230Model() || PrinterType.isRCHPrintFModel()) && (arg0 == 1))
 			  {
-				  SetLogo(SharedPrinterFields.LOGO_FILE, SharedPrinterFields.LOGO_NUMBER);
+				  SetLogo(LOGO_FILE, LOGO_NUMBER);
 			  }
 		}
 		int maxHeaderLine = fiscalPrinterDriver.getNumHeaderLines();
@@ -2400,7 +2440,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			   }
 			   if (PrinterType.isTH230Model() && (arg0 == 1))
 			   {
-				   String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)SharedPrinterFields.LOGO_NUMBER + (char)0x42;
+				   String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)LOGO_NUMBER + (char)0x42;
 				   arg1 = UseBitmapInSlot+arg1;
 				   TakeYourTime.takeYourTime(600);
 			   }
@@ -2438,14 +2478,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			   if (fiscalPrinterDriver.getDayOpened())
 				   System.out.println("setAdditionalTrailer - Fiscal day opened: don't do it.");
 			   else
-				   SetLogo(SharedPrinterFields.TRAILER_LOGO_FILE, SharedPrinterFields.TRAILER_LOGO_NUMBER);
+				   SetLogo(TRAILER_LOGO_FILE, TRAILER_LOGO_NUMBER);
 		   }
 			   
 		   try
 		   {
 			   if (PrinterType.isTH230Model())
 			   {
-				   String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)SharedPrinterFields.TRAILER_LOGO_NUMBER + (char)0x42;
+				   String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)TRAILER_LOGO_NUMBER + (char)0x42;
 				   text = UseBitmapInSlot+text;
 			   }
 			   fiscalPrinterDriver.setAdditionalTrailer(text);
@@ -2604,7 +2644,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
         	p = "0."+p;
         else
         	p = p.substring ( 0,p.length()-2 ) + "." + p.substring ( p.length()-2 );
-    	return ( newMsg + SharedPrinterFields.ALINER.substring(0,mx-newMsg.length()-p.length())+ p);
+    	return ( newMsg + ALINER.substring(0,mx-newMsg.length()-p.length())+ p);
     }
    	
     protected String buildTotal ( String de, long price )
@@ -2684,7 +2724,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		String des = s.substring(0, a+1);
 		
-		return(des + SharedPrinterFields.ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-des.length()-ivadesc.length()-amt.length()-1)+ amt);
+		return(des + ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-des.length()-ivadesc.length()-amt.length()-1)+ amt);
 	}
     
     protected String buildSRTSubtotalAdjustment ( String de, long price )
@@ -2736,7 +2776,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	public void AnnullaResoRT_Posponed()
 	{
-		if (!SharedPrinterFields.isFlagsVoidTicket())
+		if (!isFlagsVoidTicket())
 			MessageBox.showMessage(RESONONCORRETTO, null, MessageBox.OK);
 		
 		try {
@@ -2748,7 +2788,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 //		setTxnnumbertorefund(LineRefundSRT.getTxnnumbertorefund());	// ??? non dovrebbe più servire visto che setVoided() sulla transazione non si farà più da qui immagino
 		
-		if (!SharedPrinterFields.isFlagsVoidTicket())
+		if (!isFlagsVoidTicket())
 			MessageBox.showMessage(OPERAZIONEANNULLATA, null, MessageBox.OK);
 	}
 	
@@ -2900,7 +2940,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private void endTicket(String FiscalNum) throws JposException
 		{
-			if (SharedPrinterFields.isFlagsVoidTicket())
+			if (isFlagsVoidTicket())
 				return;
 			
 			if (!RTTxnType.isVoidTrx())
@@ -2943,7 +2983,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private void endTicketSRT(String SRTServerID, String SRTTillID, String currentFingerPrint) throws JposException
 		{
-			if (SharedPrinterFields.isFlagsVoidTicket())
+			if (isFlagsVoidTicket())
 				return;
 			
 			if (!RTTxnType.isVoidTrx())
@@ -3013,13 +3053,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, " ");
 			
-			if (!SharedPrinterFields.isCFcliente()){
+			if (!isCFcliente()){
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, RTConsts.INTERPELLO141);
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, RTConsts.INTERPELLO142);
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, RTConsts.INTERPELLO143);
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, " ");
 			}
-			SharedPrinterFields.setCFcliente(false);
+			setCFcliente(false);
 		}
 		
 		ArrayList splitFingerPrint(String fingerprint)
@@ -3107,11 +3147,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			if (PrinterType.isTH230Model())
 			{
 				System.out.println("SetLogo - setting logo: "+number+" - "+name);
-				String[] params = {SharedPrinterFields.LOGO_FOLDER+name, null};
+				String[] params = {LOGO_FOLDER+name, null};
 				int[] params1 = {number};
 		            
 				try {
-					if (number == SharedPrinterFields.LOGO_NUMBER)
+					if (number == LOGO_NUMBER)
 					{
 						// erase all images
 						fiscalPrinterDriver.directIO(1201, null, null);
@@ -3122,7 +3162,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				}
 				TakeYourTime.takeYourTime(600);
 		            
-				int retry = (number == SharedPrinterFields.LOGO_NUMBER ? 3 : 1);
+				int retry = (number == LOGO_NUMBER ? 3 : 1);
 				for (int i=0; i<retry; i++)
 				{
 					try {
@@ -3143,7 +3183,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			{
 				System.out.println("SetLogo - setting logo: "+number+" - "+name);
 						
-						File filep = new File(SharedPrinterFields.LOGO_FOLDER+name);
+						File filep = new File(LOGO_FOLDER+name);
 						if (!filep.exists()){
 							System.out.println("SetLogo: "+filep.getAbsolutePath()+" doesn't exist");
 							return;
@@ -3152,10 +3192,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						int cmdLoad = 1202;
 						int cmdSelect = 1204;
 			    		int[] configuration = new int[] {3};
-			    		String[] path = new String[] {SharedPrinterFields.LOGO_FOLDER+name};
+			    		String[] path = new String[] {LOGO_FOLDER+name};
 			    		int[] logo = new int[] {3};
 			    		
-			    		if (number == SharedPrinterFields.TRAILER_LOGO_NUMBER) {
+			    		if (number == TRAILER_LOGO_NUMBER) {
 			    			cmdSelect = 1205;
 			    			configuration[0] = 4;
 			    			logo[0] = 4;
@@ -3181,7 +3221,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		   
 		protected void PrintLogo(int number)
 		{
-			if (PrinterType.isCUSTOMK2Model() && (number == SharedPrinterFields.TRAILER_LOGO_NUMBER))
+			if (PrinterType.isCUSTOMK2Model() && (number == TRAILER_LOGO_NUMBER))
 				return;
 			   
 			if (PrinterType.isTH230Model())
@@ -3205,7 +3245,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				try
 				{
 					strBytData = new String("3017031");
-					if (number == SharedPrinterFields.TRAILER_LOGO_NUMBER)
+					if (number == TRAILER_LOGO_NUMBER)
 						strBytData = new String("3017032");
 					fiscalPrinterDriver.directIO(JPOS_FPTR_DI_RAWDATA, data, strBytData);
 				}
@@ -3756,11 +3796,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			String intestazione = RTConsts.DESCRIZIONE;
 			if (fiscalreceipt){
-				intestazione = intestazione + SharedPrinterFields.ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-2-intestazione.length()-RTConsts.IVA.length())+ RTConsts.IVA;
+				intestazione = intestazione + ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-2-intestazione.length()-RTConsts.IVA.length())+ RTConsts.IVA;
 			}
 			else{
-				intestazione = intestazione + SharedPrinterFields.ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-1-intestazione.length()-RTConsts.IVA.length())+ RTConsts.IVA;
-				intestazione = intestazione + SharedPrinterFields.ALINER.substring(0,RTConsts.setMAXLNGHOFLENGTH()-intestazione.length()-RTConsts.PREZZO.length())+ RTConsts.PREZZO;
+				intestazione = intestazione + ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-1-intestazione.length()-RTConsts.IVA.length())+ RTConsts.IVA;
+				intestazione = intestazione + ALINER.substring(0,RTConsts.setMAXLNGHOFLENGTH()-intestazione.length()-RTConsts.PREZZO.length())+ RTConsts.PREZZO;
 			}
 			LastTicket.setIntestazione5(intestazione);
 			return intestazione;
@@ -3771,7 +3811,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			String intestazione = "";
 			
 			intestazione = RTConsts.INTESTAZIONE1;
-			intestazione = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
+			intestazione = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
 			
 			LastTicket.setIntestazione1(intestazione);
 			return intestazione;
@@ -3783,15 +3823,15 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (RTTxnType.isVoidTrx(type)){
 				intestazione = RTConsts.INTESTAZIONE23;
-				intestazione = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
+				intestazione = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
 			}
 			if (RTTxnType.isRefundTrx(type)){
 				intestazione = RTConsts.INTESTAZIONE21;
-				intestazione = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
+				intestazione = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
 			}
 			if (RTTxnType.isSaleTrx(type)){
 				intestazione = RTConsts.INTESTAZIONE20;
-				intestazione = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
+				intestazione = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
 			}
 			LastTicket.setIntestazione2(intestazione);
 			return intestazione;
@@ -3803,7 +3843,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (RTTxnType.isVoidTrx(type) || RTTxnType.isRefundTrx(type)){
 				intestazione = RTConsts.INTESTAZIONE3;
-				intestazione = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
+				intestazione = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
 			}
 			LastTicket.setIntestazione3(intestazione);
 			return intestazione;
@@ -3815,7 +3855,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (RTTxnType.isVoidTrx(type) || RTTxnType.isRefundTrx(type)){
 				intestazione = RTConsts.INTESTAZIONE4;
-				intestazione = SharedPrinterFields.ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
+				intestazione = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-intestazione.length())/2))+intestazione;
 			}
 			LastTicket.setIntestazione4(intestazione);
 			return intestazione;
@@ -3849,7 +3889,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        int mx = MAXLNGHOFLENGTH;
 	        String newMsg = (desc.length() <= mx)? desc: desc.substring (0, mx);
 	        
-	    	return ( SharedPrinterFields.ALINER.substring(0,mx-newMsg.length())+ newMsg);
+	    	return ( ALINER.substring(0,mx-newMsg.length())+ newMsg);
 	    }
 		
 		protected void stampaBarcodePerResi()
@@ -3866,7 +3906,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			if (RTTxnType.isRefundTrx() || RTTxnType.isVoidTrx())
 				return;
 			
-			if (SharedPrinterFields.isFlagsVoidTicket())
+			if (isFlagsVoidTicket())
 				return;
 			
 			String anno;
@@ -4184,7 +4224,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 
 		private void newModifierCommand(String descr, long amount, int cmd, int vat, int ivapolipos)
 		{
-			if (SharedPrinterFields.isfwRT2disabled())
+			if (fiscalPrinterDriver.isfwRT2disabled())
 				return;
 			
 			System.out.println("newModifierCommand - descr=<"+descr+">");
@@ -4896,7 +4936,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		public void setPaperSavingMode()
 		{
-			if (SharedPrinterFields.isfwRT2disabled())
+			if (fiscalPrinterDriver.isfwRT2disabled())
 				return;
 			
 			if (SRTPrinterExtension.isPRT())
@@ -4917,7 +4957,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 
 		public void setRoundingMode(int mode)
 		{
-			if (SharedPrinterFields.isfwRT2disabled())
+			if (fiscalPrinterDriver.isfwRT2disabled())
 				return;
 			
 			System.out.println("RT2 - setRoundingMode - mode = "+mode);
@@ -4967,7 +5007,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			String Kind = Sprint.f("%03d", RTConsts.ROUNDINGDISABLE);
 			
-			if (SharedPrinterFields.isfwRT2enabled())
+			if (fiscalPrinterDriver.isfwRT2enabled())
 			{
 				if (PrinterType.isEpsonModel()) {
 					StringBuffer sbcmd = new StringBuffer("27");
@@ -4986,7 +5026,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			int ret = -1;
 			
-			if (SharedPrinterFields.isfwRT2disabled())
+			if (fiscalPrinterDriver.isfwRT2disabled())
 				return ret;
 			
 			System.out.println("RT2 - enableLowerRoundedPay - mode = "+mode);

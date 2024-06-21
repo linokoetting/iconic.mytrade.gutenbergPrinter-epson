@@ -6,7 +6,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.AtecoInfo;
-import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
+import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
 import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;

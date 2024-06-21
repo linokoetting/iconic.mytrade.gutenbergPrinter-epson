@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo;
-import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
-import iconic.mytrade.gutenberg.srt.DummyServerRT;
+import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
+import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import jpos.JposException;
 

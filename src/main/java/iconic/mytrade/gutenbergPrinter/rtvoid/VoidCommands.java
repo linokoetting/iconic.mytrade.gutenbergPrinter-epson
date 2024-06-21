@@ -3,14 +3,14 @@ package iconic.mytrade.gutenbergPrinter.rtvoid;
 import iconic.mytrade.gutenberg.jpos.printer.service.LastTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
-import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
-import iconic.mytrade.gutenberg.srt.DummyServerRT;
-import iconic.mytrade.gutenberg.srt.RTConsts;
+import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
+import iconic.mytrade.gutenberg.jpos.printer.srt.RTConsts;
+import iconic.mytrade.gutenberg.jpos.printer.srt.Xml4SRT;
+import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.FiscalPrinterDriver;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
 import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
-import iconic.mytrade.gutenberg.srt.Xml4SRT;
 import jpos.FiscalPrinterConst;
 import jpos.JposException;
 

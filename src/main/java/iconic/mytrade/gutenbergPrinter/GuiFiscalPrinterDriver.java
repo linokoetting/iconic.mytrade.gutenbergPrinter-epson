@@ -8,7 +8,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
-import iconic.mytrade.gutenberg.jpos.printer.service.utils.Sprint;
+import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergGuiPrinter.PrinterGUI;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import jpos.JposException;

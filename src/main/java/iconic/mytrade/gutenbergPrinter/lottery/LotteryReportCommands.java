@@ -23,9 +23,6 @@ public class LotteryReportCommands extends PrinterCommands {
 	
 	public void printLotteryReport()
 	{
-		if (!PrinterType.isEpsonModel())
-			return;
-		
 		String till = PosApp.getTillNumber();
 		
         Calendar c = Calendar.getInstance();
@@ -122,7 +119,7 @@ public class LotteryReportCommands extends PrinterCommands {
 	public LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
 		LotteryStatus status = null;
 		
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.Lotteria.isLotteryOn())
+		if (SharedPrinterFields.Lotteria.isLotteryOn())
 		{
 			String operator = "01";
 			String zrep_num = Sprint.f("%04d", repz);
@@ -143,7 +140,7 @@ public class LotteryReportCommands extends PrinterCommands {
 	public LotteryReceiptStatus ReadLotteryReceiptStatus(String till, int repz, int recnum, String date, int type) {
 		LotteryReceiptStatus status = null;
 		
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.Lotteria.isLotteryOn())
+		if (SharedPrinterFields.Lotteria.isLotteryOn())
 		{
 			String zrep_num = Sprint.f("%04d", repz);
 			String rec_num = Sprint.f("%04d", recnum);
@@ -370,7 +367,7 @@ public class LotteryReportCommands extends PrinterCommands {
 	
 	private void printLTStatus(String filename)
 	{
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.Lotteria.isLotteryOn())
+		if (SharedPrinterFields.Lotteria.isLotteryOn())
 		{
 			try {
 				

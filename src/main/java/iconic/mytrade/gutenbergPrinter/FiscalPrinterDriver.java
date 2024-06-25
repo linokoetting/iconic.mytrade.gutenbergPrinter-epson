@@ -90,23 +90,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 	
 	private void setRT2fw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				RT2fw = Double.parseDouble(Rt2Fw_Epson_M);
-			else if (rttype.equalsIgnoreCase("I"))
-				RT2fw = Double.parseDouble(Rt2Fw_Epson_I);
-			else if (rttype.equalsIgnoreCase("S"))
-				RT2fw = Double.parseDouble(Rt2Fw_Epson_S);
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			RT2fw = Double.parseDouble(Rt2Fw_Rch);
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			RT2fw = Double.parseDouble(Rt2Fw_Diebold);
-		}
+		if (rttype.equalsIgnoreCase("M"))
+			RT2fw = Double.parseDouble(Rt2Fw_Epson_M);
+		else if (rttype.equalsIgnoreCase("I"))
+			RT2fw = Double.parseDouble(Rt2Fw_Epson_I);
+		else if (rttype.equalsIgnoreCase("S"))
+			RT2fw = Double.parseDouble(Rt2Fw_Epson_S);
 		System.out.println("RT2 - setRT2fw : "+RT2fw);
 	}
 	
@@ -116,21 +105,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 	
 	private void setLotteryfw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
 			if (rttype.equalsIgnoreCase("M"))
 				Lotteryfw = 10.02;
 			else if (rttype.equalsIgnoreCase("I"))
 				Lotteryfw = 6.02;
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			Lotteryfw = 7.0;
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			Lotteryfw = 7.0;
-		}
 		System.out.println("RT2 - setLotteryfw : "+Lotteryfw);
 	}
 	
@@ -140,23 +118,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 	
 	private void setSMTKfw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				SMTKfw = 999;													// non possibile con le Epson Modificate
-			else if (rttype.equalsIgnoreCase("I"))
-				SMTKfw = 9;
-			else if (rttype.equalsIgnoreCase("S"))
-				SMTKfw = Double.parseDouble(Rt2Fw_Epson_S);	// ininfluente
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
+		if (rttype.equalsIgnoreCase("M"))
+			SMTKfw = 999;													// non possibile con le Epson Modificate
+		else if (rttype.equalsIgnoreCase("I"))
 			SMTKfw = 9;
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			SMTKfw = 9;
-		}
+		else if (rttype.equalsIgnoreCase("S"))
+			SMTKfw = Double.parseDouble(Rt2Fw_Epson_S);	// ininfluente
 		System.out.println("SMTK - setSMTKfw : "+SMTKfw);
 	}
 	
@@ -166,21 +133,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 	
 	private void setILotteryfw(String rttype) {
-		if (PrinterType.isEpsonModel())
-		{
-			if (rttype.equalsIgnoreCase("M"))
-				ILotteryfw = 12.00;
-			else if (rttype.equalsIgnoreCase("I"))
-				ILotteryfw = 10.00;
-		}
-		if (PrinterType.isRCHPrintFModel())
-		{
-			ILotteryfw = 9.00;
-		}
-		if (PrinterType.isDieboldRTOneModel())
-		{
+		if (rttype.equalsIgnoreCase("M"))
+			ILotteryfw = 12.00;
+		else if (rttype.equalsIgnoreCase("I"))
 			ILotteryfw = 10.00;
-		}
 		System.out.println("RT2 - setILotteryfw : "+ILotteryfw);
 	}
 	
@@ -353,14 +309,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    SharedPrinterFields.fiscalEJ.open("uk.co.datafit.wincor.system.device.FiscalEJFile", null);
 	    SharedPrinterFields.fiscalEJ.setDeviceEnabled(true);
 	    
-		if (PrinterType.isDieboldRTOneModel()) {
-			try {
-				fiscalPrinter.resetPrinter();
-			} catch (JposException e) {
-				System.out.println ( "Printer Exception <"+e.toString()+">");
-			}
-		}
-		
 	    if (isRTModel())
 	    {
 	    	int rtstatus = RT_KO;
@@ -438,21 +386,19 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         
 		if (isRTModel())
 		{
-			if (PrinterType.isEpsonModel()) {
-				String f = "fiscal_"+
-						   (as[0].substring(0, as[0].indexOf("."))).trim()+(as[0].substring(as[0].indexOf(".")+1)).trim()+
-						   "_"+SharedPrinterFields.RTPrinterId.substring(2, 5)
-						   +"_"+Sprint.f("%04d", fwBuildNumber)
-						   +"_";
-				
-				boolean tested = CheckFw.inList(f);
-				if (!tested) {
-					System.out.println("\n---------------------------------------------------------------------------------------------");
-					System.out.println("ATTENZIONE - FIRMWARE EPSON NON CERTIFICATO DA RETEX : "+f);
-					System.out.println("---------------------------------------------------------------------------------------------\n");
-				}
-				PrinterInfo.SavePrinterInfo("Tested FW", String.valueOf(tested));
+			String f = "fiscal_"+
+					   (as[0].substring(0, as[0].indexOf("."))).trim()+(as[0].substring(as[0].indexOf(".")+1)).trim()+
+					   "_"+SharedPrinterFields.RTPrinterId.substring(2, 5)
+					   +"_"+Sprint.f("%04d", fwBuildNumber)
+					   +"_";
+			
+			boolean tested = CheckFw.inList(f);
+			if (!tested) {
+				System.out.println("\n---------------------------------------------------------------------------------------------");
+				System.out.println("ATTENZIONE - FIRMWARE EPSON NON CERTIFICATO DA RETEX : "+f);
+				System.out.println("---------------------------------------------------------------------------------------------\n");
 			}
+			PrinterInfo.SavePrinterInfo("Tested FW", String.valueOf(tested));
 		}
         
         String oldS = as[0];
@@ -472,27 +418,17 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		}
 		as[0] = newS;
 		
-	    if (PrinterType.isEpsonModel()) {
-	    	if (!epsonClass4){
-				int myfw = Integer.parseInt((as[0].substring(0, as[0].indexOf("."))).trim());
-				epsonClass4 = (myfw >= 4 ? true : false);
-		        System.out.println ("RetailCube-R3printers printer fw = "+myfw+" - epsonClass4 = "+epsonClass4);
-	    	}
-	    	fw = Double.parseDouble(as[0].trim());
-			System.out.println("RT2 - fw : "+fw);
-	    	setfwLotteryenabled(fw >= getLotteryfw());
-	    	setfwRT2enabled(fw >= getRT2fw());
-	    	setfwSMTKenabled(fw >= getSMTKfw());
-	    	setfwILotteryenabled(fw >= getILotteryfw());
-	    }
-	    if (PrinterType.isRCHPrintFModel()) {
-	    	fw = Double.parseDouble((as[0].substring(0, as[0].lastIndexOf((int)'.'))).trim());
-			System.out.println("RT2 - fw : "+fw);
-	    	setfwLotteryenabled(fw >= getLotteryfw());
-	    	setfwRT2enabled(fw >= getRT2fw());
-	    	setfwSMTKenabled(fw >= getSMTKfw());
-	    	setfwILotteryenabled(fw >= getILotteryfw());
-	    }
+    	if (!epsonClass4){
+			int myfw = Integer.parseInt((as[0].substring(0, as[0].indexOf("."))).trim());
+			epsonClass4 = (myfw >= 4 ? true : false);
+	        System.out.println ("RetailCube-R3printers printer fw = "+myfw+" - epsonClass4 = "+epsonClass4);
+    	}
+    	fw = Double.parseDouble(as[0].trim());
+		System.out.println("RT2 - fw : "+fw);
+    	setfwLotteryenabled(fw >= getLotteryfw());
+    	setfwRT2enabled(fw >= getRT2fw());
+    	setfwSMTKenabled(fw >= getSMTKfw());
+    	setfwILotteryenabled(fw >= getILotteryfw());
 	    
 	    if (isRTModel())
 	    {
@@ -501,12 +437,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     		setLocalAccessControl();
     		setFidelityOption(1);
     		setAppendixOption(1,0);
-	    	if (PrinterType.isEpsonModel()) {
-	    		SharedPrinterFields.VAT_N4_Dept = "20";
-	    	}
-	    	if (PrinterType.isRCHPrintFModel()) {
-	    		SharedPrinterFields.VAT_N4_Dept = "40";
-	    	}
+    		SharedPrinterFields.VAT_N4_Dept = "20";
     		DicoTaxObject.setBASE_SERVICES_DEPT(Integer.parseInt(SharedPrinterFields.VAT_N4_Dept)+1);
     		SharedPrinterFields.Printer_IPAddress = getPrinterIpAdd();
 			PrinterInfo.SavePrinterInfo("IPAddress", SharedPrinterFields.Printer_IPAddress);
@@ -575,25 +506,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	   {
 		   int rtstatus = RT_OK;
 		   
-		   if (PrinterType.isEpsonModel ()) {
-			   rtstatus = checkRTStatus_Epson();
-			   return rtstatus;
-		   }
-		   
-		   if (PrinterType.isRCHPrintFModel()) {
-			   rtstatus = checkRTStatus_Rch();
-			   return rtstatus;
-		   }
-		   
-		   logRTStatus(rtstatus);
-		   
-		   return rtstatus;
-	   }
-	   
-	   private int checkRTStatus_Epson() throws JposException
-	   {
-		   int reply = RT_OK;
-		   
 		   StringBuffer sbcmd = new StringBuffer("");
 		   String rtType = "", rtMainStatus = "", rtSubStatus = "", sDailyOpen = "", sNoWorkingPeriod = "", fileToSend = "",
 				  oldFiletoSend = "", fileRejected = "", expiryDateCD = "", expiryDateCA = "", trainingMode = "",
@@ -636,7 +548,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 
 			   if(sNoWorkingPeriod.equals("1")) {
 				   noWorkingPeriod = true;
-				   reply = RT_NWP;
+				   rtstatus = RT_NWP;
 				   System.out.println("checkRTStatus - ATTENZIONE --------------------------------------" + rtType);
 				   System.out.println("checkRTStatus - NECESSARIO REPORT Z");
 				   System.out.println("checkRTStatus - ATTENZIONE --------------------------------------" + rtType);
@@ -650,9 +562,9 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			   }
 			   
 			   if (rtMainStatus.equals("01")) {
-				   reply = RT_NOTINSERVICE;
+				   rtstatus = RT_NOTINSERVICE;
 				   if (rtSubStatus.equalsIgnoreCase("08"))
-					   reply = RT_PRESERVICE;
+					   rtstatus = RT_PRESERVICE;
 			   }
 
 			   System.out.println("checkRTStatus - RT type : " + rtType);
@@ -707,143 +619,26 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   else
 		   {
 			   System.out.println("checkRTStatus - Printer is NOT RT model");
-			   reply = RT_KO;
+			   rtstatus = RT_KO;
 		   }
 		   
-		   logRTStatus(reply, status);
+		   logRTStatus(rtstatus, status);
 		   
-		   return reply;
+		   return rtstatus;
 	   }
 	   
-	   private int checkRTStatus_Rch() throws JposException
-	   {
-		   	int reply = RT_OK;
-		   	
-		   	RTStatus status = null;
-
-		   	int rtMainStatus = 0;
-		   	int outOfService = 0;
-		   	boolean noWorkingPeriod = false;
-		   	int oldFiletoSend = 0;
-		   
-			int ALLisOK = 7;
-			int maxFileStilltoSend = 5;	// ???
-			
-			StringBuffer op = new StringBuffer("0");
-			int ret = this.executeRTDirectIo(5001, 0, op);
-			System.out.println("checkRTStatus - status : "+ret+" ("+Sprint.f("%06d", Integer.toBinaryString(ret))+")");
-			
-			rtMainStatus = ret;
-			
-			if (((ret & 0x04) >> 2) == 1)
-			{
-				System.out.println("checkRTStatus - Printer is RT model");
-				
-				outOfService = ((ret & 0x08) >> 3);
-				System.out.println("checkRTStatus - RT Out Of Service : " + outOfService);
-				
-				boolean lottery_disabled = (outOfService == 1);
-				SharedPrinterFields.Lotteria.setLotteryOn(!lottery_disabled);
-				
-				if (ret == ALLisOK){
-			    	ret = RTstilltosend();
-			    	System.out.println("checkRTStatus - result : "+ret);
-			    	if (ret < 0){
-			    		oldFiletoSend = (ret * (-1)) - 100;
-			    		noWorkingPeriod = true;
-			    		reply = RT_NWP;
-			    	}
-			    	else if (ret > 100){
-			    		RTtrytosend();
-				    	ret = RTstilltosend();
-				    	System.out.println("checkRTStatus - result : "+ret);
-			    		oldFiletoSend = ret - 100;
-			    		//if (oldFiletoSend >= maxFileStilltoSend)
-			    		//	reply = RT_OLDFILESTOSEND;
-			    	}
-			    	
-					StringBuffer abilita = new StringBuffer(">U/$1");	// abilita sconti indiretti
-					this.executeRTDirectIo(0, 0, abilita);
-					
-			    	int ltret = LTstilltosend();
-			    	System.out.println("checkRTStatus - result : "+ltret);
-			    	if (ltret > 100){
-			    		LTtrytosend();
-			    		ltret = LTstilltosend();
-				    	System.out.println("checkRTStatus - result : "+ltret);
-				    	if (ltret > 100){
-							StringBuffer readpending = new StringBuffer("<</?i/*6");
-							this.executeRTDirectIo(0, 0, readpending);
-				    	}
-			    	}
-				}
-				else if (ret < ALLisOK){
-					reply = RT_PRESERVICE;	// in realtà significa NON censito oppure NON attivato
-				}
-				else if (ret > ALLisOK){
-					reply = RT_NOTINSERVICE;
-				}
-				
-				System.out.println("checkRTStatus - RT No Working Period : " + noWorkingPeriod);
-				System.out.println("checkRTStatus - RT Old File to send n. : " + oldFiletoSend);
-				
-			   // questo lo faccio solo per avere i dati da scrivere nel file di log
-			   // non fa nessuna interrogazione ma salva solo i dati appena letti
-			   status = new RTStatus("", rtMainStatus, -1, fiscalPrinter.getDayOpened(),
-					   				 noWorkingPeriod, -1, oldFiletoSend, -1, -1, -1, outOfService,
-					   				"", "", -1, -1, -1, -1);
-			   
-			   setLotteryfw("");
-			   setRT2fw("");
-			   setSMTKfw("");
-			   setILotteryfw("");
-			   
-			   getCertificateSetting("");
-			   getVPSetting();
-			}
-			else
-			{
-				System.out.println("checkRTStatus - Printer is NOT RT model");
-				reply = RT_KO;
-			}
-			
-			logRTStatus(reply, status);
-			   
-			return reply;
-	   }
-	   
-		protected String getPrinterIpAdd()
+	   protected String getPrinterIpAdd()
 		{
 			String IpAdd = "";
 			
-			if (PrinterType.isEpsonModel()) {
-				StringBuffer sbcmd = new StringBuffer("01");
-				executeRTDirectIo(4219, 0, sbcmd);
-		        String[] tmp = String13Fix.split(sbcmd.toString().substring(3).trim(),".");
-		        for (int i=0; i<tmp.length; i++) {
-		        	IpAdd= IpAdd + Integer.parseInt(tmp[i]);
-		        	if (i<(tmp.length-1))
-		        			IpAdd = IpAdd+".";
-		        }
-			}
-			
-			if (PrinterType.isRCHPrintFModel()) {
-				String ethernetSetting[] = getEthernetSetting();
-				
-				int ipadd = 0;
-//				int submask = 1;
-//				int gw = 2;
-//				int dns = 3;
-//				int port = 4;
-//				int mac = 5;
-				
-				StringTokenizer st = new StringTokenizer(ethernetSetting[ipadd], " ");
-				String[] tmp = new String[st.countTokens()];
-				for (int i = 0; i < tmp.length; i++) {
-					tmp[i] = st.nextToken();
-				}
-				IpAdd = tmp[1];
-			}
+			StringBuffer sbcmd = new StringBuffer("01");
+			executeRTDirectIo(4219, 0, sbcmd);
+	        String[] tmp = String13Fix.split(sbcmd.toString().substring(3).trim(),".");
+	        for (int i=0; i<tmp.length; i++) {
+	        	IpAdd= IpAdd + Integer.parseInt(tmp[i]);
+	        	if (i<(tmp.length-1))
+	        			IpAdd = IpAdd+".";
+	        }
 			
 			System.out.println("getPrinterIpAdd - returning : "+IpAdd);
 			return IpAdd;
@@ -853,51 +648,14 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    {
 	    	String[] ret = null;
 	    	
-	    	if (!PrinterType.isRCHPrintFModel())
-	    		return ret;
-	    	
-	        int cmdInt = 0;
-	        int[] mydata = {0};
-	        String cmd = "<</?e";
-	        
-		   DirectIOListener p=new DirectIOListener();
-		   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
-		   
-	        try {
-	        	p.started = true;
-	        	p.buffer="";
-				
-				directIO(cmdInt, mydata, cmd);
-				while (p.started) {
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-					}
-				}
-				
-				//System.out.println("getEthernetSetting - buffer = "+p.buffer);
-				
-				StringTokenizer st = new StringTokenizer(p.buffer, ",");
-				ret = new String[st.countTokens()];
-				for (int i = 0; i < ret.length; i++) {
-					ret[i] = st.nextToken();
-					//System.out.println("getEthernetSetting - ret["+i+"] = "+ret[i]+" - "+ret[i].length());
-				}
-				
-			} catch (JposException e) {
-				System.out.println("getEthernetSetting - Exception : " + e.getMessage());
-			}
-	        
-	        fiscalPrinter.removeDirectIOListener(p);
-	        
-	        return ret;
+    		return ret;
 	    }
 	    
 	    private String getPrinterId() throws JposException {
 	    	int[] opt = new int[1];
 	    	String[] printerId = new String[1];
 	    	
-	    	if (isRTModel() && PrinterType.isEpsonModel()) {
+	    	if (isRTModel()) {
 		    	String printerIdModel;
 		    	String printerIdManufacturer;
 		    	String printerIdNumber;
@@ -916,19 +674,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		      		return null;
 				System.out.println("getPrinterId - returning : "+printerIdManufacturer + status.getRtType() + printerIdModel + printerIdNumber);
 		      	return (printerIdManufacturer + status.getRtType() + printerIdModel + printerIdNumber);
-	    	}
-	    	else if (isRTModel() && PrinterType.isRchPrintFModel()) {
-		    	String printerIdModel;
-		    	String printerIdManufacturer;
-		    	String printerIdNumber;
-		    	
-		    	fiscalPrinter.getData(FiscalPrinterConst.FPTR_GD_PRINTER_ID, opt, printerId);
-				System.out.println("getPrinterId - printerId : <"+printerId[0]+">");
-		    	printerIdManufacturer = printerId[0].trim().substring(3, 5);
-		    	printerIdModel = "M" + printerId[0].trim().substring(0, 2);
-		    	printerIdNumber = printerId[0].trim().substring(5);
-				System.out.println("getPrinterId - returning : "+printerIdManufacturer + printerIdModel + printerIdNumber);
-		      	return (printerIdManufacturer + printerIdModel + printerIdNumber);
 	    	}
 	    	else {
 		    	fiscalPrinter.getData(FiscalPrinterConst.FPTR_GD_PRINTER_ID, opt, printerId);
@@ -983,56 +728,22 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	   {
 		   int ret = 0;
 		   
-		   if (PrinterType.isRCHPrintFModel()){
-			   StringBuffer op = new StringBuffer("0");
-			   ret = this.executeRTDirectIo(6100, 0, op);
-		   }
-		   
 		   return ret;
 	   }
 	   
 	   private void RTtrytosend()
 	   {
-		   if (PrinterType.isRCHPrintFModel()){
-			   StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_Z);
-			   this.executeRTDirectIo(0, 0, key);
-
-			   System.out.println("checkRTStatus - RTtrytosend start...");
-			   StringBuffer send = new StringBuffer("=C422");
-			   this.executeRTDirectIo(0, 0, send);
-			   System.out.println("checkRTStatus - RTtrytosend ...end");
-
-			   key = new StringBuffer(SharedPrinterFields.KEY_REG);
-			   this.executeRTDirectIo(0, 0, key);
-		   }
 	   }
 	   
 	   private int LTstilltosend()
 	   {
 		   int ret = 0;
 		   
-		   if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.Lotteria.isLotteryOn()){
-			   StringBuffer op = new StringBuffer("0");
-			   ret = this.executeRTDirectIo(3100, 0, op);
-		   }
-		   
 		   return ret;
 	   }
 	   
 	   private void LTtrytosend()
 	   {
-		   if (PrinterType.isRCHPrintFModel() && SharedPrinterFields.Lotteria.isLotteryOn()){
-			   StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_Z);
-			   this.executeRTDirectIo(0, 0, key);
-
-			   System.out.println("checkRTStatus - LTtrytosend start...");
-			   StringBuffer send = new StringBuffer("=C482");
-			   this.executeRTDirectIo(0, 0, send);
-			   System.out.println("checkRTStatus - LTtrytosend ...end");
-
-			   key = new StringBuffer(SharedPrinterFields.KEY_REG);
-			   this.executeRTDirectIo(0, 0, key);
-		   }
 	   }
 	   
 	   private void logRTStatus(int errcode)
@@ -1175,12 +886,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 				System.out.println(s+"---------------------------------------------------------------------------------------------");
 				System.out.println(s+"LIVELLO DELLA STAMPANTE :");
 				System.out.println(s+"TIPOLOGIA - MATRICOLA   - FIRMWARE - LOTTERIA - RT2(XML7) - SMARTTICKET - LOTTERIA I. - IVA VENTILATA");
-				if (PrinterType.isEpsonModel())
-					System.out.print(s+"Epson     - ");
-				else if (PrinterType.isRchPrintFModel())
-					System.out.print(s+"RchPrintF - ");
-				else if (PrinterType.isDieboldRTOneModel())
-					System.out.print(s+"RTOne     - ");
+				System.out.print(s+"Epson     - ");
 				String fw = Sprint.f("%04s", firmware);
 				System.out.print(matricola+" - "+fw+"     -    ");
 				System.out.print(lotteria == true ? "SI    -    " : "NO    -    ");
@@ -1203,53 +909,19 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    {
 	    	int reply = 0;
 	    	
-	    	if (PrinterType.isEpsonModel()){
-		    	int[] dt={0};
-		        try
-		        {
-		        	dt[0]=Command;
+	    	int[] dt={0};
+	        try
+	        {
+	        	dt[0]=Command;
 //			        	if ((Command == 4002) || (Command == 4005) || (Command == 4037))
 //			        		System.out.println("EPSON - directIO(0,"+dt[0]+","+bjct.toString()+") - lunghezza="+bjct.toString().length());
-		        	fiscalPrinter.directIO(0, dt, bjct); 
-		        }
-		        catch(Exception e)
-		        {
-		        	reply = -1;
-		        	System.out.println("Data error\nException: "+ e.getMessage());
-		        }
-	    	}
-	    	
-	    	if (PrinterType.isRCHPrintFModel()){
-	            int[] dt={pData};
-	            String[] pString = {new String(bjct)};
-	            String str = bjct.toString();
-	            try
-	            {
-	            	System.out.println("executeRTDirectIo - Command : "+Command+" - dt : "+dt[0]);
-	            	if (Command >= 1000) {
-	            		fiscalPrinter.directIO(Command, dt, pString);
-		            	System.out.println("executeRTDirectIo - pString : "+pString[0]);
-		            	if (Command == 8003)
-		            		bjct.append(pString[0]);
-	            	}
-	            	else {
-		            	System.out.println("executeRTDirectIo - str input: "+str);
-		            	fiscalPrinter.directIO(Command, dt, str);
-		            	System.out.println("executeRTDirectIo - str output: "+str);
-	            	}
-	            }
-	            catch(Exception e)
-	            {
-	            	System.out.println("Data error\nException: "+ e.getMessage());
-	            	
-	            	if (((Command == 6000) || (Command == 6001)) && (pData == 1))
-	            		dt[0] = 0;	// document not voidable/refundable
-	            	
-	            	if ((Command == 0) && (pData == 0))
-	            		return -1;	// per non sporcare dt[0] assegnandogli -1 
-	            }
-	           reply = dt[0];
-	    	}
+	        	fiscalPrinter.directIO(0, dt, bjct); 
+	        }
+	        catch(Exception e)
+	        {
+	        	reply = -1;
+	        	System.out.println("Data error\nException: "+ e.getMessage());
+	        }
 	    	
 	    	return reply;
 	    }
@@ -1258,50 +930,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    {
 	    	String reply = "";
 	    	
-	    	if (!PrinterType.isRCHPrintFModel())
-	    		return reply;
-	    	
-	        int cmdInt = 0;
-	        int[] mydata = {0};
-	        String cmd = SharedPrinterFields.KEY_SRV;
-	        try {
-	        	directIO(cmdInt, mydata, cmd);
-			} catch (JposException e) {
-				System.out.println("getRTSettings - Exception : " + e.getMessage());
-			}
-	        
-	 	   DirectIOListener p=new DirectIOListener();
-	 	  fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
-
-	       cmd = "<</?C/("+specificSetting+")";
-	       try {
-	    	   p.started = true;
-	    	   p.buffer="";
-	    	   directIO(cmdInt, mydata, cmd);
-	    	   while (p.started) {
-	    		   try {
-	    			   Thread.sleep(500);
-	    		   } catch (InterruptedException e) {
-	    		   }
-	    	   }
-	    	   
-	    	   reply = p.buffer;
-	    	   
-			} catch (JposException e) {
-				System.out.println("getRTSettings - Exception : " + e.getMessage());
-			}
-	        
-	       fiscalPrinter.removeDirectIOListener(p);
-	   	   
-	        cmd = SharedPrinterFields.KEY_REG;
-	        try {
-	        	directIO(cmdInt, mydata, cmd);
-			} catch (JposException e) {
-				System.out.println("getRTSettings - Exception : " + e.getMessage());
-			}
-	        
-	        System.out.println("getRTSettings - reply = " + reply);
-	        return reply;
+    		return reply;
 	    }
 		    
 	   private void getCertificateSetting(String expiryDateCD)
@@ -1318,53 +947,15 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   }
 		   //System.out.println("checkRTStatus - getCertificateSetting - Printer date = "+date[0]);
         	
-		   if (PrinterType.isRCHPrintFModel())
-		   {
-			   int cmdInt = 0;
-			   int[] mydata = {0};
-			   String cmd = "<</?D/*11";
-		        
-			   DirectIOListener p=new DirectIOListener();
-			   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
-			   
-			   try {
-				   p.started = true;
-				   p.buffer="";
-					
-				   directIO(cmdInt, mydata, cmd);
-				   while (p.started) {
-					   try {
-						   Thread.sleep(500);
-					   } catch (InterruptedException e) {
-					   }
-				   }
-					
-				   System.out.println("checkRTStatus - getCertificateSetting - Expiry date = "+p.buffer);
-					
-				   SimpleDateFormat sdformat = new SimpleDateFormat("yyyy/MM/dd");
-				   d1 = sdformat.parse(p.buffer);
-				   d2 = sdformat.parse(date[0].substring(4, 8)+"/"+date[0].substring(2, 4)+"/"+date[0].substring(0, 2));
-				   
-			   } catch (Exception e) {
-				   System.out.println("checkRTStatus - getCertificateSetting - Exception : " + e.getMessage());
-				   return;
-			   } finally {
-				   fiscalPrinter.removeDirectIOListener(p);
-			   }
-		   }
-		   
-		   if (PrinterType.isEpsonModel())
-		   {
-			   try {
-				   System.out.println("checkRTStatus - getCertificateSetting - Expiry date = "+expiryDateCD);
-					
-				   SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yy");
-				   d1 = sdformat.parse(expiryDateCD.substring(0, 2)+"/"+expiryDateCD.substring(2, 4)+"/"+expiryDateCD.substring(4, 6));
-				   d2 = sdformat.parse(date[0].substring(0, 2)+"/"+date[0].substring(2, 4)+"/"+date[0].substring(6, 8));
-			   } catch (Exception e) {
-				   System.out.println("checkRTStatus - getCertificateSetting - Exception : " + e.getMessage());
-				   return;
-			   }
+		   try {
+			   System.out.println("checkRTStatus - getCertificateSetting - Expiry date = "+expiryDateCD);
+				
+			   SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yy");
+			   d1 = sdformat.parse(expiryDateCD.substring(0, 2)+"/"+expiryDateCD.substring(2, 4)+"/"+expiryDateCD.substring(4, 6));
+			   d2 = sdformat.parse(date[0].substring(0, 2)+"/"+date[0].substring(2, 4)+"/"+date[0].substring(6, 8));
+		   } catch (Exception e) {
+			   System.out.println("checkRTStatus - getCertificateSetting - Exception : " + e.getMessage());
+			   return;
 		   }
 		   
 		   boolean expired = (d1.compareTo(d2) < 0);
@@ -1389,116 +980,32 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	   Date d1=null;
 	   Date d2=null;
 	   
-	   if (PrinterType.isRCHPrintFModel())
-	   {
-		   DirectIOListener p=new DirectIOListener();
-		   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
-		   
-		   try {
-			   int cmdInt = 0;
-			   int[] mydata = {0};
-			   String cmd = "<</?D/*2";
-		        
-			   p.started = true;
-			   p.buffer="";
-				
-			   directIO(cmdInt, mydata, cmd);
-			   while (p.started) {
-				   try {
-					   Thread.sleep(500);
-				   } catch (InterruptedException e) {
-				   }
-			   }
-				
-			   System.out.println("checkRTStatus - getVPSetting - Last date = "+p.buffer);
-
-			   if (!p.buffer.equalsIgnoreCase("0")) {
-				   SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-				   d1 = sdf.parse(p.buffer);
-				   d2 = new Date(d1.getTime());
-				   sdf = new SimpleDateFormat("dd/MM/yyyy");
-				   vplastdate = sdf.format(d2).toString();
-				   System.out.println("checkRTStatus - getVPSetting - VP Last date = "+vplastdate);
-			   }
-			   
-			   cmd = "<</?i/*2";
-		        
-			   p.started = true;
-			   p.buffer="";
-				
-			   directIO(cmdInt, mydata, cmd);
-			   while (p.started) {
-				   try {
-					   Thread.sleep(500);
-				   } catch (InterruptedException e) {
-				   }
-			   }
-				
-			   System.out.println("checkRTStatus - getVPSetting - Time reading = "+p.buffer);
-			   
-			   int C = Integer.parseInt(p.buffer.substring(2, 3));
-			   int D = Integer.parseInt(p.buffer.substring(3, 4));
-			   vpexpiring = (C == 1 ? "true" : "false");
-			   vpexpired = (D == 1 ? "true" : "false");
-			   System.out.println("checkRTStatus - getVPSetting - VP Expiring = "+vpexpiring);
-			   System.out.println("checkRTStatus - getVPSetting - VP Expired = "+vpexpired);
-			   
-			   cmd = "<</?i/*7";
-		        
-			   p.started = true;
-			   p.buffer="";
-				
-			   directIO(cmdInt, mydata, cmd);
-			   while (p.started) {
-				   try {
-					   Thread.sleep(500);
-				   } catch (InterruptedException e) {
-				   }
-			   }
-				
-			   System.out.println("checkRTStatus - getVPSetting - State active = "+p.buffer);
-			   
-			   int A = Integer.parseInt(p.buffer.substring(0, 1));
-			   vpstateactive = (A == 1 ? "true" : "false");
-			   System.out.println("checkRTStatus - getVPSetting - VP State active = "+vpexpired);
-			   
-		   } catch (Exception e) {
-			   System.out.println("checkRTStatus - getVPSetting - Exception : " + e.getMessage());
-			   return;
-		   } finally {
-			   fiscalPrinter.removeDirectIOListener(p);
-		   }
-	   }
-	   
-	   if (PrinterType.isEpsonModel())
-	   {
-			String Day = "";
-			String Month = "";
-			String Year = "";
+		String Day = "";
+		String Month = "";
+		String Year = "";
+		
+		StringBuffer sbcmd = new StringBuffer("01");
+		executeRTDirectIo(4228, 0, sbcmd);
+		
+		System.out.println("checkRTStatus - getVPSetting - Expiry date = "+sbcmd.toString());
+		
+		if (!sbcmd.toString().equalsIgnoreCase("000000")) {
+			Day = sbcmd.toString().substring(0,2);
+			Month = sbcmd.toString().substring(2,4);
+			Year = sbcmd.toString().substring(4,6);
 			
-			StringBuffer sbcmd = new StringBuffer("01");
-			executeRTDirectIo(4228, 0, sbcmd);
-			
-			System.out.println("checkRTStatus - getVPSetting - Expiry date = "+sbcmd.toString());
-			
-			if (!sbcmd.toString().equalsIgnoreCase("000000")) {
-				Day = sbcmd.toString().substring(0,2);
-				Month = sbcmd.toString().substring(2,4);
-				Year = sbcmd.toString().substring(4,6);
-				
-				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
-					d1 = sdf.parse(Day+"/"+Month+"/"+Year);
-					d2 = new Date(d1.getTime());
-					sdf = new SimpleDateFormat("dd/MM/yyyy");
-					vpexpirydate = sdf.format(d2).toString();
-					System.out.println("checkRTStatus - getVPSetting - VP Expiry date = "+vpexpirydate);
-				} catch (ParseException e) {
-					System.out.println("checkRTStatus - getVPSetting - Exception : " + e.getMessage());
-					return;
-				}
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+				d1 = sdf.parse(Day+"/"+Month+"/"+Year);
+				d2 = new Date(d1.getTime());
+				sdf = new SimpleDateFormat("dd/MM/yyyy");
+				vpexpirydate = sdf.format(d2).toString();
+				System.out.println("checkRTStatus - getVPSetting - VP Expiry date = "+vpexpirydate);
+			} catch (ParseException e) {
+				System.out.println("checkRTStatus - getVPSetting - Exception : " + e.getMessage());
+				return;
 			}
-	   }
+		}
 	   
 	   PrinterInfo.SavePrinterInfo("VP Expiry date", vpexpirydate);
 	   PrinterInfo.SavePrinterInfo("VP Last date", vplastdate);
@@ -1514,75 +1021,45 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		if (isfwRT2disabled())
 			return;
 		
-		if (PrinterType.isEpsonModel()) {
-			String Index = "02";		// Login
-			String InputPar = "12345";	// Pwd
-			String Tbd = "";
-			while (InputPar.length() < 40)
-				InputPar = InputPar + " ";
-			while (Tbd.length() < 32)
-				Tbd = Tbd + " ";
-			
-			StringBuffer sbcmd = new StringBuffer(Index+InputPar+Tbd);
-	      	executeRTDirectIo(4038, 0, sbcmd);
-	      	
-			sbcmd = new StringBuffer(Index);
-	      	executeRTDirectIo(4238, 0, sbcmd);
-			System.out.println("RT2 - setLocalAccessControl - sbcmd = "+sbcmd.toString());
-			
-			Index = "04";				// Set Timeout
-			InputPar = "0";				// Timeout
-			Tbd = "";
-			while (InputPar.length() < 40)
-				InputPar = InputPar + " ";
-			while (Tbd.length() < 32)
-				Tbd = Tbd + " ";
-			
-			sbcmd = new StringBuffer(Index+InputPar+Tbd);
-	      	executeRTDirectIo(4038, 0, sbcmd);
-	      	
-			sbcmd = new StringBuffer(Index);
-	      	executeRTDirectIo(4238, 0, sbcmd);
-			System.out.println("RT2 - setLocalAccessControl - sbcmd = "+sbcmd.toString());
-		}
-		if (PrinterType.isRCHPrintFModel()) {
-			if (true)
-				return;		// di default non dovrebbe essere necessario
-			
-			StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_Z);
-			this.executeRTDirectIo(0, 0, key);
-
-			StringBuffer sbcmd = new StringBuffer("1703"+",0");
-			this.executeRTDirectIo(1301, 0, sbcmd);
-
-			key = new StringBuffer(SharedPrinterFields.KEY_REG);
-			this.executeRTDirectIo(0, 0, key);
-		}
+		String Index = "02";		// Login
+		String InputPar = "12345";	// Pwd
+		String Tbd = "";
+		while (InputPar.length() < 40)
+			InputPar = InputPar + " ";
+		while (Tbd.length() < 32)
+			Tbd = Tbd + " ";
+		
+		StringBuffer sbcmd = new StringBuffer(Index+InputPar+Tbd);
+      	executeRTDirectIo(4038, 0, sbcmd);
+      	
+		sbcmd = new StringBuffer(Index);
+      	executeRTDirectIo(4238, 0, sbcmd);
+		System.out.println("RT2 - setLocalAccessControl - sbcmd = "+sbcmd.toString());
+		
+		Index = "04";				// Set Timeout
+		InputPar = "0";				// Timeout
+		Tbd = "";
+		while (InputPar.length() < 40)
+			InputPar = InputPar + " ";
+		while (Tbd.length() < 32)
+			Tbd = Tbd + " ";
+		
+		sbcmd = new StringBuffer(Index+InputPar+Tbd);
+      	executeRTDirectIo(4038, 0, sbcmd);
+      	
+		sbcmd = new StringBuffer(Index);
+      	executeRTDirectIo(4238, 0, sbcmd);
+		System.out.println("RT2 - setLocalAccessControl - sbcmd = "+sbcmd.toString());
 	}
 		
 	private void setFidelityOption(int mode)
 	{
 		System.out.println("RT2 - setFidelityOption - mode = "+mode);
-		
-		if (PrinterType.isRchPrintFModel()) {
-			StringBuffer sbcmd = new StringBuffer(">C933/$"+mode);
-			this.executeRTDirectIo(0, 0, sbcmd);
-		}
-		
-		if (PrinterType.isDieboldRTOneModel()) {
-			StringBuffer sbcmd = new StringBuffer("C933"+mode+"00000"+"0000000000000000000000000000000000"+"00");
-			this.executeRTDirectIo(0, 0, sbcmd);
-		}
 	}
 		
 	private void setAppendixOption(int mode, int cut)
 	{
 		System.out.println("RT2 - setAppendixOption - mode = "+mode+" - cut = "+cut);
-		
-		if (PrinterType.isRCHPrintFModel()) {
-			StringBuffer sbcmd = new StringBuffer(">C170/$501"+"/&"+mode+"/["+cut);
-			this.executeRTDirectIo(0, 0, sbcmd);
-		}
 	}
 		
     private void pleaseBeep(int lunghezza, int interruzione)
@@ -2502,7 +1979,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     */
 	
 	private void SetLotteryMessages() {
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.Lotteria.isLotteryOn())
+		if (SharedPrinterFields.Lotteria.isLotteryOn())
 		{
 			String index = "";
 			String print = "0";
@@ -2524,7 +2001,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 
 	private void ReadLotteryMessages() {
-		if (PrinterType.isEpsonModel() && SharedPrinterFields.Lotteria.isLotteryOn())
+		if (SharedPrinterFields.Lotteria.isLotteryOn())
 		{
 			String index = "";
 			
@@ -2547,29 +2024,26 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		if (isfwSMTKdisabled())
 			return;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			String Index = SmartTicket.ERECEIPT_URL_SERVER_TYPE;
-			String Url = url;
-			
-	   		if (Url.length()==1 && Url.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_PULL)) {
-	    	    while (Url.length() < 256)
-	    			Url = Url+((char)0x30);
-	   		}
-	   		else if (Url.length()==1 && Url.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_DISABLE)) {
-	    	    while (Url.length() < 256)
-	    			Url = Url+((char)0x20);
-	   		}
-	   		else {
-	    	    while (Url.length() < 256)
-	    			Url = Url+((char)0x20);
-	   		}
-			
-			StringBuffer sbcmd = new StringBuffer(Index+Url);
-	      	executeRTDirectIo(9022, 0, sbcmd);
-	      	
-	      	System.out.println("SMTKsetServerUrl - Url = <"+SMTKgetServerUrl()+">");
-		}
+		String Index = SmartTicket.ERECEIPT_URL_SERVER_TYPE;
+		String Url = url;
+		
+   		if (Url.length()==1 && Url.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_PULL)) {
+    	    while (Url.length() < 256)
+    			Url = Url+((char)0x30);
+   		}
+   		else if (Url.length()==1 && Url.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_DISABLE)) {
+    	    while (Url.length() < 256)
+    			Url = Url+((char)0x20);
+   		}
+   		else {
+    	    while (Url.length() < 256)
+    			Url = Url+((char)0x20);
+   		}
+		
+		StringBuffer sbcmd = new StringBuffer(Index+Url);
+      	executeRTDirectIo(9022, 0, sbcmd);
+      	
+      	System.out.println("SMTKsetServerUrl - Url = <"+SMTKgetServerUrl()+">");
 	}
 	
 	private String SMTKgetServerUrl() {
@@ -2580,18 +2054,15 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		String Url = "";
 		String Index = SmartTicket.ERECEIPT_URL_SERVER_TYPE;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			StringBuffer sbcmd = new StringBuffer(Index);
-			while (ret != 0) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-				}
-				ret = executeRTDirectIo(9222, 0, sbcmd);
+		StringBuffer sbcmd = new StringBuffer(Index);
+		while (ret != 0) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
 			}
-	      	Url = sbcmd.toString();
+			ret = executeRTDirectIo(9222, 0, sbcmd);
 		}
+      	Url = sbcmd.toString();
 		
       	return Url;
 	}
@@ -2600,35 +2071,15 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		if (isfwSMTKdisabled())
 			return;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			String Op = "01";
-	    	String DocType = Sprint.f("%02d", doctype);
-	    	String Validity = Sprint.f("%02d", validity);
-	    	
-	    	StringBuffer sbcmd = new StringBuffer(Op+DocType+Validity);
-	      	executeRTDirectIo(1133, 0, sbcmd);
-	      	
-	      	System.out.println("SMTKsetReceiptType - DocType = <"+SMTKgetReceiptType()+">");
-	      	System.out.println("SMTKsetReceiptType - Validity = <"+SMTKgetReceiptValidity()+">");
-		}
-		
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			int ereceipt_paper = 1;
-			int ereceipt_paper_digital = 2;
-			int ereceipt_digital = 3;
-			
-			if (doctype == SmartTicket.ERECEIPT_PAPER)
-				doctype = ereceipt_paper;
-			else if (doctype == SmartTicket.ERECEIPT_DIGITAL)
-				doctype = ereceipt_digital;
-			else if (doctype == SmartTicket.ERECEIPT_PAPER_DIGITAL)
-				doctype = ereceipt_paper_digital;
-			
-			StringBuffer sbcmd = new StringBuffer("");
-	      	executeRTDirectIo(8601, doctype, sbcmd);
-		}
+		String Op = "01";
+    	String DocType = Sprint.f("%02d", doctype);
+    	String Validity = Sprint.f("%02d", validity);
+    	
+    	StringBuffer sbcmd = new StringBuffer(Op+DocType+Validity);
+      	executeRTDirectIo(1133, 0, sbcmd);
+      	
+      	System.out.println("SMTKsetReceiptType - DocType = <"+SMTKgetReceiptType()+">");
+      	System.out.println("SMTKsetReceiptType - Validity = <"+SMTKgetReceiptValidity()+">");
 	}
 	
 	public int SMTKgetReceiptType() {
@@ -2639,14 +2090,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		String DocType = "0";
 		String Validity = "1";
 		
-		if (PrinterType.isEpsonModel())
-		{
-			StringBuffer sbcmd = new StringBuffer(Op);
-	      	executeRTDirectIo(1333, 0, sbcmd);
-	      	
-	      	DocType = sbcmd.toString().substring(2, 4);
-	      	Validity = sbcmd.toString().substring(4, 6);
-		}
+		StringBuffer sbcmd = new StringBuffer(Op);
+      	executeRTDirectIo(1333, 0, sbcmd);
+      	
+      	DocType = sbcmd.toString().substring(2, 4);
+      	Validity = sbcmd.toString().substring(4, 6);
 		
       	return Integer.parseInt(DocType);
 	}
@@ -2659,14 +2107,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		String DocType = "0";
 		String Validity = "1";
 		
-		if (PrinterType.isEpsonModel())
-		{
-			StringBuffer sbcmd = new StringBuffer(Op);
-	      	executeRTDirectIo(1333, 0, sbcmd);
-	      	
-	      	DocType = sbcmd.toString().substring(2, 4);
-	      	Validity = sbcmd.toString().substring(4, 6);
-		}
+		StringBuffer sbcmd = new StringBuffer(Op);
+      	executeRTDirectIo(1333, 0, sbcmd);
+      	
+      	DocType = sbcmd.toString().substring(2, 4);
+      	Validity = sbcmd.toString().substring(4, 6);
       	
       	return Integer.parseInt(Validity);
 	}
@@ -2675,21 +2120,18 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		if (isfwSMTKdisabled())
 			return;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			String Op = "01";
-	    	String Type = Sprint.f("%02d", type);
-	        String CustomerId = customerid;
-	        
-		    while (CustomerId.length() < 256)
-				CustomerId = CustomerId+((char)0x20);
-			
-			StringBuffer sbcmd = new StringBuffer(Op+Type+CustomerId);
-			executeRTDirectIo(1132, 0, sbcmd);
-	      	
-	      	System.out.println("SMTKsetCustomerID - Type = <"+SMTKgetCustomerType()+">");
-	      	System.out.println("SMTKsetCustomerID - CustomerId = <"+SMTKgetCustomerId()+">");
-		}
+		String Op = "01";
+    	String Type = Sprint.f("%02d", type);
+        String CustomerId = customerid;
+        
+	    while (CustomerId.length() < 256)
+			CustomerId = CustomerId+((char)0x20);
+		
+		StringBuffer sbcmd = new StringBuffer(Op+Type+CustomerId);
+		executeRTDirectIo(1132, 0, sbcmd);
+      	
+      	System.out.println("SMTKsetCustomerID - Type = <"+SMTKgetCustomerType()+">");
+      	System.out.println("SMTKsetCustomerID - CustomerId = <"+SMTKgetCustomerId()+">");
 	}
 	
 	protected int SMTKgetCustomerType() {
@@ -2700,14 +2142,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		String Type = "0";
 		String CustomerId = "";
 		
-		if (PrinterType.isEpsonModel())
-		{
-			StringBuffer sbcmd = new StringBuffer(Op);
-	      	executeRTDirectIo(1332, 0, sbcmd);
-	      	
-	      	Type = sbcmd.toString().substring(2, 4);
-	      	CustomerId = sbcmd.toString().substring(4);
-		}
+		StringBuffer sbcmd = new StringBuffer(Op);
+      	executeRTDirectIo(1332, 0, sbcmd);
+      	
+      	Type = sbcmd.toString().substring(2, 4);
+      	CustomerId = sbcmd.toString().substring(4);
       	
       	return Integer.parseInt(Type);
 	}
@@ -2720,14 +2159,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		String Type = "";
 		String CustomerId = "";
 		
-		if (PrinterType.isEpsonModel())
-		{
-			StringBuffer sbcmd = new StringBuffer(Op);
-	      	executeRTDirectIo(1332, 0, sbcmd);
-	      	
-	      	Type = sbcmd.toString().substring(2, 4);
-	      	CustomerId = sbcmd.toString().substring(4);
-		}
+		StringBuffer sbcmd = new StringBuffer(Op);
+      	executeRTDirectIo(1332, 0, sbcmd);
+      	
+      	Type = sbcmd.toString().substring(2, 4);
+      	CustomerId = sbcmd.toString().substring(4);
       	
       	return CustomerId;
 	}
@@ -2738,48 +2174,40 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		
 		boolean ret = false;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			String TillId = "00000000";
-			String KindOfReceipt = "00";
-			String zRepId = Sprint.f("%04d", zrep);
-			
-			StringBuffer sbcmd = new StringBuffer(TillId+zRepId+recId+date+KindOfReceipt);
-	      	executeRTDirectIo(9226, 0, sbcmd);
-	      	
-	      	TillId = sbcmd.substring(0, 8);
-	      	zRepId = sbcmd.substring(8, 12);
-	      	recId = sbcmd.substring(12, 16);
-	      	date = sbcmd.substring(16, 22);
-	      	String Result = sbcmd.substring(22, 24);
-	      	String ErrCode = sbcmd.substring(24, 29);
-	      	String CustomerType = sbcmd.substring(29, 31);
-	      	String CustomerId = sbcmd.substring(31, 159).trim();
-	      	String UUIDPhrase = sbcmd.substring(159, 199).trim();
-	      	String ERecUrl = sbcmd.substring(199, 454).trim();
-	      	
-			System.out.println("SMTKgetStatusReceipt - TillId = "+TillId);
-			System.out.println("SMTKgetStatusReceipt - zRepId = "+zRepId);
-			System.out.println("SMTKgetStatusReceipt - recId = "+recId);
-			System.out.println("SMTKgetStatusReceipt - date = "+date);
-			System.out.println("SMTKgetStatusReceipt - Result = "+Result);
-			System.out.println("SMTKgetStatusReceipt - ErrCode = "+ErrCode);
-			System.out.println("SMTKgetStatusReceipt - CustomerType = "+CustomerType);
-			System.out.println("SMTKgetStatusReceipt - CustomerId = "+CustomerId);
-			System.out.println("SMTKgetStatusReceipt - ERecUrl = "+ERecUrl);
-			System.out.println("SMTKgetStatusReceipt - UUIDPhrase = "+UUIDPhrase);
-			System.out.println("SMTKgetStatusReceipt - KindOfReceipt = "+KindOfReceipt);
-			
-			int result = Integer.parseInt(Result);
-			int errcode = Integer.parseInt(ErrCode);
-			ret = (result == 0) &&
-				  ((errcode == 200) || (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_PULL) && errcode == 203));
-		}
+		String TillId = "00000000";
+		String KindOfReceipt = "00";
+		String zRepId = Sprint.f("%04d", zrep);
 		
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			ret = true;
-		}
+		StringBuffer sbcmd = new StringBuffer(TillId+zRepId+recId+date+KindOfReceipt);
+      	executeRTDirectIo(9226, 0, sbcmd);
+      	
+      	TillId = sbcmd.substring(0, 8);
+      	zRepId = sbcmd.substring(8, 12);
+      	recId = sbcmd.substring(12, 16);
+      	date = sbcmd.substring(16, 22);
+      	String Result = sbcmd.substring(22, 24);
+      	String ErrCode = sbcmd.substring(24, 29);
+      	String CustomerType = sbcmd.substring(29, 31);
+      	String CustomerId = sbcmd.substring(31, 159).trim();
+      	String UUIDPhrase = sbcmd.substring(159, 199).trim();
+      	String ERecUrl = sbcmd.substring(199, 454).trim();
+      	
+		System.out.println("SMTKgetStatusReceipt - TillId = "+TillId);
+		System.out.println("SMTKgetStatusReceipt - zRepId = "+zRepId);
+		System.out.println("SMTKgetStatusReceipt - recId = "+recId);
+		System.out.println("SMTKgetStatusReceipt - date = "+date);
+		System.out.println("SMTKgetStatusReceipt - Result = "+Result);
+		System.out.println("SMTKgetStatusReceipt - ErrCode = "+ErrCode);
+		System.out.println("SMTKgetStatusReceipt - CustomerType = "+CustomerType);
+		System.out.println("SMTKgetStatusReceipt - CustomerId = "+CustomerId);
+		System.out.println("SMTKgetStatusReceipt - ERecUrl = "+ERecUrl);
+		System.out.println("SMTKgetStatusReceipt - UUIDPhrase = "+UUIDPhrase);
+		System.out.println("SMTKgetStatusReceipt - KindOfReceipt = "+KindOfReceipt);
+		
+		int result = Integer.parseInt(Result);
+		int errcode = Integer.parseInt(ErrCode);
+		ret = (result == 0) &&
+			  ((errcode == 200) || (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_PULL) && errcode == 203));
 		
 		return ret;
 	}
@@ -2788,45 +2216,39 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		if (isfwSMTKdisabled())
 			return;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			String Op = "01";
-			String TillId = "00000000";
-			String KindOfRequest = "00";
-			String zRepId = Sprint.f("%04d", zrep);
-			
-			StringBuffer sbcmd = new StringBuffer(Op+TillId+zRepId+date+KindOfRequest);
-	      	executeRTDirectIo(1131, 0, sbcmd);
-	      	
-	      	Op = sbcmd.substring(0, 2);
-	      	TillId = sbcmd.substring(2, 10);
-	      	zRepId = sbcmd.substring(10, 14);
-	      	date = sbcmd.substring(14, 20);
-	      	KindOfRequest = sbcmd.substring(20, 22);
-	      	String FilesToSend = sbcmd.substring(22, 26);
-	      	String FilesSent = sbcmd.substring(26, 30);
-	      	String RejFiles = sbcmd.substring(30, 34);
-	      	String KindOfReceipt = sbcmd.substring(34, 36);
-	      	String Spare = sbcmd.substring(36, 56);
-	      	
-			System.out.println("SMTKgetStatus - Op = "+Op);
-			System.out.println("SMTKgetStatus - TillId = "+TillId);
-			System.out.println("SMTKgetStatus - date = "+date);
-			System.out.println("SMTKgetStatus - KindOfRequest = "+KindOfRequest);
-			System.out.println("SMTKgetStatus - zRepId = "+zRepId);
-			System.out.println("SMTKgetStatus - FilesToSend = "+FilesToSend);
-			System.out.println("SMTKgetStatus - FilesSent = "+FilesSent);
-			System.out.println("SMTKgetStatus - RejFiles = "+RejFiles);
-			System.out.println("SMTKgetStatus - KindOfReceipt = "+KindOfReceipt);
-			System.out.println("SMTKgetStatus - Spare = "+Spare);
-		}
+		String Op = "01";
+		String TillId = "00000000";
+		String KindOfRequest = "00";
+		String zRepId = Sprint.f("%04d", zrep);
+		
+		StringBuffer sbcmd = new StringBuffer(Op+TillId+zRepId+date+KindOfRequest);
+      	executeRTDirectIo(1131, 0, sbcmd);
+      	
+      	Op = sbcmd.substring(0, 2);
+      	TillId = sbcmd.substring(2, 10);
+      	zRepId = sbcmd.substring(10, 14);
+      	date = sbcmd.substring(14, 20);
+      	KindOfRequest = sbcmd.substring(20, 22);
+      	String FilesToSend = sbcmd.substring(22, 26);
+      	String FilesSent = sbcmd.substring(26, 30);
+      	String RejFiles = sbcmd.substring(30, 34);
+      	String KindOfReceipt = sbcmd.substring(34, 36);
+      	String Spare = sbcmd.substring(36, 56);
+      	
+		System.out.println("SMTKgetStatus - Op = "+Op);
+		System.out.println("SMTKgetStatus - TillId = "+TillId);
+		System.out.println("SMTKgetStatus - date = "+date);
+		System.out.println("SMTKgetStatus - KindOfRequest = "+KindOfRequest);
+		System.out.println("SMTKgetStatus - zRepId = "+zRepId);
+		System.out.println("SMTKgetStatus - FilesToSend = "+FilesToSend);
+		System.out.println("SMTKgetStatus - FilesSent = "+FilesSent);
+		System.out.println("SMTKgetStatus - RejFiles = "+RejFiles);
+		System.out.println("SMTKgetStatus - KindOfReceipt = "+KindOfReceipt);
+		System.out.println("SMTKgetStatus - Spare = "+Spare);
 	}
 	
 	protected void SMTKStatus()
 	{
-		if (!PrinterType.isEpsonModel())
-			return;
-		
         int[] ai = new int[1];
         String[] as = new String[1];
         getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
@@ -2905,55 +2327,23 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 
         if (i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER || i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC)
         {
-        	if (PrinterType.isRchPrintFModel()
-            	&& (i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) 
-            	//&& (posEngine != null) && (posEngine.getCurrentState() != null) && (posEngine.getCurrentState().getName() != null) && posEngine.getCurrentState().getName().equals("change")	// ???
-            	)
+            FiscalPrinterDataInformation.setNewDataAvailable(false);
+            this.xgetData(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as); 
+            System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
+            int  tck = 0;
+            tck = Integer.parseInt( as[0] );
+            if ( epsonClass4 )
             {
-	            FiscalPrinterDataInformation.setNewDataAvailable(false);
-	         	as[0] = myRchFiscalNumber;
-	           	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER, "  " + as[0]);
-	         	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, "  " + as[0]);  	
-	         	System.out.println("getData out Fiscale - data=" + as[0]+"=");
-	            FiscalPrinterDataInformation.setNewDataAvailable(true);
+            	tck = tck + 1;				// +1 drv oltre il 4.0
             }
-            else
-            {
-	            FiscalPrinterDataInformation.setNewDataAvailable(false);
-	            this.xgetData(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as); 
-	            System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
-	            int  tck = 0;
-	            if ( PrinterType.isEpsonModel() )
-	            {
-	                tck = Integer.parseInt( as[0] );
-		            if ( epsonClass4 )
-		            {
-		            	tck = tck + 1;				// +1 drv oltre il 4.0
-		            }
-	            }
-	            else
-	            {
-	                while ( as[0].startsWith(" ")) 
-	              	  as[0] = as[0].substring(1);
-	                tck = Integer.parseInt( as[0] );
-		            if ( PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel() )
-		            {
-		            	tck = tck + 1;
-		            }
-	                if (tck == 0)
-	                	tck = tck + 1;				// compatibilità con driver epson 
-	                else if (PrinterType.isTH230Model())
-	                	tck = tck + 1;
-	            }
-	            String s = Integer.toString(tck + 10000);
-	            as[0] = s.substring(1);
-	
-	           	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER, "  " + as[0]);
-	         	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, "  " + as[0]);  	
-	         	System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
-	            FiscalPrinterDataInformation.setNewDataAvailable(true);
-	            myRchFiscalNumber = as[0];
-	        }
+            String s = Integer.toString(tck + 10000);
+            as[0] = s.substring(1);
+
+           	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER, "  " + as[0]);
+         	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, "  " + as[0]);  	
+         	System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
+            FiscalPrinterDataInformation.setNewDataAvailable(true);
+            myRchFiscalNumber = as[0];
         } 
         else if (i == jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID) 
         {
@@ -2962,21 +2352,9 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
             this.xgetData(jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID, ai, as);
             System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
             String mf = null;
-            if ( PrinterType.isEpsonModel() )
-            {
-	            mf = as[0].substring(as[0].length() - 4);
-	            mf = mf + as[0].substring(0, as[0].length() - 4);
-	            System.out.println("getDataF out - data=" + mf+"=");
-            }
-            else
-            {
-	            while ( as[0].startsWith(" ")) 
-	          	as[0] = as[0].substring(1);
-	            if (PrinterType.isRCHPrintFModel())
-	            	mf = as[0].replaceAll(" ", "");
-	            else
-	            	mf = as[0];
-            }
+            mf = as[0].substring(as[0].length() - 4);
+            mf = mf + as[0].substring(0, as[0].length() - 4);
+            System.out.println("getDataF out - data=" + mf+"=");
             
             if (isRTModel()) {
             	if (SharedPrinterFields.RTPrinterId != null && SharedPrinterFields.RTPrinterId.isEmpty() == false) {
@@ -2994,35 +2372,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
             FiscalPrinterDataInformation.setNewDataAvailable(false);
             this.xgetData(i, ai, as);
             System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
-            if ( PrinterType.isEpsonModel() )
-            {
-	            System.out.println("getDataF out - data=" + as[0]+"=");
-            }
-            else
-            {            	
-	            while ( as[0].startsWith(" ")) 
-	            	  as[0] = as[0].substring(1);
-	            if (PrinterType.isTHFEJModel() || PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel())
-		    		if ( i == jpos.FiscalPrinterConst.FPTR_GD_CURRENT_TOTAL || i == jpos.FiscalPrinterConst.FPTR_GD_DAILY_TOTAL )
-		    			as [0] = as[0]+"00";
-	            
-	            if (PrinterType.isRCHPrintFModel()){
-	            	if (i == jpos.FiscalPrinterConst.FPTR_GD_FIRMWARE){
-	            		String fw = as[0].substring(5);
-	            		as[0] = fw;
-	            	}
-	            	if (i == jpos.FiscalPrinterConst.FPTR_GD_GRAND_TOTAL){
-	            		String gt = "";
-	            		for (int j=0; j < as[0].length(); j++){
-	            			if ((as[0].charAt(j) != '.') && (as[0].charAt(j) != ','))
-	            				gt = gt + as[0].charAt(j);
-	            		}
-	            		as[0] = gt;
-	            	}
-	            }
-	            
-	    		System.out.println("getDataF out - data=" + as[0]+"=");
-        	}
             FiscalPrinterDataInformation.setDataInformation(i, as[0]);
             FiscalPrinterDataInformation.setNewDataAvailable(true);
             System.out.println("getDataF out - data=" + as[0]+"=");
@@ -3038,23 +2387,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
             this.xgetData(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as);  
             System.out.println("getDataUmbuffered out Fiscale - data=" + as[0]+"=");
             int  tck = 0;
-            if ( PrinterType.isEpsonModel() )
+            tck = Integer.parseInt( as[0] );
+            if ( epsonClass4 )
             {
-                tck = Integer.parseInt( as[0] );
-	            if ( epsonClass4 )
-	            {
-	            	tck = tck + 1;				// +1 drv oltre il 4.0
-	            }
-            }
-            else
-            {
-                while ( as[0].startsWith(" ")) 
-              	  as[0] = as[0].substring(1);
-                tck = Integer.parseInt( as[0] );
-                if (tck == 0)
-                	tck = tck + 1;				// compatibilità con driver epson 
-                else if (PrinterType.isTH230Model())
-                	tck = tck + 1;
+            	tck = tck + 1;				// +1 drv oltre il 4.0
             }
             String s = Integer.toString(tck + 10000);
             as[0] = s.substring(1);
@@ -3064,39 +2400,16 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         {
             // ERRORE REPORTZ
             this.xgetData(jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID, ai, as);
-            if ( PrinterType.isEpsonModel() )
-            {
-	            String mf = as[0].substring(as[0].length() - 4);
-	            mf = mf + as[0].substring(0, as[0].length() - 4);
-	            System.out.println("getDataUmbuffered out - data=" + mf+"=");
-	            return ( mf );
-            }
-            else
-            {
-	            while ( as[0].startsWith(" ")) 
-	          	  as[0] = as[0].substring(1);
-	            String mf = as[0];
-	            return ( mf );
-            }
+            String mf = as[0].substring(as[0].length() - 4);
+            mf = mf + as[0].substring(0, as[0].length() - 4);
+            System.out.println("getDataUmbuffered out - data=" + mf+"=");
+            return ( mf );
         } 
         else 
         {
             this.xgetData(i, ai, as);
-            if ( PrinterType.isEpsonModel() )
-            {
-	            System.out.println("getDataUmbuffered out - data=" + as[0]+"=");
-	            return ( as[0] );
-            }
-            else
-            {            	
-	            while ( as[0].startsWith(" ")) 
-	            	  as[0] = as[0].substring(1);
-	            if (PrinterType.isTHFEJModel())
-		    		if ( i == jpos.FiscalPrinterConst.FPTR_GD_CURRENT_TOTAL || i == jpos.FiscalPrinterConst.FPTR_GD_DAILY_TOTAL )
-		    			as [0] = as[0]+"00";
-	    		System.out.println("getDataUmbuffered out - data=" + as[0]+"=");
-	            return ( as[0] );
-        	}
+            System.out.println("getDataUmbuffered out - data=" + as[0]+"=");
+            return ( as[0] );
         } 
     }
 	
@@ -3119,53 +2432,18 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         
 		double ret = 0;
 		
-		if (PrinterType.isEpsonModel()) {
-	    	int command = 2050;
-			StringBuffer sbcmd = new StringBuffer("3700");
-			executeRTDirectIo(command, 0, sbcmd);
-	      	if (sbcmd.toString().length() > "3700".length()) {
-		      	System.out.println("getDailyVoid - type = "+sbcmd.toString().substring(0, 2));
-		      	System.out.println("getDailyVoid - number = "+sbcmd.toString().substring(2, 4));
-		      	System.out.println("getDailyVoid - nu_val = "+sbcmd.toString().substring(4, 5));
-		      	System.out.println("getDailyVoid - items = "+sbcmd.toString().substring(5, 14));
-		      	System.out.println("getDailyVoid - sign = "+sbcmd.toString().substring(14, 15));
-		      	System.out.println("getDailyVoid - amount = "+sbcmd.toString().substring(15, 24));
-		      	ret = Double.parseDouble(sbcmd.toString().substring(15, 24))/100;
-	      	}
-		}
-		
-		if (PrinterType.isRCHPrintFModel()) {
-			StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_X);
-			this.executeRTDirectIo(0, 0, key);
-			
-			int command = 8001;
-	        int[] dt = new int[10]; 
-	        dt[0] = 10;
-	        String[] pString = {""};
-	        try {
-	        	directIO(command, dt, pString);
-			} catch (JposException e) {
-				System.out.println("getDailyVoid - Exception : " + e.getMessage());
-				return ret;
-			}
-			StringTokenizer st = new StringTokenizer(pString[0], "!");
-			String[] reply = new String[st.countTokens()];
-			for (int i = 0; i < reply.length; i++) {
-				reply[i] = st.nextToken();
-				System.out.println("getDailyVoid - reply["+i+"] = "+reply[i]+" - "+reply[i].length());
-			}
-			for (int i=0; i < reply.length; i++) {
-				if (reply[i].length() == 32) {
-					String s = reply[i].substring(14, 24);
-					System.out.println("s = "+s);
-					double d = Double.parseDouble(s) / 100;
-					ret = Math.rint((ret+d)*100)/100;
-				}
-			}
-				
-			key = new StringBuffer(SharedPrinterFields.KEY_REG);
-			this.executeRTDirectIo(0, 0, key);
-		}
+    	int command = 2050;
+		StringBuffer sbcmd = new StringBuffer("3700");
+		executeRTDirectIo(command, 0, sbcmd);
+      	if (sbcmd.toString().length() > "3700".length()) {
+	      	System.out.println("getDailyVoid - type = "+sbcmd.toString().substring(0, 2));
+	      	System.out.println("getDailyVoid - number = "+sbcmd.toString().substring(2, 4));
+	      	System.out.println("getDailyVoid - nu_val = "+sbcmd.toString().substring(4, 5));
+	      	System.out.println("getDailyVoid - items = "+sbcmd.toString().substring(5, 14));
+	      	System.out.println("getDailyVoid - sign = "+sbcmd.toString().substring(14, 15));
+	      	System.out.println("getDailyVoid - amount = "+sbcmd.toString().substring(15, 24));
+	      	ret = Double.parseDouble(sbcmd.toString().substring(15, 24))/100;
+      	}
 		
        	FiscalPrinterDataInformation.setDataInformation(FPRT_RT_POSTVOID_NUMBER, ""+((int)(ret*10000)));
         FiscalPrinterDataInformation.setNewDataAvailable(true);
@@ -3178,54 +2456,18 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         
 		double ret = -1;
 		
-		if (PrinterType.isEpsonModel()) {
-	    	int command = 2050;
-			StringBuffer sbcmd = new StringBuffer("3600");
-			executeRTDirectIo(command, 0, sbcmd);
-	      	if (sbcmd.toString().length() > "3700".length()) {
-		      	System.out.println("getDailyRefund - type = "+sbcmd.toString().substring(0, 2));
-		      	System.out.println("getDailyRefund - number = "+sbcmd.toString().substring(2, 4));
-		      	System.out.println("getDailyRefund - nu_val = "+sbcmd.toString().substring(4, 5));
-		      	System.out.println("getDailyRefund - items = "+sbcmd.toString().substring(5, 14));
-		      	System.out.println("getDailyRefund - sign = "+sbcmd.toString().substring(14, 15));
-		      	System.out.println("getDailyRefund - amount = "+sbcmd.toString().substring(15, 24));
-		      	ret = Double.parseDouble(sbcmd.toString().substring(15, 24))/100;
-	      	}
-		}
-		
-		if (PrinterType.isRCHPrintFModel()) {
-			StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_X);
-			this.executeRTDirectIo(0, 0, key);
-			
-			int command = 8001;
-	        int[] dt = new int[10]; 
-	        dt[0] = 20;
-	        String[] pString = {""};
-	        try {
-	        	directIO(command, dt, pString);
-			} catch (JposException e) {
-				System.out.println("getDailyRefund - Exception : " + e.getMessage());
-				return ret;
-			}
-			StringTokenizer st = new StringTokenizer(pString[0], "!");
-			String[] reply = new String[st.countTokens()];
-			for (int i = 0; i < reply.length; i++) {
-				reply[i] = st.nextToken();
-				System.out.println("getDailyRefund - reply["+i+"] = "+reply[i]+" - "+reply[i].length());
-			}
-			ret = 0;
-			for (int i=0; i < reply.length; i++) {
-				if (reply[i].length() == 32) {
-					String s = reply[i].substring(14, 24);
-					System.out.println("s = "+s);
-					double d = Double.parseDouble(s) / 100;
-					ret = Math.rint((ret+d)*100)/100;
-				}
-			}
-				
-			key = new StringBuffer(SharedPrinterFields.KEY_REG);
-			this.executeRTDirectIo(0, 0, key);
-		}
+    	int command = 2050;
+		StringBuffer sbcmd = new StringBuffer("3600");
+		executeRTDirectIo(command, 0, sbcmd);
+      	if (sbcmd.toString().length() > "3700".length()) {
+	      	System.out.println("getDailyRefund - type = "+sbcmd.toString().substring(0, 2));
+	      	System.out.println("getDailyRefund - number = "+sbcmd.toString().substring(2, 4));
+	      	System.out.println("getDailyRefund - nu_val = "+sbcmd.toString().substring(4, 5));
+	      	System.out.println("getDailyRefund - items = "+sbcmd.toString().substring(5, 14));
+	      	System.out.println("getDailyRefund - sign = "+sbcmd.toString().substring(14, 15));
+	      	System.out.println("getDailyRefund - amount = "+sbcmd.toString().substring(15, 24));
+	      	ret = Double.parseDouble(sbcmd.toString().substring(15, 24))/100;
+      	}
 		
        	FiscalPrinterDataInformation.setDataInformation(FPRT_RT_REFUND_NUMBER, ""+((int)(ret*10000)));
         FiscalPrinterDataInformation.setNewDataAvailable(true);
@@ -3237,65 +2479,27 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	{
 		int o = 0;
 		
-    	if (PrinterType.isNCR2215Model())
-    	{
-			switch ( i )
+		if (PrinterCommands.getSimulateState() == jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL)
+		{
+			try
 			{
-				case jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER:
-				case jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC:
-					o = 0x34;
-					break;
-				case jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID:
-					o = 0x3E;
-					break;
-				case jpos.FiscalPrinterConst.FPTR_GD_DAILY_TOTAL:
-					o = 0x26;
-					break;
-				case jpos.FiscalPrinterConst.FPTR_GD_CURRENT_TOTAL:
-					o = 0x2D;
-					break;
-				case jpos.FiscalPrinterConst.FPTR_GD_GRAND_TOTAL:
-					o = 0x28;
-					break;
-				case jpos.FiscalPrinterConst.FPTR_GD_FIRMWARE:
-					o = 0x40;
-					break;
-				case jpos.FiscalPrinterConst.FPTR_GD_Z_REPORT:
-					o = 0x35;
-					break;
-				default:
-					break;
-			}
-            int[] reply = new int[7];
-            String obj = Integer.toHexString(o).toUpperCase();
-            directIO(JPOS_FPTR_PRN_FISCALREQUEST, reply, "0x"+obj);
-            as[0] = Integer.toString(reply[0]);
-            System.out.println("NCR xgetData("+"0x"+obj+") as[0]= "+as[0]);
-    	}
-    	else
-    	{
-			if ((PrinterType.isEpsonModel()) && (PrinterCommands.getSimulateState() == jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL))
-			{
-				try
-				{
-					if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
-			            as[0] = xgetDailyData("24");
-					else
-						fiscalPrinter.getData(i, ai, as);
-				}
-				catch ( JposException e ) {
-			        System.out.println("Patch per Epson FP90/1 FW 1.03");
-			        as[0] = "0";
-				}
-			}
-			else
-			{
-				if (PrinterType.isEpsonModel() && isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
+				if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
 		            as[0] = xgetDailyData("24");
 				else
 					fiscalPrinter.getData(i, ai, as);
 			}
-    	}
+			catch ( JposException e ) {
+		        System.out.println("Patch per Epson FP90/1 FW 1.03");
+		        as[0] = "0";
+			}
+		}
+		else
+		{
+			if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
+	            as[0] = xgetDailyData("24");
+			else
+				fiscalPrinter.getData(i, ai, as);
+		}
 	}
 	private String xgetDailyData(String type) throws JposException
 	{
@@ -3326,7 +2530,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         return (reply);
 	}
 	
-	public ArrayList<String> getReceiptFromEj_Epson(String recId, String date) throws JposException {
+	public ArrayList<String> getReceiptFromEj(String recId, String date) throws JposException {
 		// Legge l'ej dalla printer riga per riga - LENTISSIMA
 		
     	ArrayList<String> ret = new ArrayList<String>();
@@ -3343,12 +2547,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	        	directIO(0, dt, command); 
 	      	}
 		}catch(Exception e){
-			System.out.println("getReceiptFromEj_Epson - Exception : " + e.getMessage());
+			System.out.println("getReceiptFromEj - Exception : " + e.getMessage());
 		}
 		return ret;
     }
     
-    private ArrayList<String> getReceiptFromEj_Epson(String date) throws JposException {
+    private ArrayList<String> getReceiptFromEj(String date) throws JposException {
     	// Legge l'ej dalla printer in un colpo solo - comunque LENTA, bisognerebbe fare andare la printer a 115200
     	
 		String recId = "9999";
@@ -3361,9 +2565,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		int[] dt={3104};
 		ArrayList<String> ret = new ArrayList<String>();
 		
-    	if (!PrinterType.isEpsonModel())
-    		return ret;
-    	
 		try{
 			StringBuffer command = new StringBuffer(Op + PnRd + docType + Date + recId + recId + Inc + NU);
 			directIO(0, dt, command);	
@@ -3382,7 +2583,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    			break;
 	      	}
 		}catch(Exception e){
-			System.out.println("getReceiptFromEj_Epson - Exception : " + e.getMessage());
+			System.out.println("getReceiptFromEj - Exception : " + e.getMessage());
 	}
 	
 	return ret;
@@ -3394,63 +2595,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
             result[i] = src.substring(i*len, Math.min(src.length(), (i+1)*len))+R3define.Lf;
         }
         return result;
-    }
-    
-    public ArrayList<String> getReceiptFromEj_Rch()
-    {
-    	ArrayList<String> ret = new ArrayList<String>();
-		String[] ticket = null;
-		
-    	if (!PrinterType.isRCHPrintFModel())
-    		return ret;
-    	
-        int cmdInt = 0;
-        int[] mydata = {0};
-        String cmd = SharedPrinterFields.KEY_Z;
-        try {
-        	directIO(cmdInt, mydata, cmd);
-		} catch (JposException e) {
-			System.out.println("getReceiptFromEj_Rch - Exception : " + e.getMessage());
-		}
-        
-	   DirectIOListener p=new DirectIOListener();
-	   fiscalPrinter.addDirectIOListener((jpos.events.DirectIOListener) p);
-		   
-	   cmd = "=C453/$0";
-	   try {
-			p.started = true;
-			p.buffer="";
-			directIO(cmdInt, mydata, cmd);
-			while (p.started) {
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-				}
-			}
-			
-			ticket = split(p.buffer, 48);
-			
-		} catch (JposException e) {
-			System.out.println("getReceiptFromEj_Rch - Exception : " + e.getMessage());
-		}
-        
-        fiscalPrinter.removeDirectIOListener(p);
-  	   
-        cmd = SharedPrinterFields.KEY_REG;
-        try {
-        	directIO(cmdInt, mydata, cmd);
-		} catch (JposException e) {
-			System.out.println("getReceiptFromEj_Rch - Exception : " + e.getMessage());
-		}
-        
-        String s = "";
-		for (int i=0; i<ticket.length; i++) {
-			if ((i<=9) || (i>=ticket.length-4))
-				continue;
-			s = String13Fix.replaceAll(ticket[i], "ﾀ", "euro");
-			ret.add(s);
-		}
-		return ret;
     }
     
 	boolean checkCurrentTicketTotal ( String Pr, long In ) {
@@ -3468,25 +2612,13 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	   public void reprintLastTicket()
 	   {
 		   PleaseDisplay.pleaseDisplay("Attendere Prego...");
-		   if (PrinterType.isRCHPrintFModel())
-		   {
-			   try {
-				   fiscalPrinter.printDuplicateReceipt();
-			   } catch (JposException e) {
-				   System.out.println("Reprinting ticket: "+e.getMessage());
-				   MessageBox.showMessage(e.getMessage(), null, MessageBox.OK);
-			   }
-			   return;
-		   }
 		    
 		   DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
 		   Date date = new Date();
 		   int[] ai = new int[1];
 		   String[] as = new String[1];
 		   getData(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as);
-		   if ( PrinterType.isNCRFiscalModel() ||
-				   (PrinterType.isEpsonModel() && epsonClass4) ||
-				   PrinterType.isTH230Model() )
+		   if ( epsonClass4 )
 		   {
 			   // num. scontrino da decrementare nei casi in cui è stato
 			   // incrementato precedentemente nella funzione getDataF()
@@ -3504,75 +2636,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   catch (JposException e)
 		   {
 			   System.out.println(e.getMessage());
-		   }
-	   }
-
-	   public void fwUpdate()
-	   {
-		   int[] ai = new int[1];
-		   String[] as = new String[1];
-	        
-		   if (PrinterType.isRchPrintFModel()) {
-			   int[] opt = new int[1];
-			   String[] printerId = new String[1];
-			   try {
-				   fiscalPrinter.getData(FiscalPrinterConst.FPTR_GD_PRINTER_ID, opt, printerId);
-			   } catch (JposException e) {
-				   System.out.println("fwUpdate - Exception: "+e.getMessage());
-				   MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-				   return;
-			   }
-			   int matricola = Integer.parseInt(printerId[0].substring(printerId[0].length()-8));
-			   if (matricola < 72018101) {
-				   System.out.println("fwUpdate - matricola: "+matricola);
-				   MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-				   return;
-			   }
-		    	
-			   try {
-				   if (fiscalPrinter.getDayOpened()) {
-					   System.out.println("fwUpdate - Fiscal day opened: don't do it.");
-					   MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					   return;
-				   }
-			   } catch (JposException e) {
-				   System.out.println("fwUpdate - Exception: "+e.getMessage());
-				   MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-				   return;
-			   }
-				
-			   int ret = RTstilltosend();
-			   if (ret > 100) {
-				   System.out.println("fwUpdate - some files still to send("+ret+")");
-				   RTtrytosend();
-				   ret = RTstilltosend();
-				   if (ret > 100) {
-					   System.out.println("fwUpdate - some files still to send("+ret+")");
-					   MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					   return;
-				   }
-			   }
-		    	
-			   try {
-				   fiscalPrinter.getData(jpos.FiscalPrinterConst.FPTR_GD_FIRMWARE, ai, as);
-			   } catch (JposException e) {
-				   System.out.println("fwUpdate - Exception: "+e.getMessage());
-				   MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-				   return;
-			   }
-			   System.out.println ("RT2 - fwUpdate - printer FW : "+as[0]);
-	            
-			   StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_SRV);
-			   executeRTDirectIo(0, 0, key);
-				
-			   String cmd = "=C901";
-			   StringBuffer sbcmd = new StringBuffer(cmd);
-			   System.out.println("RT2 - fwUpdate - sbcmd = "+sbcmd.toString());
-			   executeRTDirectIo(0, 0, sbcmd);
-			   System.out.println("RT2 - fwUpdate - sbcmd = "+sbcmd.toString());
-				
-			   key = new StringBuffer(SharedPrinterFields.KEY_REG);
-			   executeRTDirectIo(0, 0, key);
 		   }
 	   }
 

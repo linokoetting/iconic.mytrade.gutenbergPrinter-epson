@@ -74,74 +74,26 @@ public class Report extends PrinterCommands {
 				
 				case jpos.FiscalPrinterConst.FPTR_RT_ORDINAL:
 				case jpos.FiscalPrinterConst.FPTR_RT_DATE:
-					if (PrinterType.isNCR2215Model())
+					try
 					{
-			            String givenDate = startNum.substring(6,8)+startNum.substring(2,4)+startNum.substring(0,2);
-			            String endDate = endNum.substring(6,8)+endNum.substring(2,4)+endNum.substring(0,2);
-		                try
-		                {
-	                        String strBytData = new String("\u0002"+"\u0020"+"\u0031"+"\u0043"+"\u0000"+"\u0020"+"\u001F"+givenDate+"\u001F"+endDate+"\u0003"+"\u0027"+"\u0020");
-	                        int[] BCC = new int[2];
-	                        BCC = dobcc(strBytData);
-	                        char strCharData[] = strBytData.toCharArray();
-	                        strCharData[strBytData.length()-2] = (char)BCC[0];
-	                        strCharData[strBytData.length()-1] = (char)BCC[1];
-	                        strBytData = new String(strCharData);
-		                    fiscalPrinterDriver.directIO(JPOS_FPTR_DI_RAWDATA, data, strBytData);
-		                }
-		                catch ( JposException jpe )
-		                {
-		                    System.out.println ( "Print FM = <"+jpe.getMessage()+">" );
-							MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
-		                }
+						fiscalPrinterDriver.printReport (reportType, startNum, endNum);
 					}
-					else
+					catch (JposException jpe)
 					{
-						try
-						{
-							fiscalPrinterDriver.printReport (reportType, startNum, endNum);
-						}
-						catch (JposException jpe)
-						{
-							System.out.println ( "MAPOTO-fiscalPrinterDriver.printReport <"+jpe.getMessage()+">");
-							MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
-						}
+						System.out.println ( "MAPOTO-fiscalPrinterDriver.printReport <"+jpe.getMessage()+">");
+						MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
 					}
 				break;
 				
 				case PRINTTOTFISCALMEMBYDATE:
-					if (PrinterType.isNCR2215Model())
+					try
 					{
-			            String givenDate = startNum.substring(6,8)+startNum.substring(2,4)+startNum.substring(0,2);
-			            String endDate = endNum.substring(6,8)+endNum.substring(2,4)+endNum.substring(0,2);
-		                try
-		                {
-	                        String strBytData = new String("\u0002"+"\u0020"+"\u0031"+"\u0043"+"\u0000"+"\u0023"+"\u001F"+givenDate+"\u001F"+endDate+"\u0003"+"\u0027"+"\u0023");
-	                        int[] BCC = new int[2];
-	                        BCC = dobcc(strBytData);
-	                        char strCharData[] = strBytData.toCharArray();
-	                        strCharData[strBytData.length()-2] = (char)BCC[0];
-	                        strCharData[strBytData.length()-1] = (char)BCC[1];
-	                        strBytData = new String(strCharData);
-		                	fiscalPrinterDriver.directIO(JPOS_FPTR_DI_RAWDATA, data, strBytData);
-		                }
-		                catch ( JposException jpe )
-		                {
-		                    System.out.println ( "Print FM = <"+jpe.getMessage()+">" );
-							MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
-		                }
+						printPeriodicTotalsReport(startNum, endNum);
 					}
-					else
+					catch (JposException jpe)
 					{
-						try
-						{
-							printPeriodicTotalsReport(startNum, endNum);
-						}
-						catch (JposException jpe)
-						{
-							System.out.println ( "MAPOTO-printPeriodicTotalsReport <"+jpe.getMessage()+">");
-							MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
-						}
+						System.out.println ( "MAPOTO-printPeriodicTotalsReport <"+jpe.getMessage()+">");
+						MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
 					}
 					break;
 					
@@ -164,16 +116,8 @@ public class Report extends PrinterCommands {
 		//startNum = "ggmmaaaaNNNN";
 		//endNum   = "ggmmaaaaNNNN";
 
-		String obj [] = new String [1];
 		String givenDate = startNum.substring(0,8);
 		String endDate = endNum.substring(0,8);
-		int receiptStart = Integer.parseInt(startNum.substring(8,12));
-		int receiptEnd = Integer.parseInt(endNum.substring(8,12));
-        String range [] = new String [2];
-//      int filter[] = new int [1];
-        int session;
-        int data[] = new int [5];
-        int data1[] = new int [10];
 
 		/* ONLY FOR DEBUG*/
 		// debug( "DataInizio    : " + givenDate);
@@ -181,193 +125,38 @@ public class Report extends PrinterCommands {
 		// debug( "DataFine      : " + endDate);
 		// debug( "RicevutaFine  : " + receiptEnd);
 		
-		try
-		{
-			if (PrinterType.isTHFEJModel())
-			{
-				obj[0] = givenDate +","+Integer.toString(receiptStart) + ","  + endDate + "," + Integer.toString(receiptEnd) +";";
-				fiscalPrinterDriver.directIO( 11, null, obj);
-			}
-			else if (PrinterType.isTH230Model())
-			{
-				// la TH230 non considera receiptStart e receiptEnd
-				// ma stampa gli scontrini compresi nell'intervallo orario 
-				// quindi non possiamo usare questo comando
-/*		        range[0] = givenDate + "0001" + Integer.toString(receiptStart);
-		        range[1] = endDate + "2359" + Integer.toString(receiptEnd);
-		        filter[0] = 15;
-				directIO( 1103, filter, range);*/
-				
-                SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
-                
-                Calendar c1 = Calendar.getInstance();
-                try {
-					c1.setTime(sdf.parse(givenDate));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+		// la Epson non permette di stampare
+		// un'intervallo di scontrini a cavallo di più date per cui stampo tutti
+		// gli scontrini un giorno per volta per l'intervallo di giorni richiesto
 
-                Calendar c2 = Calendar.getInstance();
-                try {
-					c2.setTime(sdf.parse(endDate));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-                
-                do {
-                	range[0] = givenDate;
-                	fiscalPrinterDriver.directIO( 1106, null, range);
-                    for (session=Integer.parseInt(range[0]); session<=Integer.parseInt(range[1]); session++)
-                    {
-            			System.out.println ( "r3PrintSomeReceiptByDate Date<"+givenDate+"> Session<"+session+">");
-                    	data[0] = session;
-                        data[1] = receiptStart;
-                        data[2] = session;
-                        data[3] = receiptEnd;
-                        data[4] = 15;
-                        fiscalPrinterDriver.directIO( 1105, data, obj);
-                    }
-                    c1.add(Calendar.DATE, 1);
-                    givenDate = sdf.format(c1.getTime());
-                } while (!c1.after(c2));
+		givenDate = startNum.substring(0,2)+startNum.substring(2,4)+startNum.substring(6,8);
+        endDate = endNum.substring(0,2)+endNum.substring(2,4)+endNum.substring(6,8);
+        String ticketStart = startNum.substring(8,12);
+        String ticketEnd = endNum.substring(8,12);
 
-			}
-			else if (PrinterType.isNCRFiscalModel())
-			{
-				// la NCR2215 non permette di stampare
-				// un'intervallo di scontrini a cavallo di più date per cui stampo tutti
-				// gli scontrini un giorno per volta per l'intervallo di giorni richiesto
-				
-                givenDate = startNum.substring(6,8)+startNum.substring(2,4)+startNum.substring(0,2);
-                endDate = endNum.substring(6,8)+endNum.substring(2,4)+endNum.substring(0,2);
-                String ticketStart = startNum.substring(8,12);
-                String ticketEnd = endNum.substring(8,12);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
 
-                byte JPOS_FPTR_FPU_COMMAND_A = 9;
-                byte EJ_PRINT_COMMAND = (byte)0x91;
-                data = new int[1];
-                String StrPrintEJ;
-                data[0] = EJ_PRINT_COMMAND;
+        Calendar c1 = Calendar.getInstance();
+        try {
+        	c1.setTime(sdf.parse(givenDate));
+        } catch (ParseException e) {
+        	e.printStackTrace();
+        }
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
+        Calendar c2 = Calendar.getInstance();
+        try {
+        	c2.setTime(sdf.parse(endDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-                Calendar c1 = Calendar.getInstance();
-                try {
-                	c1.setTime(sdf.parse(givenDate));
-                } catch (ParseException e) {
-                	e.printStackTrace();
-                }
-
-                Calendar c2 = Calendar.getInstance();
-                try {
-                	c2.setTime(sdf.parse(endDate));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                do {
-        			System.out.println ( "r3PrintSomeReceiptByDate Date<"+givenDate+"> ticketStart<"+ticketStart+">"+"> ticketEnd<"+ticketEnd+">");
-        			if (PrinterType.isNCR2215Model())
-        			{
-	                    StrPrintEJ = new String("\u0004\u001F"+ticketStart+"\u001F"+ticketEnd+"\u001F"+givenDate);
-	                    fiscalPrinterDriver.directIO(JPOS_FPTR_FPU_COMMAND_A, data, StrPrintEJ);
-        			}
-        			else if (PrinterType.isCustomModel())
-        			{
-                        StrPrintEJ = new String("8002"+givenDate.substring(4,6)+givenDate.substring(2,4)+givenDate.substring(0,2)+ticketStart+ticketEnd+"0");
-                        data1[0]=0;
-                        fiscalPrinterDriver.directIO(8002, data1, StrPrintEJ);
-        			}
-                    c1.add(Calendar.DATE, 1);
-                    givenDate = sdf.format(c1.getTime());
-                } while (!c1.after(c2));
-			}
-			else if (PrinterType.isEpsonModel())
-			{
-				// la Epson non permette di stampare
-				// un'intervallo di scontrini a cavallo di più date per cui stampo tutti
-				// gli scontrini un giorno per volta per l'intervallo di giorni richiesto
-
-				givenDate = startNum.substring(0,2)+startNum.substring(2,4)+startNum.substring(6,8);
-                endDate = endNum.substring(0,2)+endNum.substring(2,4)+endNum.substring(6,8);
-                String ticketStart = startNum.substring(8,12);
-                String ticketEnd = endNum.substring(8,12);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-
-                Calendar c1 = Calendar.getInstance();
-                try {
-                	c1.setTime(sdf.parse(givenDate));
-                } catch (ParseException e) {
-                	e.printStackTrace();
-                }
-
-                Calendar c2 = Calendar.getInstance();
-                try {
-                	c2.setTime(sdf.parse(endDate));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                do {
-        			System.out.println ( "r3PrintSomeReceiptByDate Date<"+givenDate+"> ticketStart<"+ticketStart+">"+"> ticketEnd<"+ticketEnd+">");
-        			PrinterCommands cmd = new PrinterCommands();
-        			cmd.executeDirectIo(3098, "01"+givenDate+ticketStart+ticketEnd);
-                    c1.add(Calendar.DATE, 1);
-                    givenDate = sdf.format(c1.getTime());
-                } while (!c1.after(c2));
-			}
-			else if (PrinterType.isRCHPrintFModel())
-			{
-				// la RCH non permette di stampare
-				// un'intervallo di scontrini a cavallo di più date per cui stampo tutti
-				// gli scontrini un giorno per volta per l'intervallo di giorni richiesto
-
-				givenDate = startNum.substring(0,2)+startNum.substring(2,4)+startNum.substring(6,8);
-                endDate = endNum.substring(0,2)+endNum.substring(2,4)+endNum.substring(6,8);
-                String ticketStart = startNum.substring(8,12);
-                String ticketEnd = endNum.substring(8,12);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy");
-
-                Calendar c1 = Calendar.getInstance();
-                try {
-                	c1.setTime(sdf.parse(givenDate));
-                } catch (ParseException e) {
-                	e.printStackTrace();
-                }
-
-                Calendar c2 = Calendar.getInstance();
-                try {
-                	c2.setTime(sdf.parse(endDate));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                do {
-        			System.out.println ( "r3PrintSomeReceiptByDate Date<"+givenDate+"> ticketStart<"+ticketStart+">"+"> ticketEnd<"+ticketEnd+">");
-                    int cmdInt = 0;
-                    int[] mydata = {0};
-                    String cmd = SharedPrinterFields.KEY_Z;
-                    fiscalPrinterDriver.directIO(cmdInt, mydata, cmd);
-                    cmd = "=C452/$1/&"+givenDate+"/["+ticketStart+"/]"+ticketEnd;
-                    fiscalPrinterDriver.directIO(cmdInt, mydata, cmd);
-                    cmd = SharedPrinterFields.KEY_REG;
-                    fiscalPrinterDriver.directIO(cmdInt, mydata, cmd);
-                    c1.add(Calendar.DATE, 1);
-                    givenDate = sdf.format(c1.getTime());
-                } while (!c1.after(c2));
-			}
-		}
-		
-		catch (JposException jpe)
-		{
-			System.out.println ( "MAPOTO-r3PrintSomeReceiptByDate <"+jpe.getMessage()+">");
-			if (jpe.getErrorCode() == 111)
-				MessageBox.showMessage("HardwareFailure EJEmptyDate", null, MessageBox.OK);
-			else
-				MessageBox.showMessage(jpe.getMessage(), null, MessageBox.OK);
-		}
+        do {
+			System.out.println ( "r3PrintSomeReceiptByDate Date<"+givenDate+"> ticketStart<"+ticketStart+">"+"> ticketEnd<"+ticketEnd+">");
+			PrinterCommands cmd = new PrinterCommands();
+			cmd.executeDirectIo(3098, "01"+givenDate+ticketStart+ticketEnd);
+            c1.add(Calendar.DATE, 1);
+            givenDate = sdf.format(c1.getTime());
+        } while (!c1.after(c2));
 	}
 
 	private static void downloadOnFile () throws JposException
@@ -550,26 +339,9 @@ public class Report extends PrinterCommands {
 
 		try
 		{
-			if (PrinterType.isTHFEJModel())
-				fiscalPrinterDriver.directIO(6, data, obj);
-			else if (PrinterType.isTH230Model())
-				fiscalPrinterDriver.directIO(1104, data, obj);
-			else if (PrinterType.isNCR2215Model())
-			{
-				MessageBox.showMessage("Funzione non valida");
-				return(-1);
-			}
-			else if (PrinterType.isEpsonModel())
-			{
-				data[0]=3097;
-				obj[0]="01";
-				fiscalPrinterDriver.directIO(0, data, obj);
-			}
-			else if (PrinterType.isCustomModel())
-			{
-		    	int data1[] = new int[25];
-		    	fiscalPrinterDriver.directIO(8007, data1, "8007");
-			}
+			data[0]=3097;
+			obj[0]="01";
+			fiscalPrinterDriver.directIO(0, data, obj);
 		}
 		catch (JposException jpe)
 		{

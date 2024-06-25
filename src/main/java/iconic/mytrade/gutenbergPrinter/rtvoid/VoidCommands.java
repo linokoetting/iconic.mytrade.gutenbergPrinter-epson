@@ -18,51 +18,25 @@ public class VoidCommands extends PrinterCommands {
 
 	public boolean isVoidableDocument(String zRepId, String recId, String date, String printerId) throws JposException
 	{
-		if (PrinterType.isEpsonModel())
-		{
-			try{
-				StringBuffer command = new StringBuffer("2" + printerId + date + recId + zRepId);
-		      	System.out.println("isVoidableDocument - command : " + command.toString());
-				//posEngine.printSelectedDevices("R3getPhotoDisplay3R", null, false, "OD");	// ???
-				//posEngine.printSelectedDevices("PleaseWait",null,false,"OD");				// ???
-		      	int ret = fiscalPrinterDriver.executeRTDirectIo(9205, 0, command);
-		      	System.out.println("isVoidableDocument - result : " + command.toString() + " - ret : " + ret);
-				if ((ret == 0) && (command.substring(0, 1).equals("0") || command.substring(0, 1).equals("1"))){
-		            System.out.println("isVoidableDocument - Document is voidable");
-		            return true;
-				}
-		        else{
-		            System.out.println("isVoidableDocument - Document is NOT voidable");
-					//posEngine.printSelectedDevices("R3setPhotoDisplay3R", null, false, "OD");	// ???
-		            return false;
-		        }
-			}catch(Exception e){
-				System.out.println("isVoidableDocument - Exception : " + e.getMessage());
-				}
-		}
-		else if (PrinterType.isRCHPrintFModel())
-		{
-			try{
-				String mydate = date.substring(0, 4) + date.substring(6, 8);
-				date = mydate;
-				StringBuffer command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId));
-				if (fiscalPrinterDriver.isfwRT2enabled())
-					command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId) + "," + printerId + "," + "0");
-		      	System.out.println("isVoidableDocument - command : " + command.toString());
-		      	int result = fiscalPrinterDriver.executeRTDirectIo(6001, 1, command);
-		      	System.out.println("isVoidableDocument - result : " + result);
-				if (result == 1){
-		            System.out.println("isVoidableDocument - Document is voidable");
-		            return true;
-				}
-		        else{
-		            System.out.println("isVoidableDocument - Document is NOT voidable");
-		            return false;
-		        }
-			}catch(Exception e){
-				System.out.println("isVoidableDocument - Exception : " + e.getMessage());
-				}
-		}
+		try{
+			StringBuffer command = new StringBuffer("2" + printerId + date + recId + zRepId);
+	      	System.out.println("isVoidableDocument - command : " + command.toString());
+			//posEngine.printSelectedDevices("R3getPhotoDisplay3R", null, false, "OD");	// ???
+			//posEngine.printSelectedDevices("PleaseWait",null,false,"OD");				// ???
+	      	int ret = fiscalPrinterDriver.executeRTDirectIo(9205, 0, command);
+	      	System.out.println("isVoidableDocument - result : " + command.toString() + " - ret : " + ret);
+			if ((ret == 0) && (command.substring(0, 1).equals("0") || command.substring(0, 1).equals("1"))){
+	            System.out.println("isVoidableDocument - Document is voidable");
+	            return true;
+			}
+	        else{
+	            System.out.println("isVoidableDocument - Document is NOT voidable");
+				//posEngine.printSelectedDevices("R3setPhotoDisplay3R", null, false, "OD");	// ???
+	            return false;
+	        }
+		}catch(Exception e){
+			System.out.println("isVoidableDocument - Exception : " + e.getMessage());
+			}
 		
 		return false;
     }
@@ -71,52 +45,29 @@ public class VoidCommands extends PrinterCommands {
 	{
 		boolean reply = true;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			try{
-				StringBuffer command = new StringBuffer("0140001VOID " + zRepId + " " + recId + " " + date + " "+ printerId);
-		      	System.out.println("VoidDocument - command : " + command.toString());
-		      	int ret = fiscalPrinterDriver.executeRTDirectIo(1078, 0, command);
-		      	System.out.println("VoidDocument - result : " + command.toString() + " - ret : " + ret);
-		      	if ((ret == -1) || (Integer.parseInt(command.toString().substring(0, 2)) < 50)){
-		      		if (printerId.equalsIgnoreCase(SharedPrinterFields.RTPrinterId)) {
-			      		reply = false;
-			      		System.out.println("VoidDocument - Document NOT found");
-		      		}
-		      		else {
-		      			// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa
-		      			System.out.println("VoidDocument - funzionalita' disabilitata");
-		      			// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa
-		      		}
-		      	}
-		      	else{
-		      		VoidDocumentToEJ(zRepId, recId, date, printerId);
-		      	}
-			}catch(Exception e){
-	      		reply = false;
-				System.out.println("VoidDocument - Exception : " + e.getMessage());
-				}
-		}
-		else if (PrinterType.isRCHPrintFModel())
-		{
-			try{
-				String mydate = date.substring(0, 4) + date.substring(6, 8);
-				date = mydate;
-				StringBuffer command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId));
-				if (fiscalPrinterDriver.isfwRT2enabled())
-					command = new StringBuffer(date + "," + Integer.parseInt(zRepId) + "," + Integer.parseInt(recId) + "," + printerId + "," + "0");
-		      	System.out.println("VoidDocument - command : " + command.toString());
-		      	fiscalPrinterDriver.executeRTDirectIo(6001, 0, command);
-		      	if (PrinterType.isDieboldRTOneModel()) {
-					StringBuffer closevoid = new StringBuffer("=c");
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, closevoid);
-		      	}
+		try{
+			StringBuffer command = new StringBuffer("0140001VOID " + zRepId + " " + recId + " " + date + " "+ printerId);
+	      	System.out.println("VoidDocument - command : " + command.toString());
+	      	int ret = fiscalPrinterDriver.executeRTDirectIo(1078, 0, command);
+	      	System.out.println("VoidDocument - result : " + command.toString() + " - ret : " + ret);
+	      	if ((ret == -1) || (Integer.parseInt(command.toString().substring(0, 2)) < 50)){
+	      		if (printerId.equalsIgnoreCase(SharedPrinterFields.RTPrinterId)) {
+		      		reply = false;
+		      		System.out.println("VoidDocument - Document NOT found");
+	      		}
+	      		else {
+	      			// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa
+	      			System.out.println("VoidDocument - funzionalita' disabilitata");
+	      			// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa
+	      		}
+	      	}
+	      	else{
 	      		VoidDocumentToEJ(zRepId, recId, date, printerId);
-			}catch(Exception e){
-	      		reply = false;
-				System.out.println("VoidDocument - Exception : " + e.getMessage());
-				}
-		}
+	      	}
+		}catch(Exception e){
+      		reply = false;
+			System.out.println("VoidDocument - Exception : " + e.getMessage());
+			}
 		
 		return reply;
     }

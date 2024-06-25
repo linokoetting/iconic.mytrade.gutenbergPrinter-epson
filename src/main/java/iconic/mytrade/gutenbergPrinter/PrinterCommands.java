@@ -462,11 +462,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    storeDailyTotal(Total);
 		System.out.println ( "MAPOTO-EXEC BEGINFISCAL AFTER STORE DAILY TOTAL" );
 		
-    	if (PrinterType.isDieboldRTOneModel()) {
-			StringBuffer Klean = new StringBuffer("=K");
-			fiscalPrinterDriver.executeRTDirectIo(0, 0, Klean);
-    	}
-		
 		System.out.println ( "MAPOTO-EXEC BEGINFISCAL BEFORE NATIVE" );
 		fiscalPrinterDriver.beginFiscalReceipt(arg0);
 		System.out.println ( "MAPOTO-EXEC BEGINFISCAL AFTER  NATIVE" );
@@ -525,19 +520,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				return;
 			}
 			scriviLastTicket(s);
-			
-			if (PrinterType.isTHFEJModel())
-			{
-				// aggiungo crlf perchè non messi dalla printer durante la printNormal
-				
-				if (s.length() >= 2){
-					if (!((s.substring(s.length()-2)).equalsIgnoreCase(R3define.CrLf))){
-						s = s+R3define.CrLf;
-					}
-				}
-				else
-					s = s+R3define.CrLf;
-			}
 		}
 		
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
@@ -575,13 +557,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 		}
 		
-		if (SRTPrinterExtension.isPRT() && PrinterType.isRCHPrintFModel() && TaxData.isOmaggio(jIvaPolipos) && fiscalPrinterDriver.isfwRT2enabled()) {
-			// lo vende automaticamente la printer
-			return;
-		}
-		
 		if (SRTPrinterExtension.isPRT()){
-			if (RTTxnType.isRefundTrx() && PrinterType.isEpsonModel()){
+			if (RTTxnType.isRefundTrx()){
 				printRecNormalRefund(s, l, jIvaPolipos);
 				return;
 			}
@@ -603,39 +580,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		System.out.println ( "MAPOTO-EXEC PRINT ITEM"+s );
 		
 		String newdes= null;
-		if ( PrinterType.isEpsonModel() )
-			newdes =s;
-		else
-		{
-			newdes = s.replaceAll("(?i)TOTALE", "TOTA..");
-			s = newdes;
-			newdes = s.replaceAll("(?i)TOTAL", "TOTA.");
-			
-			String k2desc="";
-			for(int k2idx=0; k2idx<newdes.length(); k2idx++)
-			{
-                if ((int)(newdes.charAt(k2idx)) >= 128)
-                    k2desc = k2desc + ".";
-                else
-                    k2desc = k2desc + newdes.charAt(k2idx);
-			}
-			newdes=k2desc;
-				
-			if (PrinterType.isDieboldRTOneModel())
-			{
-				s = newdes;
-				newdes = s.replaceAll("\\)", "-");
-				s = newdes;
-				newdes = s.replaceAll("\\(", "-");
-			}
-		}
+		newdes =s;
         String s2 = (s.length() > MAXLNGHOFDESCR) ? newdes.substring(0, MAXLNGHOFDESCR) :newdes;
         System.out.println("printRecItem in - s=<" + s2 + "> l=" + l + " i=" + i + " j=" + j
                 + " l1=" + l1 + " s1=" + s1);
-        if (PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel())
-        	fiscalPrinterDriver.printRecItem(s2, l / 100, 0, j, l1, s1);
-        else
-        	fiscalPrinterDriver.printRecItem(s2, l, 0, j, l1, s1);
+       	fiscalPrinterDriver.printRecItem(s2, l, 0, j, l1, s1);
         System.out.println("printRecItem out");
 		
 		if ( iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.isRoungickInLinePromo() )
@@ -684,14 +633,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private void pleaseVoid ( String arg0 ) throws JposException
 	{
-		if ( PrinterType.isTH230Model() )
-		{
-			fiscalPrinterDriver.printRecVoid(arg0+" ");
-		}
-		else
-		{
-			fiscalPrinterDriver.printRecVoid(arg0);
-		}
+		fiscalPrinterDriver.printRecVoid(arg0);
 	}
 	
 	public void endFiscalReceipt(boolean arg0) throws JposException {
@@ -700,51 +642,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
         	SharedPrinterFields.Lotteria.resetLottery();
         
 		System.out.println ( "MAPOTO-EXEC_ENDFISCAL CHECKING NONFISCAL TRAILER" );
-		
-		if (!SRTPrinterExtension.isSRT()){
-			switch ( PrinterType.getPrinterModel() )
-			{
-				case PrinterType.TH230_N:
-			        if ( ! isFlagsVoidTicket() )
-			        {
-				        printRecMessage(" ");
-				        printRecMessage("--------------------------------------------");
-				        printRecMessage("   scontrino non fiscale ai sensi dello");
-				        printRecMessage("    articolo 1, comma 429, della legge");
-				        printRecMessage("            n. 311 del 2004");
-				        printRecMessage("--------------------------------------------");
-				        printRecMessage(" ");
-			        }
-			        setFlagsVoidTicket( false );
-					break;
-				case PrinterType.NCR7198_N:
-			        if ( ! isFlagsVoidTicket() )
-			        {
-				        printRecMessage(" ");
-				        printRecMessage("--------------------------------------------");
-				        printRecMessage("   scontrino non fiscale ai sensi dello");
-				        printRecMessage("    articolo 1, comma 429, della legge");
-				        printRecMessage("            n. 311 del 2004");
-				        printRecMessage("--------------------------------------------");
-				        printRecMessage(" ");
-			        }
-			        setFlagsVoidTicket( false );
-					break;
-				case PrinterType.EP_TMT88:
-			        if ( ! isFlagsVoidTicket() )
-			        {
-				        printRecMessage(" ");
-				        printRecMessage("------------------------------------------");
-				        printRecMessage("  scontrino non fiscale ai sensi dello");
-				        printRecMessage("   articolo 1, comma 429, della legge");
-				        printRecMessage("           n. 311 del 2004");
-				        printRecMessage("------------------------------------------");
-				        printRecMessage(" ");
-			        }
-			        setFlagsVoidTicket( false );
-					break;
-			}
-		}
 		
 		System.out.println ( "MAPOTO-EXEC ENDFISCAL - arg0="+arg0 );
 		String dateTime = "";
@@ -945,54 +842,24 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		System.out.println ( "MAPOTO-EXEC_ENDFISCAL" );
 		
 		SharedPrinterFields.resetInTicket();	    
-		if (PrinterType.isCUSTOMK2Model())
-		{
-			// se per caso si chiama la fiscalPrinterDriver.getPrinterState() senza aver
-			// venduto nulla il driver della stampante esce logicamente dallo stato fiscale
-			// e si mette in stato FPTR_PS_MONITOR (e ad esempio la sequenza passaggio tessera
-			// più subtotale provocherebbe la non chiusura dello scontrino).		  
-			state = this.getPrinterState();
-			System.out.println("CUSTOMK2 state="+state);
-		}
-		else if (PrinterType.isNCRFiscalModel())
-        	state = getFiscalPrinterState();
-        if (!((PrinterType.isNCRFiscalModel()) && state == jpos.FiscalPrinterConst.FPTR_PS_MONITOR))
-        {
-        	if (PrinterType.isEpsonModel()) {
-        		abilitaTaglioCarta(false);
-        	}
+   		abilitaTaglioCarta(false);
         	
-        	if (PrinterType.isRCHPrintFModel()) {
-        		stampaBarcodePerResi();
-        	}
+       	fiscalPrinterDriver.endFiscalReceipt(arg0);
         	
-        	fiscalPrinterDriver.endFiscalReceipt(arg0);
-        	
-        	if (PrinterType.isEpsonModel()) {
-        		stampaBarcodePerResi();
-        		abilitaTaglioCarta(true);
-        	}
-        }
+   		stampaBarcodePerResi();
+   		abilitaTaglioCarta(true);
         
         SharedPrinterFields.resetInTicket();	    
         setFlagsVoidTicket( false );
         
-		if (SRTPrinterExtension.isPRT() && PrinterType.isEpsonModel() && RTTxnType.isRefundTrx())
+		if (SRTPrinterExtension.isPRT() && RTTxnType.isRefundTrx())
 			currentTicket = 0;
 
 		String Total = currentFiscalTotal(jpos.FiscalPrinterConst.FPTR_GD_DAILY_TOTAL);
 	    if ( fiscalPrinterDriver.checkCurrentDailyTotal(Total) == false )
 	    {
-			if (SRTPrinterExtension.isPRT() && PrinterType.isRCHPrintFModel() && (RTConsts.getCURRENTROUNDING() == RTConsts.FULLROUNDING) && (SharedPrinterFields.RoundingRT != 0.0)) {
-				if ( fiscalPrinterDriver.checkCurrentDailyTotalRounded(Total, SharedPrinterFields.RoundingRT.doubleValue()) == false ) {
-					System.out.println ("FISCAL PRINTER RECEIPT NOT STORED");
-			    	throw new JposException(9999);
-				}
-			}
-			else {
-				System.out.println ("FISCAL PRINTER RECEIPT NOT STORED");
-		    	throw new JposException(9999);
-			}
+			System.out.println ("FISCAL PRINTER RECEIPT NOT STORED");
+	    	throw new JposException(9999);
 	    }
 		
 		if (SRTPrinterExtension.isPRT())
@@ -1051,17 +918,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			fiscalPrinterDriver.endFiscalReceipt(false);
 		}
 		resetAndClear();
-		if (!PrinterType.isCustomModel())	// per non rallentare troppo
-			System.out.println("MAPOTO-EXEC_RESET_OUT <"+getFiscalPrinterState()+">");
-		else
-			System.out.println("MAPOTO-EXEC_RESET_OUT");
+		System.out.println("MAPOTO-EXEC_RESET_OUT <"+getFiscalPrinterState()+">");
 	}
 	
 	public void beginNonFiscal() throws JposException {
-    	if (!PrinterType.isCustomModel())	// per non rallentare troppo
-    		System.out.println(  "MAPOTO-EXEC BEGINNONFISCALT <"+getFiscalPrinterState()+">");
-    	else
-    		System.out.println(  "MAPOTO-EXEC BEGINNONFISCALT");
+   		System.out.println(  "MAPOTO-EXEC BEGINNONFISCALT <"+getFiscalPrinterState()+">");
 		
 		SharedPrinterFields.setInTicket();
 		resetprtDone();
@@ -1115,17 +976,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		System.out.println ( "MAPOTO-EXEC PRINT ITEM ADJUSTMENT" );
 		
 		setFlagVoidRefund(false);
-		if ( PrinterType.isEpsonModel() )
-		{
-			System.out.println("printRecItemAdj. in - arg0=" + arg0 + " arg1=" + arg1 + " arg2="
-	                + arg2 + " arg3=" + arg3);
-	        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
-	        System.out.println("printRecItemAdj. out");
-		}
-		else
-		{
-			fiscalPrinterDriver.printRecItemAdjustment(arg0, arg1, arg2, arg3);
-		}
+		System.out.println("printRecItemAdj. in - arg0=" + arg0 + " arg1=" + arg1 + " arg2="
+                + arg2 + " arg3=" + arg3);
+        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
+        System.out.println("printRecItemAdj. out");
 		
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
 		{
@@ -1155,19 +1009,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			String s = arg0;
-			arg0 = s.replaceAll("\\)", " ");
-			s = arg0;
-			arg0 = s.replaceAll("\\(", " ");
-		}
-		
 		String back30 = "";
 		setFlagVoidRefund(false);
 	    int i = 43;
 	    
-    	if (( staticMsgLen == 0 ) || ( PrinterType.isTHFEJModel() ))
+    	if ( staticMsgLen == 0 )
     		staticMsgLen = fiscalPrinterDriver.getMessageLength();
     	i = staticMsgLen;
     	
@@ -1175,38 +1021,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    s1 = String13Fix.replaceAll(s1,R3define.Cr, "�");
 	    s1 = String13Fix.replaceAll(s1,"��", "�");
 
-	    if (PrinterType.isEpsonModel())
-	    	s1 = String13Fix.replaceAll(s1, "€", ""+(char)96);
-	    if (PrinterType.isRCHPrintFModel())
-	    	s1 = String13Fix.replaceAll(s1, "€", ""+(char)127);
-		
-		if ( !PrinterType.isEpsonModel() )
-		{
-			String newdes= null;
-			newdes = s1.replaceAll("(?i)TOTALE", "TOTA..");
-			s1 = newdes;
-			newdes = s1.replaceAll("(?i)TOTAL", "TOTA.");
-			s1 = newdes;
-			
-			if (PrinterType.isRCHPrintFModel() && SRTPrinterExtension.isPRT())
-			{
-			      String oldS = s1;
-			      s1 = "";
-			      for ( int j = 0 ; j < oldS.length(); j++ )
-			      {
-			    	  if ((oldS.charAt(j) < (char)32) || (oldS.charAt(j) > (char)127))
-			    	  {
-		        		  if ((oldS.charAt(j) == (char)10) || (oldS.charAt(j) == (char)13) || (oldS.charAt(j) == '�'))
-		    	    		  s1 = s1 + oldS.charAt(j);
-		        		  else
-		        			  s1 = s1 + ' ';
-			    	  }
-			    	  else
-			    		  s1 = s1 + oldS.charAt(j);
-			      }
-			}
-			
-		}
+    	s1 = String13Fix.replaceAll(s1, "€", ""+(char)96);
 		
 	    String[] msg = String13Fix.split(s1,"�");
 	    for (int z = 0; z < msg.length; z++)
@@ -1229,28 +1044,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        		continue;
         	}
         	
-	    	if (PrinterType.isNCRFiscalModel())
-	    	{
-   				back30 = please30 ( msg[z] );
-	    		fiscalPrinterDriver.printRecMessage(back30);
-	    	}
-	    	else
-	    	{
-	    		if (PrinterType.isRCHPrintFModel())
-	    		{
-	    			if (fw >= 6.0) {
-	    				String Testo = (msg[z].length() > i) ? msg[z].substring(0, i) : msg[z];
-	    				StringBuffer printrecmessage = new StringBuffer("=\"/("+Testo+")/&1");	/* 		="/(Testo)/&1 		*/
-	    				if (AtLeastOnePrintedItem)
-		    				printrecmessage = new StringBuffer("=\"/("+Testo+")");
-	    				fiscalPrinterDriver.executeRTDirectIo(0, 0, printrecmessage);
-	    			}
-		    		else
-		    			fiscalPrinterDriver.printRecMessage((msg[z].length() > i) ? msg[z].substring(0, i) : msg[z]);
-	    		}
-	    		else
-	    			fiscalPrinterDriver.printRecMessage((msg[z].length() > i) ? msg[z].substring(0, i) : msg[z]);
-	    	}
+   			fiscalPrinterDriver.printRecMessage((msg[z].length() > i) ? msg[z].substring(0, i) : msg[z]);
 	    }
 	    
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
@@ -1322,39 +1116,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 	    final int MAXLNGHOFDESCR = 23;
 		String newdes = null;
-		if ( PrinterType.isEpsonModel() )
-			newdes =s;
-		else
-		{
-			newdes = s.replaceAll("(?i)TOTALE", "TOTA..");     
-			s = newdes;
-			newdes = s.replaceAll("(?i)TOTAL", "TOTA.");
-
-			String k2desc="";
-			for(int k2idx=0; k2idx<newdes.length(); k2idx++)
-			{
-		        if ((int)(newdes.charAt(k2idx)) >= 128)
-		            k2desc = k2desc + ".";
-		        else
-		            k2desc = k2desc + newdes.charAt(k2idx);
-			}
-			newdes=k2desc;
-		}
+		newdes =s;
 	    String newMsg = (newdes.length()<= MAXLNGHOFDESCR)? newdes: newdes.substring (0, MAXLNGHOFDESCR);
-	    if (PrinterType.isNCRFiscalModel())
-	    	fiscalPrinterDriver.printRecRefund (newMsg, l / 100, i);
-	    else if (PrinterType.isRCHPrintFModel())
-	    {
-	    	if (l > 0)
-	    		fiscalPrinterDriver.printRecRefund (newMsg, l / 100, i);
-	    	else
-	    		printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, "Reso "+s);
-	    }
-	    else
-	    	fiscalPrinterDriver.printRecRefund (newMsg, l, i);
+    	fiscalPrinterDriver.printRecRefund (newMsg, l, i);
 	    
 		if (SRTPrinterExtension.isPRT()){
-			if (RTTxnType.isRefundTrx() && PrinterType.isEpsonModel()){
+			if (RTTxnType.isRefundTrx()){
 				return;	// perchè in questo caso la parte sottostante la fa già il metodo printRecNormalRefund()
 			}
 		}
@@ -1382,17 +1149,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		setFlagVoidRefund(false);
 		
-		if (PrinterType.isRCHPrintFModel()) {
-/*			ITransactionSale tsale = null;										// ???
-			try{
-				tsale = (ITransactionSale)posEngine.getTransaction();
-			}
-			catch(ClassCastException e){
-				return;
-			}
-			if ((tsale != null) && (tsale.getItemLines(false).size() == 0))
-				return;*/
-		}
 		if (!isprtDone() && (fiscalPrinterDriver.getPrinterState() == jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT))
 			fiscalPrinterDriver.printRecSubtotal(arg0);
 	}
@@ -1425,22 +1181,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJ "+arg1+" "+arg2 );
 		
-		if ( PrinterType.isEpsonModel() )
-		{
-	        System.out.println("printRecSubtotalAdjustment in - arg0=" + arg0 + " arg1=" + arg1
-	                + " arg2=" + arg2);
-	        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
-	        System.out.println("printRecSubtotalAdjustment out");
-		}
-		else
-		{
-	    	if ( PrinterType.isTH230Model() )
-	    		fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, arg1+" ", arg2);
-	    	else if (PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel())
-	    		fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2 / 100);
-	    	else
-	    		fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, arg1, arg2);
-		}
+        System.out.println("printRecSubtotalAdjustment in - arg0=" + arg0 + " arg1=" + arg1
+                + " arg2=" + arg2);
+        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
+        System.out.println("printRecSubtotalAdjustment out");
 	}
 
 	public void directIO(int i, int data[],  Object o) throws JposException
@@ -1452,10 +1196,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		if ( ! SharedPrinterFields.isInTicket() ) 				// directIO estemporanei
 		{
-			if (! PrinterType.isEpsonModel())
-				fiscalPrinterDriver.directIO(i, data, o);
-			else
-				fiscalPrinterDriver.directIO(i, data, bf);
+			fiscalPrinterDriver.directIO(i, data, bf);
 			return;
 		}
 		
@@ -1468,19 +1209,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		System.out.println ( "XDIRECTIO :"+ i +":"+data[0]+":"+s+":");
 		
-		if (PrinterType.isRCHPrintFModel()) {
-            String[] pString = {new String(s)};
-        	if (i >= 1000)
-        		fiscalPrinterDriver.directIO(i, data, pString);
-        	else
-        		fiscalPrinterDriver.directIO(i, data, s);
-		}
-		else {
-			if (PrinterType.isNCRFiscalModel())
-				fiscalPrinterDriver.directIO(i, data, s.toString());
-			else
-				fiscalPrinterDriver.directIO(i, data, s);
-		}
+		fiscalPrinterDriver.directIO(i, data, s);
 	}
 	
     private void printScontiByTax(int arg0, String arg1, long arg2) throws JposException
@@ -1534,45 +1263,27 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				VatInOutHandling vatInOutH = (VatInOutHandling) SSCO.get(index);
 				double value = ( vatInOutH.getLordo() - vatInOutH.getTotalAmount() );
 				if (value > 0.00) {
-					if (PrinterType.isEpsonModel()){
-						String myDepartment = "";
-						if (Integer.parseInt(vatInOutH.getRtVatCode()) == SharedPrinterFields.VAT_N4_Index)
-							myDepartment = Sprint.f("%02d", SharedPrinterFields.VAT_N4_Dept);
-						else
-							myDepartment = Sprint.f("%02d", vatInOutH.getRtVatCode());
-						
-						StringBuffer sbcmd = new StringBuffer("");
-						sbcmd = new StringBuffer(myDepartment);
-				      	
-						String myOperator = "01";
-						String myDiscountDescription = "Sconto IVA";
-						String myDiscountAmount = Sprint.f("%09d", Math.rint(value*100));
-						String myDiscountType = "3";
-						String myAlignment = "1";
-						
-						sbcmd = new StringBuffer(myOperator + myDiscountDescription + myDiscountAmount + myDiscountType + myDepartment + myAlignment);
-						System.out.println("printScontiByTax - sbcmd="+sbcmd);
-						fiscalPrinterDriver.executeRTDirectIo(1083, 0, sbcmd);
-						
-				        String out = buildSubtotalAdjustment ( myDiscountDescription.substring(7)+" "+vatInOutH.getRate()+"%", (long)(Math.rint(value*100) * 100) );
-				        scriviLastTicket(out);
-					}
-					else if (PrinterType.isRCHPrintFModel()){
-						String myDepartment = "";
-						if (Integer.parseInt(vatInOutH.getRtVatCode()) == SharedPrinterFields.VAT_N4_Index)
-							myDepartment = SharedPrinterFields.VAT_N4_Dept;
-						else
-							myDepartment = ""+DicoTaxToPrinter.getFromPoliposToPrinter(Integer.parseInt(vatInOutH.getSwVatCode()));
-						String myDiscountAmount = ""+(int)(Math.rint(value*100));
-						String myDiscountDescription = "Sconto IVA";
-						
-						StringBuffer sbcmd = new StringBuffer("=U/*"+myDepartment+"/$"+myDiscountAmount+"/("+myDiscountDescription+")");
-						System.out.println("printScontiByTax - sbcmd="+sbcmd);
-						fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
-						
-				        String out = buildSubtotalAdjustment ( myDiscountDescription.substring(7)+" "+vatInOutH.getRate()+"%", (long)(Math.rint(value*100) * 100) );
-				        scriviLastTicket(out);
-					}
+					String myDepartment = "";
+					if (Integer.parseInt(vatInOutH.getRtVatCode()) == SharedPrinterFields.VAT_N4_Index)
+						myDepartment = Sprint.f("%02d", SharedPrinterFields.VAT_N4_Dept);
+					else
+						myDepartment = Sprint.f("%02d", vatInOutH.getRtVatCode());
+					
+					StringBuffer sbcmd = new StringBuffer("");
+					sbcmd = new StringBuffer(myDepartment);
+			      	
+					String myOperator = "01";
+					String myDiscountDescription = "Sconto IVA";
+					String myDiscountAmount = Sprint.f("%09d", Math.rint(value*100));
+					String myDiscountType = "3";
+					String myAlignment = "1";
+					
+					sbcmd = new StringBuffer(myOperator + myDiscountDescription + myDiscountAmount + myDiscountType + myDepartment + myAlignment);
+					System.out.println("printScontiByTax - sbcmd="+sbcmd);
+					fiscalPrinterDriver.executeRTDirectIo(1083, 0, sbcmd);
+					
+			        String out = buildSubtotalAdjustment ( myDiscountDescription.substring(7)+" "+vatInOutH.getRate()+"%", (long)(Math.rint(value*100) * 100) );
+			        scriviLastTicket(out);
 				}
 			}
 		}
@@ -1614,88 +1325,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		if (SRTPrinterExtension.isSRT())
 			DummyServerRT.pleaseDoServerInfo();
 		
-		if (SRTPrinterExtension.isPRT() && PrinterType.isRCHPrintFModel()){
-			if ((arg0 == 0) && (arg1 == 0)) {
-/*				ITransactionSale tsale = null;												// ???
-				try{
-					tsale = (ITransactionSale)posEngine.getTransaction();
-				}
-				catch(ClassCastException e){
-				}
-				if ((tsale != null) && ((tsale.getItemLines(false).size() == 0) || (AtLeastOnePrintedItem == false))){
-					int aliquota = getVATTableEntry_Rch();
-					// brutto ma per ora la stampante si incazza se si passa la tessera 
-					// e poi si chiude lo scontrino a zero senza vendere nulla
-					// oppure se nello scontrino non c'è nessun item fiscale
-					//fiscalPrinterDriver.printRecItem("....................", 1, 0, 8, 0, "");
-					//fiscalPrinterDriver.printRecVoidItem("....................", 1, 1, 1, 0, 8);
-					fiscalPrinterDriver.printRecItem("....................", 0, 0, aliquota, 0, "");
-				}*/
-			}
-		}
-		
 		if (SRTPrinterExtension.isPRT()){
-			if (PrinterType.isEpsonModel())
-				arg2 = LoadMops.getPrefixPayment(p+arg2, fiscalPrinterDriver.isfwRT2disabled()) + arg2;
-			else if (PrinterType.isRCHPrintFModel()) {
-				pd = arg2;
-				arg2 = LoadMops.getRCHPrefixPayment(arg2);
-				System.out.println ( "MAPOTO-EXEC PRINT TOTAL - arg2="+arg2 );
-				if (fiscalPrinterDriver.isfwRT2enabled()) {
-					int t = Integer.parseInt(p.substring(0,1));
-					if (t == LoadMops.TICKETWN_TYPE)
-						arg2 = arg2+","+p.substring(1,3);
-					System.out.println ( "MAPOTO-EXEC PRINT TOTAL - arg2="+arg2 );
-				}
-			}
+			arg2 = LoadMops.getPrefixPayment(p+arg2, fiscalPrinterDriver.isfwRT2disabled()) + arg2;
 			System.out.println ( "MAPOTO-EXEC PRINT TOTAL - arg2="+arg2 );
 		}
 		
-		if (SRTPrinterExtension.isPRT()){
-			if (RTTxnType.isRefundTrx() && PrinterType.isRCHPrintFModel()){
-				if ((SharedPrinterFields.Lotteria.getLotteryCode() != null) && (SharedPrinterFields.Lotteria.getLotteryCode().length() > 0))
-					LotteryCommands.SendLotteryCode(SharedPrinterFields.Lotteria.getLotteryCode());
-				
-				long t = arg0;
-				
-				SharedPrinterFields.getChangeDescription();
-				arg0 = 0;
-				arg1 = 0;
-				arg2 = LoadMops.getRCHPrefixPayment(SharedPrinterFields.ChangeCurrency);
-				System.out.println ( "MAPOTO before driver.printRecTotal arg2="+arg2);
-	        	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
-	        	
-	        	try {
-					// scrittura file lastticket
-					
-					String out = buildTotal ( "", t );
-					scriviLastTicket(out);
-					
-					out = buildTotalIva ( "", RoungickTax.getTotalTaxLong() );
-					scriviLastTicket(out);
-					
-					LocalTimestamp lts = TransactionSale.getEndData();
-					String date = Sprint.f("%02d-%02d-%d %02d:%02d",new Integer(lts.getDay()),new Integer(lts.getMonth()+1),new Integer(lts.getYear()+1900),new Integer(lts.getHour()),new Integer(lts.getMinute())); 
-					out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-date.length())/2))+date;
-					scriviLastTicket(out);
-					
-					out = LastTicket.getDocnum();
-					scriviLastTicket(out);
-					
-					if ((SharedPrinterFields.Lotteria.getLotteryCode() != null) && (SharedPrinterFields.Lotteria.getLotteryCode().length() > 0)) {
-						out = LastTicket.getLottery()+SharedPrinterFields.Lotteria.getLotteryCode();
-						scriviLastTicket(out);
-					}
-					
-					out = ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-SharedPrinterFields.RTPrinterId.length())/2))+SharedPrinterFields.RTPrinterId;
-					scriviLastTicket(out);
-				} catch (Exception e) {
-					System.out.println("LastTicket error: "+e.getMessage());
-				}
-	        	return;
-			}
-		}
-
 		if (SRTPrinterExtension.isSRT() || (SRTPrinterExtension.isPRT() && RTTxnType.isRefundTrx()==false)){
 			String s = arg2;
 			arg2 = LoadMops.getSrtDescription(pd);
@@ -1738,17 +1372,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				throw new JposException(9998);
 			}
 			
-			if (PrinterType.isCUSTOMK2Model())
-			{
-				// questa printer non vuole il printRecTotal se non è stato venduto niente
-				// (ad esempio la sequenza passaggio tessera più subtotale), l'accetterebbe
-				// invece su uno scontrino a zero con vendite/annulli/storni
-				double tot = Double.valueOf(printerTotal).doubleValue()/100;
-				System.out.println("CUSTOMK2 tot="+tot);
-				if (tot == 0.)
-					return;
-			}
-			
 	        if (SRTPrinterExtension.isPRT())
 	        	LotteryCommands.SendLotteryCode(SharedPrinterFields.Lotteria.getLotteryCode());
 	        
@@ -1764,11 +1387,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 			else{
 				System.out.println ( "MAPOTO before driver.printRecTotal");
-		        if (PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel()){
-		        	fiscalPrinterDriver.printRecTotal(arg0 / 100, arg1 / 100, arg2);
-		        }
-		        else
-		        	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
+	        	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
 				System.out.println ( "MAPOTO after driver.printRecTotal");
 			}
 		}
@@ -1776,93 +1395,50 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			if (SRTPrinterExtension.isPRT()) {
 		        DummyServerRT.srtRecTotal tendermerge = null;
-		        if (PrinterType.isRCHPrintFModel()) {
-		        	String prefix = arg2;
-					if (arg2.indexOf(",") >= 0)
-						prefix = arg2.substring(0, arg2.indexOf(","));
-					if (prefix == "" || prefix.length() == 0) {
-						// il mop che si sta usando non è caricato nei 30 mop sulla printer, in questo caso lo consideriamo Contanti come fa la printer 
-						prefix = ""+SharedPrinterFields.INDICE_CONTANTI;
-					}
-			        tendermerge = new DummyServerRT.srtRecTotal(LoadMops.getSrtDescription(LoadMops.getRCHDescriptionPayment(Integer.parseInt(prefix))), arg1);
-		        }
-		        else {
-			        tendermerge = new DummyServerRT.srtRecTotal(LoadMops.getSrtDescription(arg2), arg1);
-		        }
+		        tendermerge = new DummyServerRT.srtRecTotal(LoadMops.getSrtDescription(arg2), arg1);
 			}
 			
 			System.out.println ( "MAPOTO before driver.printRecTotal - arg0="+arg0+" arg1="+arg1+" arg2="+arg2);
-	        if (PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel()){
-	        	fiscalPrinterDriver.printRecTotal(arg0 / 100, arg1 / 100, arg2);
-	        }
-	        else{
-	        	// PROVVISORIO
-	        	if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled() && (arg0 == arg1)) {
-	        		SharedPrinterFields.getChangeDescription();
-	        		if (arg2.equalsIgnoreCase(SharedPrinterFields.ChangeCurrency)) {
-	        			arg0 = 0;
-						progress_amount+=arg1;
-	        			arg1 = 0;
-	        		}
-	        	}
-	        	// PROVVISORIO
-	        	
-	        	if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()) {
-					if (arg2.length() > 0) {
-						int prefix = Integer.parseInt(LoadMops.getPrefixPayment(arg2, fiscalPrinterDriver.isfwRT2disabled()));
-						if ((prefix / 100) == LoadMops.TICKETWN_TYPE) {
-							int howmany = prefix % 100;
-							if (howmany > 1) {
-								long singleamount = arg1 / howmany;
-								long totalamount = singleamount * howmany;
-								System.out.println ( "MAPOTO before driver.printRecTotal - singleamount="+singleamount+" howmany="+howmany+" totalamount="+totalamount);
-								if (totalamount == arg1) {
-									// singleamount ok
-									arg1 = singleamount;	// questo falserà il valore di progress_amount ma me ne frego tanto progress_eft sarà false
-								}
-								else {
-									// singleamount ko, problemi di arrotondamento ?
-									System.out.println ( "MAPOTO before driver.printRecTotal - WARNING B.PASTO - "+"MAYBE ROUNDING PROBLEMS");
-									String s = arg2.replaceFirst(""+prefix, LoadMops.TICKETWN_TYPE+"01");
-									arg2 = s;
-								}
-								System.out.println ( "MAPOTO before driver.printRecTotal - arg0="+arg0+" arg1="+arg1+" arg2="+arg2);
-							}
-						}
-					}
-	        	}
-	        	
-	        	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
-	        }
-			System.out.println ( "MAPOTO after driver.printRecTotal");
-			
-			if (enabledLowerRoundedPay == -1) {
-				if (PrinterType.isRCHPrintFModel() && fiscalPrinterDriver.isfwRT2enabled()) {
+        	// PROVVISORIO
+        	if (fiscalPrinterDriver.isfwRT2enabled() && (arg0 == arg1)) {
+        		SharedPrinterFields.getChangeDescription();
+        		if (arg2.equalsIgnoreCase(SharedPrinterFields.ChangeCurrency)) {
+        			arg0 = 0;
 					progress_amount+=arg1;
-					if (arg2.indexOf(",") >= 0)
-						arg2 = arg2.substring(0, arg2.indexOf(","));
-					System.out.println ( "MAPOTO after driver.printRecTotal - arg2="+arg2);
-					if (arg2.length() > 0) {
-						if (Integer.parseInt(arg2) != SharedPrinterFields.INDICE_CONTANTI)
-							progress_cash = false;
-					}
-					else
-						progress_cash = false;
-					System.out.println ( "MAPOTO after driver.printRecTotal - progress_amount="+progress_amount+" progress_cash="+progress_cash);
-					long stilltopay = arg0-progress_amount;
-					System.out.println ( "MAPOTO after driver.printRecTotal - stilltopay="+stilltopay+" getCURRENTROUNDING="+RTConsts.getCURRENTROUNDING()+" onlycash="+progress_cash);
-					if ((stilltopay > 0) && (stilltopay < 300)) {
-						if ((RTConsts.getCURRENTROUNDING() == RTConsts.FULLROUNDING) || (RTConsts.getCURRENTROUNDING() == RTConsts.NEGATIVEROUNDING)) {
-							if (progress_cash == true) {
-								System.out.println ( "MAPOTO before driver.printRecTotal("+arg0/100+","+stilltopay/100+","+SharedPrinterFields.INDICE_SCONTOAPAGARE+")");
-					        	fiscalPrinterDriver.printRecTotal(arg0/100, stilltopay/100, ""+SharedPrinterFields.INDICE_SCONTOAPAGARE);
-								System.out.println ( "MAPOTO after driver.printRecTotal("+arg0/100+","+stilltopay/100+","+SharedPrinterFields.INDICE_SCONTOAPAGARE+")");
+        			arg1 = 0;
+        		}
+        	}
+        	// PROVVISORIO
+        	
+        	if (fiscalPrinterDriver.isfwRT2enabled()) {
+				if (arg2.length() > 0) {
+					int prefix = Integer.parseInt(LoadMops.getPrefixPayment(arg2, fiscalPrinterDriver.isfwRT2disabled()));
+					if ((prefix / 100) == LoadMops.TICKETWN_TYPE) {
+						int howmany = prefix % 100;
+						if (howmany > 1) {
+							long singleamount = arg1 / howmany;
+							long totalamount = singleamount * howmany;
+							System.out.println ( "MAPOTO before driver.printRecTotal - singleamount="+singleamount+" howmany="+howmany+" totalamount="+totalamount);
+							if (totalamount == arg1) {
+								// singleamount ok
+								arg1 = singleamount;	// questo falserà il valore di progress_amount ma me ne frego tanto progress_eft sarà false
 							}
+							else {
+								// singleamount ko, problemi di arrotondamento ?
+								System.out.println ( "MAPOTO before driver.printRecTotal - WARNING B.PASTO - "+"MAYBE ROUNDING PROBLEMS");
+								String s = arg2.replaceFirst(""+prefix, LoadMops.TICKETWN_TYPE+"01");
+								arg2 = s;
+							}
+							System.out.println ( "MAPOTO before driver.printRecTotal - arg0="+arg0+" arg1="+arg1+" arg2="+arg2);
 						}
 					}
 				}
-			}
-			if (PrinterType.isEpsonModel() && fiscalPrinterDriver.isfwRT2enabled()) {
+        	}
+        	
+        	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
+			System.out.println ( "MAPOTO after driver.printRecTotal");
+			
+			if (fiscalPrinterDriver.isfwRT2enabled()) {
 				progress_amount+=arg1;
 				if (arg2.length() > 0) {
 					if (!arg2.equalsIgnoreCase(SharedPrinterFields.ChangeCurrency))
@@ -1907,11 +1483,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (SRTPrinterExtension.isTenderMerge()){
 					for (int i=0; i<DummyServerRT.groups.size(); i++){
 						System.out.println ( "MAPOTO before driver.printRecTotal");
-				        if (PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel()){
-				        	fiscalPrinterDriver.printRecTotal(arg0 / 100, ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount() / 100, ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr());
-				        }
-				        else
-				        	fiscalPrinterDriver.printRecTotal(arg0, ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr());
+			        	fiscalPrinterDriver.printRecTotal(arg0, ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr());
 						System.out.println ( "MAPOTO after driver.printRecTotal");
 						
 						String out = buildItem ( ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount() );
@@ -1963,11 +1535,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							resto+=Math.abs(rounding);
 					}
 					
-					if (PrinterType.isRCHPrintFModel()) {
-						if ((resto == 0) && (rounding < 0))
-							resto+=Math.abs(rounding);
-					}
-					
 					if (RTTxnType.isSaleTrx())
 					{
 						if (resto > 0) {
@@ -1983,12 +1550,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					{
 						for (int i=0; i<DummyServerRT.groups.size(); i++) {
 							if (((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount() == HardTotals.Totale.getLongX100()) {
-								if (PrinterType.isRCHPrintFModel() && rounding < 0) {
-									out = buildItem ( ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount() );
-								}
-								else {
-									out = buildItem ( ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount()+rounding );
-								}
+								out = buildItem ( ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount()+rounding );
 							}
 							else {
 								out = buildItem ( ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getDescr(), ((DummyServerRT.srtRecTotal)DummyServerRT.groups.get(i)).getAmount() );
@@ -2062,10 +1624,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			                        SharedPrinterFields.lineePagamento = null;
 			                    }else {                        
 			                    	if (Long.parseLong(M.getV().get(1).toString()) == HardTotals.Totale.getLongX100()) {
-										if (PrinterType.isRCHPrintFModel() && rounding < 0)
-				                    		out = buildItem ( M.getV().get(2).toString().substring(3), Long.parseLong(M.getV().get(1).toString()) /*- resto*/ );
-										else
-											out = buildItem ( M.getV().get(2).toString().substring(3), Long.parseLong(M.getV().get(1).toString())+rounding /*- resto*/ );
+										out = buildItem ( M.getV().get(2).toString().substring(3), Long.parseLong(M.getV().get(1).toString())+rounding /*- resto*/ );
 			                    	}
 			                    	else {
 			                    		out = buildItem ( M.getV().get(2).toString().substring(3), Long.parseLong(M.getV().get(1).toString()) /*- resto*/ );
@@ -2079,13 +1638,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							long val =  rounding;
 							if (val > 0) {
 								out = buildItem (LastTicket.getRoundingup(), val);
-								if (PrinterType.isRCHPrintFModel())
-									out = buildItem (LastTicket.getRoundingup1(), val);
 							}
 							else {
 								out = buildItem (LastTicket.getRoundingdown(), Math.abs(val));
-								if (PrinterType.isRCHPrintFModel())
-									out = buildItem (LastTicket.getRoundingdown1(), Math.abs(val));
 							}
 							scriviLastTicket(out);
 						}
@@ -2136,79 +1691,17 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				i=i*(-1);
 		}
 		
-		if ( PrinterType.isEpsonModel() )
-		{
-	        System.out.println("printRecVoidItem in - s=" + s + " l=" + l + " i=" + i + " j="
-	                + j + " l1=" + l1 + " k=" + k);
-	        String s1 = s.length() > 17 ? s.substring(0, 17) : s;
-	        
-	        if (SRTPrinterExtension.isSRT()) s1 = s;
-	        
-	        if ((l == 0) && (i > 0))
-	        	fiscalPrinterDriver.printRecVoidItem(s1, l1 * i / 1000, 1000, j, l, k);
-	        else
-	        	fiscalPrinterDriver.printRecVoidItem(s1, l * i / 1000, 1000, j, l1, k);
-	        System.out.println("printRecVoidItem out");
-		}
-		else
-		{
-	      final int MAXLNGHOFDESCR = 17;
-	      String new_description = s.replaceAll("(?i)TOTALE", "TOTA..");
-	      s = new_description;
-	      new_description = s.replaceAll("(?i)TOTAL", "TOTA.");
-	      
-			String k2desc="";
-			for(int k2idx=0; k2idx<new_description.length(); k2idx++)
-			{
-		        if ((int)(new_description.charAt(k2idx)) >= 128)
-		            k2desc = k2desc + ".";
-		        else
-		            k2desc = k2desc + new_description.charAt(k2idx);
-			}
-			new_description=k2desc;
-				
-			if (PrinterType.isDieboldRTOneModel())
-			{
-				s = new_description;
-				new_description = s.replaceAll("\\)", "-");
-				s = new_description;
-				new_description = s.replaceAll("\\(", "-");
-			}
-
-			String newMsg = (new_description.length()<= MAXLNGHOFDESCR)? new_description: 
-	                                                               new_description.substring (0, MAXLNGHOFDESCR);			      
-		    if (SRTPrinterExtension.isSRT()) newMsg = new_description;
-		      
-	      if ( i < 0)
-	      {
-	    	  long a;
-	    	  if ( PrinterType.isTH230Model() )
-	    	  {
-	    		  if (!isFlagVoidRefund(l, l1))
-	    			  a = l1 * i / -1000;
-	    		  else
-	    			  a = l1;
-		    	  fiscalPrinterDriver.printRecItem(m, a, 1, k, 0, "");
-	    	  }
-	    	  else
-	    	  {
-	    		  if (!isFlagVoidRefund(l, l1))
-	    			  a = l1 * i / -1000;
-	    		  else
-	    			  a = l1;
-				  if (PrinterType.isNCRFiscalModel() || PrinterType.isRCHPrintFModel())
-					  fiscalPrinterDriver.printRecItem(m, a / 100, 0, k, 0, "");
-				  else
-					  fiscalPrinterDriver.printRecItem(m, a, 0, k, 0, "");
-	    	  }
-	    	  setFlagVoidRefund(false);
-	    	  return;
-	      }
-	      if ( l ==  0 )
-	    	  pleaseVoidItem (newMsg, l1, i, j, l, k);
-	      else
-	    	  pleaseVoidItem (newMsg, l, i, j, l1, k); 
-	    }
+        System.out.println("printRecVoidItem in - s=" + s + " l=" + l + " i=" + i + " j="
+                + j + " l1=" + l1 + " k=" + k);
+        String s1 = s.length() > 17 ? s.substring(0, 17) : s;
+        
+        if (SRTPrinterExtension.isSRT()) s1 = s;
+        
+        if ((l == 0) && (i > 0))
+        	fiscalPrinterDriver.printRecVoidItem(s1, l1 * i / 1000, 1000, j, l, k);
+        else
+        	fiscalPrinterDriver.printRecVoidItem(s1, l * i / 1000, 1000, j, l1, k);
+        System.out.println("printRecVoidItem out");
 		
 		setFlagVoidRefund(false);
 		
@@ -2237,34 +1730,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		  
 		if ( PrinterType.getPrinterJavaPosModel() == PrinterType.JAVAPOS113 )
 		{
-			if ( PrinterType.isTH230Model()){
-	      		((jpos.FiscalPrinterControl113)fiscalPrinterDriver).printRecItemVoid(s, l * i / 1000, i, k, l , "Pz");
-			}else{
-				System.out.println ( "JavaPos 1.13 - Printer != TH230: unimplemented version" );
-			}
+			System.out.println ( "JavaPos 1.13 - Printer != TH230: unimplemented version" );
 		}
 		else
 		{
-			if ( PrinterType.isTH230Model()){
-		     	fiscalPrinterDriver.printRecVoidItem (s, l * i / 1000, i, j, l1, k);
-			}
-			else{
-			    if (PrinterType.isNCRFiscalModel())
-			    	fiscalPrinterDriver.printRecVoidItem (s, (l / 100) * i / 1000, i, j, l1, k);
-			    else if (PrinterType.isRCHPrintFModel())
-			    {
-			    	if (l > 0){
-			    		//fiscalPrinterDriver.printRecVoidItem (s, l / 100, i / 1000, j, l1, k);
-			    		long prezzo = (l / 100) * (i / 1000);
-			    		int qta = 1;
-			    		fiscalPrinterDriver.printRecVoidItem (s, prezzo, qta, j, l1, k);
-			    	}
-			    	else
-			    		printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, "Storno "+s);
-			    }
-			    else
-			    	fiscalPrinterDriver.printRecVoidItem (s, l, i, j, l1, k);
-			}
+	    	fiscalPrinterDriver.printRecVoidItem (s, l, i, j, l1, k);
 		}
 	}
 	
@@ -2377,14 +1847,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
   	    
   	    setFlagVoidRefund(false);
   	    
-  	    if ( (!PrinterType.isEpsonModel()) && (!PrinterType.isRCHPrintFModel()) )
-  	    {
-  	    	if (!fiscalPrinterDriver.getDayOpened())
-  	    	{
-  	    		System.out.println("printZReport - Fiscal day not opened: don't do it.");
-  	    		return;
-  	    	}
-  	    }
   	    fiscalPrinterDriver.printZReport();
   	    
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
@@ -2396,14 +1858,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 
 	public void setDate(String arg0) throws JposException {
        System.out.println("setDate in - s=" + arg0);
-	   if ( ! PrinterType.isEpsonModel() )
-	   {
-			if (fiscalPrinterDriver.getDayOpened())
-			{
-				System.out.println("setDate - Fiscal day opened: don't do it.");
-				return;
-			}
-	   }
 	   String s1 = arg0.substring(8, 10) + arg0.substring(5, 7) + arg0.substring(0, 4)
 	                + arg0.substring(11, 13) + arg0.substring(14, 16);
 	   fiscalPrinterDriver.setDate(s1);
@@ -2411,18 +1865,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void setHeaderLine(int arg0, String arg1, boolean arg2) throws JposException {
-		if ( ! PrinterType.isEpsonModel() )
-		{
-		  	  if (fiscalPrinterDriver.getDayOpened())
-		  	  {
-		  		  System.out.println("setHeaderLine - Fiscal day opened: don't do it.");
-		  		  return;
-		  	  }
-			  if ((PrinterType.isTH230Model() || PrinterType.isRCHPrintFModel()) && (arg0 == 1))
-			  {
-				  SetLogo(LOGO_FILE, LOGO_NUMBER);
-			  }
-		}
 		int maxHeaderLine = fiscalPrinterDriver.getNumHeaderLines();
 		if(arg0 > maxHeaderLine) 
 			return;
@@ -2430,22 +1872,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		String s = arg1;
 		arg1 = cleanLine(s);
 		   
-		if (PrinterType.isRCHPrintFModel())
-			fiscalPrinterDriver.setHeaderLine(arg0-1, (arg1.length()>36 ? arg1.substring(0, 36) : arg1), arg2);
-		else
-		{
-			   if (PrinterType.isTH230Model())
-			   {
-				   arg1 = align_center(arg1, 44);	// 44 = da specifiche
-			   }
-			   if (PrinterType.isTH230Model() && (arg0 == 1))
-			   {
-				   String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)LOGO_NUMBER + (char)0x42;
-				   arg1 = UseBitmapInSlot+arg1;
-				   TakeYourTime.takeYourTime(600);
-			   }
-			   fiscalPrinterDriver.setHeaderLine(arg0, arg1, arg2);
-		}
+	   fiscalPrinterDriver.setHeaderLine(arg0, arg1, arg2);
 	}
 
 	public void setTrailerLine(int arg0, String arg1, boolean arg2) throws JposException {
@@ -2469,46 +1896,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	   public void setAdditionalTrailer(String text) throws JposException
 	   {
 		   /* TEMPORANEO */
-		   if ((!PrinterType.isTH230Model()) && (!PrinterType.isRCHPrintFModel()))
-			   return;
+		   return;
 		   /* TEMPORANEO */
-			   
-		   if (PrinterType.isTH230Model() || PrinterType.isRCHPrintFModel())
-		   {
-			   if (fiscalPrinterDriver.getDayOpened())
-				   System.out.println("setAdditionalTrailer - Fiscal day opened: don't do it.");
-			   else
-				   SetLogo(TRAILER_LOGO_FILE, TRAILER_LOGO_NUMBER);
-		   }
-			   
-		   try
-		   {
-			   if (PrinterType.isTH230Model())
-			   {
-				   String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)TRAILER_LOGO_NUMBER + (char)0x42;
-				   text = UseBitmapInSlot+text;
-			   }
-			   fiscalPrinterDriver.setAdditionalTrailer(text);
-		   }
-		   catch ( JposException nsme )
-		   {
-			   if ( nsme.getErrorCode() == 104 && nsme.getErrorCodeExtended() == 0 )
-			   {
-				   System.out.println ( "Versione di JavaPOS non supporta il metodo");
-			   }
-			   else
-			   {
-				   throw nsme;
-			   }
-		   }
 	   }
 	   
 	public static int getState() throws JposException
 	{
-         if (!PrinterType.isCustomModel())	// per non rallentare troppo
-        	 System.out.println("MAPOTO-FISICAL_PRINTER-STATE " + getFiscalPrinterState());
-		 else
-			 System.out.println("MAPOTO-FISICAL_PRINTER-STATE");
+       	 System.out.println("MAPOTO-FISICAL_PRINTER-STATE " + getFiscalPrinterState());
 		 return getFiscalPrinterState();
 	}
 	
@@ -2627,10 +2021,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
    	protected String buildbuild ( int mx, String desc, long price )
     {
    		System.out.println("LONGPRICE:"+price);
-    	if ( PrinterType.isTMT88model() )	//epson non fiscale accorcia lunghezza stampa riga normale
-    	{
-    		mx = mx - 2;
-    	}
         int MAXLNGHOFDESCR = 28;
         String newMsg = (desc.length()<= MAXLNGHOFDESCR)? desc: desc.substring (0, MAXLNGHOFDESCR);
 
@@ -2736,10 +2126,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     }
     
 	public void resetAndClear() throws JposException {
-		if (PrinterType.isDieboldRTOneModel()) {
-			StringBuffer closestateprinter = new StringBuffer("=x");
-			fiscalPrinterDriver.executeRTDirectIo(0, 0, closestateprinter);
-		}
 		fiscalPrinterDriver.resetPrinter();
 		fiscalPrinterDriver.clearError();
 	}
@@ -2752,7 +2138,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 	
 	public void Reset_III(boolean doit) {
-		if (!doit && PrinterType.isEpsonModel())
+		if (!doit)
 			return;
 		
 		while ( true )
@@ -2761,8 +2147,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			{					 
 				System.out.println ( "MAPOTO-RESET AFTERCLEAR INIT <"+fiscalPrinterDriver.getState()+">");
 				resetAndClear();
-				if ((!PrinterType.isCustomModel()) && (!PrinterType.isRCHPrintFModel()))
-					fiscalPrinterDriver.clearOutput();
+				fiscalPrinterDriver.clearOutput();
 				System.out.println ( "MAPOTO-RESET AFTERCLEAR END <"+fiscalPrinterDriver.getState()+">");
 				break;
 			}
@@ -3134,127 +2519,15 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private static int getFiscalPrinterState() throws JposException
 		{
-			if (PrinterType.isCustomModel())
-				TakeYourTime.takeYourTime(80);
 			return (fiscalPrinterDriver.getPrinterState());
 		}
 		
 		public void SetLogo(String name, int number)
 		{
-			if (PrinterType.isDieboldRTOneModel())
-				return;
-				   
-			if (PrinterType.isTH230Model())
-			{
-				System.out.println("SetLogo - setting logo: "+number+" - "+name);
-				String[] params = {LOGO_FOLDER+name, null};
-				int[] params1 = {number};
-		            
-				try {
-					if (number == LOGO_NUMBER)
-					{
-						// erase all images
-						fiscalPrinterDriver.directIO(1201, null, null);
-					}
-				} catch (JposException e) {
-					System.out.println ( "MAPOTO-SETLOGO (1201) <"+e.toString()+">");
-					e.printStackTrace();
-				}
-				TakeYourTime.takeYourTime(600);
-		            
-				int retry = (number == LOGO_NUMBER ? 3 : 1);
-				for (int i=0; i<retry; i++)
-				{
-					try {
-						// image loading
-						fiscalPrinterDriver.directIO(1202, params1, params[0]);
-						System.out.println ( "MAPOTO-SETLOGO (1202) retry="+i+" OK");
-						TakeYourTime.takeYourTime(600);
-						break;
-					} catch (JposException e) {
-						System.out.println ( "MAPOTO-SETLOGO (1202) <"+e.toString()+">");
-						e.printStackTrace();
-					}
-					TakeYourTime.takeYourTime(600);
-				}
-			}
-				   
-			if (PrinterType.isRCHPrintFModel())
-			{
-				System.out.println("SetLogo - setting logo: "+number+" - "+name);
-						
-						File filep = new File(LOGO_FOLDER+name);
-						if (!filep.exists()){
-							System.out.println("SetLogo: "+filep.getAbsolutePath()+" doesn't exist");
-							return;
-						}
-
-						int cmdLoad = 1202;
-						int cmdSelect = 1204;
-			    		int[] configuration = new int[] {3};
-			    		String[] path = new String[] {LOGO_FOLDER+name};
-			    		int[] logo = new int[] {3};
-			    		
-			    		if (number == TRAILER_LOGO_NUMBER) {
-			    			cmdSelect = 1205;
-			    			configuration[0] = 4;
-			    			logo[0] = 4;
-			    		}
-			    		
-			    		try {
-							fiscalPrinterDriver.directIO(cmdLoad, configuration, path);
-						} catch (Exception e) {
-							System.out.println("SetLogo ("+cmdLoad+") - exception: "+e.getMessage());
-						}
-			    		System.out.println("Waiting a little while...");
-			    		TakeYourTime.takeYourTime(5000);
-			    		
-			    		try {
-			    			fiscalPrinterDriver.directIO(cmdSelect, logo, null);
-						} catch (Exception e) {
-							System.out.println("SetLogo ("+cmdSelect+") - exception: "+e.getMessage());
-						}
-			    		System.out.println("Waiting a little while...");
-			    		TakeYourTime.takeYourTime(5000);
-			}
 		}
 		   
 		protected void PrintLogo(int number)
 		{
-			if (PrinterType.isCUSTOMK2Model() && (number == TRAILER_LOGO_NUMBER))
-				return;
-			   
-			if (PrinterType.isTH230Model())
-			{
-				// dovremmo essere in uno scontrino non fiscale, perchè
-				// negli scontrini fiscali è impostato/stampato tramite l'AdditionalTrailer
-				String UseBitmapInSlot = ""+(char)0x1B + (char)0x7C + (byte)number + (char)0x42;
-				try {
-					fiscalPrinterDriver.printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, UseBitmapInSlot);
-				} catch (JposException e) {
-					System.out.println ( "MAPOTO-PRINTLOGO <"+e.toString()+">");
-					e.printStackTrace();
-				}
-			}
-			if (PrinterType.isCUSTOMK2Model())
-			{
-				byte JPOS_FPTR_DI_RAWDATA = 0;
-				int[] data = new int[25];
-				String strBytData;
-
-				try
-				{
-					strBytData = new String("3017031");
-					if (number == TRAILER_LOGO_NUMBER)
-						strBytData = new String("3017032");
-					fiscalPrinterDriver.directIO(JPOS_FPTR_DI_RAWDATA, data, strBytData);
-				}
-				catch ( JposException e )
-				{
-					System.out.println ( "MAPOTO-PRINTLOGO <"+e.toString()+">");
-					e.printStackTrace();
-				}
-			}
 		}
 		
 		protected static void scriviLastTicket(String linea){
@@ -3353,11 +2626,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					if (linea.length() == 0)
 						linea=" ";
 					
-					if (PrinterType.isEpsonModel()){
-						int a = linea.indexOf("TOTALE");
-						if (a >= 0)
-							linea = linea.substring(a);
-					}
+					int a = linea.indexOf("TOTALE");
+					if (a >= 0)
+						linea = linea.substring(a);
 					
 					try {
 						lastch = linea.charAt(linea.length()-1);
@@ -3428,24 +2699,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private void initTicket() throws JposException
 		{
-			if (PrinterType.isTH230Model())
-			{
-				int maxHeaderLine = fiscalPrinterDriver.getNumHeaderLines();
-
-				ArrayList HH = TicketErrorSupport.getHD();
-				if (HH == null)
-					return;
-				space (2);
-				for ( int i = 0; (i < HH.size()) && (i < maxHeaderLine); i++ )
-				{
-					String sd = (String)HH.get(i);
-					
-					sd = align_center(sd, fiscalPrinterDriver.getMessageLength());
-					   
-					fiscalPrinterDriver.printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, sd);
-				}
-				space ( 2 );
-			}
 		}
 		
 	    private void space (int how) throws JposException
@@ -3612,14 +2865,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    			out = out + ' ';
 	    	}
 			   
-	    	if (PrinterType.isDieboldRTOneModel())
-	    	{
-	    		String s = out;
-	    		out = s.replaceAll("\\)", " ");
-	    		s = out;
-	    		out = s.replaceAll("\\(", " ");
-	    	}
-				
 	    	return (out);
 	    }
 		   
@@ -3686,33 +2931,21 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (state != jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT)
 					return;
 				
-				if (PrinterType.isEpsonModel())
-				{
-					String op = "01";
-					String fiscalcode = s;
-					StringBuffer sbcmd = new StringBuffer(op + fiscalcode);
-					int cmd = 0;
-					if (s.length() == PILEN)
-						cmd = 1060;															// stampa P.Iva
-					else
-						cmd = 1061;															// stampa C.F.
-					
-					System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
-					fiscalPrinterDriver.executeRTDirectIo(cmd, 0, sbcmd);
-					System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
-					if (Integer.parseInt(sbcmd.toString()) == 30) {
-						System.out.println("printRecCFPiva - invalid fiscal code (bad checksum)");
-						return;
-					}
-				}
-				if (PrinterType.isRCHPrintFModel())
-				{
-		            String fiscalcode = s;
-					StringBuffer sbcmd = new StringBuffer("=\"/?C/("+fiscalcode+")");		// stampa P.Iva / C.F.
-		            
-					System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
-					System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
+				String op = "01";
+				String fiscalcode = s;
+				StringBuffer sbcmd = new StringBuffer(op + fiscalcode);
+				int cmd = 0;
+				if (s.length() == PILEN)
+					cmd = 1060;															// stampa P.Iva
+				else
+					cmd = 1061;															// stampa C.F.
+				
+				System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
+				fiscalPrinterDriver.executeRTDirectIo(cmd, 0, sbcmd);
+				System.out.println("printRecCFPiva - sbcmd = "+sbcmd.toString());
+				if (Integer.parseInt(sbcmd.toString()) == 30) {
+					System.out.println("printRecCFPiva - invalid fiscal code (bad checksum)");
+					return;
 				}
 				setCFPIvaFlag(true);
 			}
@@ -3896,7 +3129,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			// usata solo negli scontrini fiscali
 			
-			if (PrinterType.isEpsonModel() && SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
+			if (SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
 				if (SmartTicket.Smart_Ticket_ReceiptMode != SmartTicket.ERECEIPT_PAPER)
 					return;
 			
@@ -3924,28 +3157,20 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				repz = Sprint.f("%04d",DummyServerRT.CurrentFiscalClosure);
 			}
 			else {
-				if (PrinterType.isRchPrintFModel()) {
-					num = fiscalPrinterDriver.myRchFiscalNumber;
-				}
-				
 		        int[] ai = new int[1];
 		        String[] as = new String[1];
-				if (!PrinterType.isRchPrintFModel()) {
-					fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as);
-		            num = as[0];
-				}
+				fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as);
+	            num = as[0];
 				
-	            if (PrinterType.isEpsonModel()) {
-	            	try {
-						if (fiscalPrinterDriver.getPrinterState() == jpos.FiscalPrinterConst.FPTR_PS_MONITOR) {
-							// siamo in extra lines dopo l'endfiscal
-	    	            	num = Sprint.f("%04d",Integer.parseInt(as[0])-1);
-						}
-					} catch (Exception e) {
-						   System.out.println("stampaBarcodePerResi - Exception : " + e.getMessage());
-						   return;
+            	try {
+					if (fiscalPrinterDriver.getPrinterState() == jpos.FiscalPrinterConst.FPTR_PS_MONITOR) {
+						// siamo in extra lines dopo l'endfiscal
+    	            	num = Sprint.f("%04d",Integer.parseInt(as[0])-1);
 					}
-	            }
+				} catch (Exception e) {
+					   System.out.println("stampaBarcodePerResi - Exception : " + e.getMessage());
+					   return;
+				}
 	            
 	            fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
 	            try {
@@ -3962,18 +3187,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
 			
 			StringBuffer objb = new StringBuffer("");
-    		if (PrinterType.isEpsonModel()) {
-    			bc = convertiBarcodePerResi(bc);
-    			String width = setwidth(SharedPrinterFields.Lotteria.getLotteryCode());
-    			String subset = setsubset();
-				objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
-				fiscalPrinterDriver.executeRTDirectIo(1075, 0, objb);
-    		}
-    		
-    		if (PrinterType.isRCHPrintFModel()) {
-				objb = new StringBuffer(bc);
-				fiscalPrinterDriver.executeRTDirectIo(5000, 8, objb);
-    		}
+			bc = convertiBarcodePerResi(bc);
+			String width = setwidth(SharedPrinterFields.Lotteria.getLotteryCode());
+			String subset = setsubset();
+			objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
+			fiscalPrinterDriver.executeRTDirectIo(1075, 0, objb);
     		
     		SmartTicket.SMTKbarcodes_add(bc);
 		}
@@ -3995,32 +3213,16 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
 			
 			StringBuffer objb = new StringBuffer("");
-    		if (PrinterType.isEpsonModel()) {
-    			bc = convertiBarcodePerResi(bc);
-    			String width = setwidth(lott);
-    			String subset = setsubset();
-				objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
-				executeDirectIo(1075, objb.toString());
-    		}
-    		
-    		if (PrinterType.isRCHPrintFModel()) {
-    			int[] dt={0};
-    			dt[0]=8;
-				objb = new StringBuffer(bc);
-				try {
-					this.directIO(5000, dt, objb);
-				} catch (JposException e) {
-					System.out.println("stampaBarcodePerResi - Exception : " + e.getMessage());
-				}
-    		}
+			bc = convertiBarcodePerResi(bc);
+			String width = setwidth(lott);
+			String subset = setsubset();
+			objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
+			executeDirectIo(1075, objb.toString());
     		
 //    		SMTKbarcodes_add(bc);
 		}
 
 		public static String getBarcodePrefix() {
-			if (!PrinterType.isEpsonPrinterModel())
-				return barcodePrefix;
-			
 	    	String bcp = "";
 	    	bcp = convertiBarcodePerResi(barcodePrefix);
 	    	return bcp;
@@ -4072,14 +3274,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		protected void abilitaTaglioCarta(boolean flag)
 		{
-			if (PrinterType.isEpsonModel() && SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
+			if (SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
 				if (SmartTicket.Smart_Ticket_ReceiptMode != SmartTicket.ERECEIPT_PAPER)
 					return;
 			
 			if (!Lotteria.isPrintBarcode())
-				return;
-			
-			if (!PrinterType.isEpsonModel())
 				return;
 			
 			String op;
@@ -4119,8 +3318,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			else
 			{
 				System.out.println("MAPOTO-TicketErrorSupport:checkCurrentTicketTotal <false> at PRINTER="+fromPrinter+" at TILL="+currentTicket);
-			    if (PrinterType.isNCR2215Model())
-					return ( true );	// pare che questa interrogazione non funzioni su NCR
 				return ( false );
 			}
 		}
@@ -4232,45 +3429,19 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println("newModifierCommand - cmd="+cmd);
 			System.out.println("newModifierCommand - vat="+vat);
 			
-			if (PrinterType.isEpsonModel()) {
-				String op = "01";
-				String amn = Sprint.f("%09d",amount/100);;
-				String type = Sprint.f("%02d",cmd);
-				String department = Sprint.f("%02d",vat);
-				String alignment = "1";
-				descr="";
-				while (descr.length() < 38)
-					descr = descr+" ";
-				
-				StringBuffer sbcmd = new StringBuffer(op+descr+amn+type+department+alignment);
-				System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
-				fiscalPrinterDriver.executeRTDirectIo(1090, 0, sbcmd);
-				System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
-			}
-			if (PrinterType.isRCHPrintFModel()) {
-				if (cmd == 2) {
-					if (TaxData.isServizi(ivapolipos))
-						System.out.println("RT2 - newModifierCommand - WARNING : articolo tipo Servizio");
-					
-					// =R2/$2000/&3/(BUONO MONOUSO)
-					cmd = 3;
-				}
-				if (cmd == 1) {
-					// =R2/$2000/&1/(OMAGGIO)
-					cmd = 1;
-				}
-				if (cmd == 0) {
-					if (TaxData.isServizi(ivapolipos))
-						System.out.println("RT2 - newModifierCommand - WARNING : articolo tipo Servizio");
-					
-					// =R2/$2000/&2/(ACCONTO)
-					cmd = 2;
-				}
-				StringBuffer sbcmd = new StringBuffer("=R"+vat+"/$"+(amount/100)+"/&"+cmd+"/("+descr+")");
-				System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
-				fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
-				System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
-			}
+			String op = "01";
+			String amn = Sprint.f("%09d",amount/100);;
+			String type = Sprint.f("%02d",cmd);
+			String department = Sprint.f("%02d",vat);
+			String alignment = "1";
+			descr="";
+			while (descr.length() < 38)
+				descr = descr+" ";
+			
+			StringBuffer sbcmd = new StringBuffer(op+descr+amn+type+department+alignment);
+			System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
+			fiscalPrinterDriver.executeRTDirectIo(1090, 0, sbcmd);
+			System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
 		}
 
 		public void RTRefund(String data, String serialSRT, boolean freerefund) {
@@ -4941,16 +4112,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (SRTPrinterExtension.isPRT())
 			{
-				if (PrinterType.isEpsonModel()) {
-					if (PaperSavingProperties.getPrinterMode() != null && PaperSavingProperties.getPrinterMode().isEmpty() == false) {
-						String mode = PaperSavingProperties.getPrinterMode();
-						
-						String risparmiocarta = Sprint.f("%03d", mode);
-						StringBuffer sbcmd = new StringBuffer("18"+risparmiocarta);
-						System.out.println("setPaperSavingMode - sbcmd = "+sbcmd.toString());
-				      	fiscalPrinterDriver.executeRTDirectIo(4015, 0, sbcmd);
-						System.out.println("setPaperSavingMode - sbcmd = "+sbcmd.toString());
-					}
+				if (PaperSavingProperties.getPrinterMode() != null && PaperSavingProperties.getPrinterMode().isEmpty() == false) {
+					String mode = PaperSavingProperties.getPrinterMode();
+					
+					String risparmiocarta = Sprint.f("%03d", mode);
+					StringBuffer sbcmd = new StringBuffer("18"+risparmiocarta);
+					System.out.println("setPaperSavingMode - sbcmd = "+sbcmd.toString());
+			      	fiscalPrinterDriver.executeRTDirectIo(4015, 0, sbcmd);
+					System.out.println("setPaperSavingMode - sbcmd = "+sbcmd.toString());
 				}
 			}
 		}		
@@ -4964,40 +4133,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (SRTPrinterExtension.isPRT())
 			{
-				if (PrinterType.isEpsonModel()) {
-					String Kind = Sprint.f("%03d", mode);
-					StringBuffer sbcmd = new StringBuffer("27"+Kind);
-			      	fiscalPrinterDriver.executeRTDirectIo(4015, 0, sbcmd);
-					System.out.println("RT2 - setRoundingMode - sbcmd = "+sbcmd.toString());
-			      	
-					getRoundingMode();
-				}
-				if (PrinterType.isRCHPrintFModel()) {
-					StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_SRV);
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, key);
-		
-					int Kind = mode;
-					StringBuffer sbcmd = new StringBuffer(">C928/&8/$"+Kind);
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
-		
-					key = new StringBuffer(SharedPrinterFields.KEY_REG);
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, key);
-					
-					if (PrinterType.isRchPrintFModel()) {
-						if ((mode == RTConsts.FULLROUNDING) || (mode == RTConsts.NEGATIVEROUNDING)) {
-							if (fw < 8.3) {
-								enabledLowerRoundedPay = enableLowerRoundedPay(0);
-								enabledLowerRoundedPay = -1;
-							}
-							else {
-								enabledLowerRoundedPay = enableLowerRoundedPay(1);
-							}
-						}
-						else
-							enabledLowerRoundedPay = enableLowerRoundedPay(0);
-						System.out.println("RT2 - setRoundingMode - enabledLowerRoundedPay = "+enabledLowerRoundedPay);
-					}
-				}
+				String Kind = Sprint.f("%03d", mode);
+				StringBuffer sbcmd = new StringBuffer("27"+Kind);
+		      	fiscalPrinterDriver.executeRTDirectIo(4015, 0, sbcmd);
+				System.out.println("RT2 - setRoundingMode - sbcmd = "+sbcmd.toString());
+		      	
+				getRoundingMode();
 			}
 			
 			RTConsts.setCURRENTROUNDING(mode);
@@ -5009,13 +4150,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (fiscalPrinterDriver.isfwRT2enabled())
 			{
-				if (PrinterType.isEpsonModel()) {
-					StringBuffer sbcmd = new StringBuffer("27");
-			      	fiscalPrinterDriver.executeRTDirectIo(4215, 0, sbcmd);
-					System.out.println("RT2 - getRoundingMode - sbcmd = "+sbcmd.toString());
-			      	
-			      	Kind = sbcmd.toString().substring(2, 5);
-				}
+				StringBuffer sbcmd = new StringBuffer("27");
+		      	fiscalPrinterDriver.executeRTDirectIo(4215, 0, sbcmd);
+				System.out.println("RT2 - getRoundingMode - sbcmd = "+sbcmd.toString());
+		      	
+		      	Kind = sbcmd.toString().substring(2, 5);
 			}
 	      	
 			System.out.println("RT2 - getRoundingMode - Kind = "+Kind);
@@ -5030,11 +4169,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				return ret;
 			
 			System.out.println("RT2 - enableLowerRoundedPay - mode = "+mode);
-			
-			if (PrinterType.isRchPrintFModel()) {
-				StringBuffer sbcmd = new StringBuffer(">C928/&11/$"+mode);
-				ret = fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
-			}
 			
 			System.out.println("RT2 - enableLowerRoundedPay - ret = "+ret);
 			return ret;

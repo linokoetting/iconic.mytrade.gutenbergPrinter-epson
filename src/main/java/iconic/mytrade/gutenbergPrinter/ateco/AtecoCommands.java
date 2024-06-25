@@ -28,20 +28,6 @@ public class AtecoCommands extends PrinterCommands {
 		
 		if ( DicoTaxLoad.isIvaAllaPrinter() ){
 			
-			if (PrinterType.isRCHPrintFModel()) {
-				if (TodayFiscalTicket == 1) {
-					StringBuffer key = new StringBuffer(SharedPrinterFields.KEY_SRV);
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, key);
-
-					StringBuffer sbcmd = new StringBuffer(">C913");
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, sbcmd);
-
-					key = new StringBuffer(SharedPrinterFields.KEY_REG);
-					fiscalPrinterDriver.executeRTDirectIo(0, 0, key);
-				}
-				return;
-			}
-			
 			try {
 				MultiAttivita = 3;
 				
@@ -150,20 +136,18 @@ public class AtecoCommands extends PrinterCommands {
 		String PrintVi = ""+printvi;
 		String Spare = "0000000000";
 		
-		if (PrinterType.isEpsonModel()) {
-			if (isMultiAttivita()) {
-				StringBuffer sbcmd = new StringBuffer(AtecoIndex+AtecoCode+Ventilazione+PrintVi+Spare);
-		      	fiscalPrinterDriver.executeRTDirectIo(4037, 0, sbcmd);
-		      	
-				sbcmd = new StringBuffer(AtecoIndex);
-		      	fiscalPrinterDriver.executeRTDirectIo(4237, 0, sbcmd);
-		      	
-		      	AtecoIndex = sbcmd.toString().substring(0, 2);
-		      	AtecoCode = sbcmd.toString().substring(2, 8);
-		      	Ventilazione = sbcmd.toString().substring(8, 9);
-		      	PrintVi = sbcmd.toString().substring(9, 10);
-		      	Spare = sbcmd.toString().substring(10, 20);
-			}
+		if (isMultiAttivita()) {
+			StringBuffer sbcmd = new StringBuffer(AtecoIndex+AtecoCode+Ventilazione+PrintVi+Spare);
+	      	fiscalPrinterDriver.executeRTDirectIo(4037, 0, sbcmd);
+	      	
+			sbcmd = new StringBuffer(AtecoIndex);
+	      	fiscalPrinterDriver.executeRTDirectIo(4237, 0, sbcmd);
+	      	
+	      	AtecoIndex = sbcmd.toString().substring(0, 2);
+	      	AtecoCode = sbcmd.toString().substring(2, 8);
+	      	Ventilazione = sbcmd.toString().substring(8, 9);
+	      	PrintVi = sbcmd.toString().substring(9, 10);
+	      	Spare = sbcmd.toString().substring(10, 20);
 		}
       	
 		System.out.println("RT2 - setAtecoCode - AtecoIndex = "+AtecoIndex+" - AtecoCode = "+AtecoCode+" - Ventilazione = "+Ventilazione+" - PrintVi = "+PrintVi+" - Spare = "+Spare);

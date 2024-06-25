@@ -41,13 +41,8 @@ public class SMTKCommands extends PrinterCommands {
 	        	// per i postVoid non abbiamo i dati per costruire il lastticket
 	        	
 				ArrayList<String> ticket = null;
-				if (PrinterType.isEpsonModel()) {
-			    	//ticket = getReceiptFromEj_Epson(date[0].substring(0, 8));
-			    	ticket = fiscalPrinterDriver.getReceiptFromEj_Epson(DummyServerRT.CurrentReceiptNumber, date[0].substring(0, 8));	// uso questa anche se è più lenta perchè tanto è solo per i postvoid e mi restituisce le righe già divise, che dovrei comunque dividerle io con l'altra procedura che è appena più veloce
-				}
-				if (PrinterType.isRCHPrintFModel()) {
-					ticket = fiscalPrinterDriver.getReceiptFromEj_Rch();
-				}
+		    	//ticket = getReceiptFromEj(date[0].substring(0, 8));
+		    	ticket = fiscalPrinterDriver.getReceiptFromEj(DummyServerRT.CurrentReceiptNumber, date[0].substring(0, 8));	// uso questa anche se è più lenta perchè tanto è solo per i postvoid e mi restituisce le righe già divise, che dovrei comunque dividerle io con l'altra procedura che è appena più veloce
 				
 				initTicketOnFile();
 		    	for (int i=0; i<ticket.size(); i++)
@@ -99,13 +94,8 @@ public class SMTKCommands extends PrinterCommands {
 	        	// per i postVoid non abbiamo i dati per costruire il lastticket
 	        	
 				ArrayList<String> ticket = null;
-				if (PrinterType.isEpsonModel()) {
-			    	//ticket = getReceiptFromEj_Epson(date[0].substring(0, 8));
-			    	ticket = fiscalPrinterDriver.getReceiptFromEj_Epson(DummyServerRT.CurrentReceiptNumber, date[0].substring(0, 8));	// uso questa anche se è più lenta perchè tanto è solo per i postvoid e mi restituisce le righe già divise, che dovrei comunque dividerle io con l'altra procedura che è appena più veloce 
-				}
-				if (PrinterType.isRCHPrintFModel()) {
-					ticket = fiscalPrinterDriver.getReceiptFromEj_Rch();
-				}
+		    	//ticket = getReceiptFromEj(date[0].substring(0, 8));
+		    	ticket = fiscalPrinterDriver.getReceiptFromEj(DummyServerRT.CurrentReceiptNumber, date[0].substring(0, 8));	// uso questa anche se è più lenta perchè tanto è solo per i postvoid e mi restituisce le righe già divise, che dovrei comunque dividerle io con l'altra procedura che è appena più veloce 
 				
 		        for(int i = 0; i < ticket.size(); i++)
 		        	textfile = (new StringBuilder(String.valueOf(textfile))).append((String)ticket.get(i)).toString();
@@ -136,66 +126,26 @@ public class SMTKCommands extends PrinterCommands {
 	    	
 	    	if (fiscalPrinterDriver.SMTKgetStatusReceipt(DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber, date[0].substring(0, 4)+date[0].substring(6, 8)))
 	    	{
-	    		if (PrinterType.isEpsonModel())
-	    		{
-			    	String PdfPath = buildPdfPath(SharedPrinterFields.Printer_IPAddress, date[0]);
-			    	System.out.println("SMTK - PdfPath="+PdfPath);
-			    	String PdfFilename = buildPdfFilename(PdfPath, DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber);
-			    	if (PdfFilename != null && PdfFilename.length() > 0)
-			    	{
-				    	System.out.println("SMTK - PdfFilename="+PdfFilename);
-				    	String XmlFilename = buildXmlFilename(PdfFilename);
-				    	System.out.println("SMTK - XmlFilename="+XmlFilename);
-				    	SMTKdownload(PdfPath+PdfFilename);
-				    	SMTKdownload(PdfPath+XmlFilename);
-				    	Xml4SRT.runXmlUpdater(XmlFilename, textfile, true, false, true, key, false);
-				    	moveSmartTicket(PdfFilename, date[0].substring(0, 2), transactionnumber, "pdf", Integer.parseInt(DummyServerRT.CurrentReceiptNumber), voiding);
-				    	moveSmartTicket(XmlFilename, date[0].substring(0, 2), transactionnumber, "xml", Integer.parseInt(DummyServerRT.CurrentReceiptNumber), voiding);
-			    	}
-			    	else
-			    	{
-			    		System.out.println("SMTK - Http connection timeout : download failed.");
-			    		if (fiscalPrinterDriver.SMTKgetReceiptType() == SmartTicket.ERECEIPT_DIGITAL)
-			    			fiscalPrinterDriver.reprintLastTicket();
-			    	}
-	    		}
-	    		
-	    		if (PrinterType.isDieboldRTOneModel())
-	    		{
-	    			String PdfFilename = SMTKdownload(rtsTrxBuilder.storerecallticket.Default.getsourcePath());
-			    	if (PdfFilename != null && PdfFilename.length() > 0)
-			    	{
-				    	System.out.println("SMTK - PdfFilename="+PdfFilename);
-				    	String XmlFilename = buildXmlFilename(PdfFilename);
-				    	System.out.println("SMTK - XmlFilename="+XmlFilename);
-				    	
-						StringTokenizer st = new StringTokenizer(PdfFilename, ".");
-						String[] tmp1 = new String[st.countTokens()];
-						for (int i = 0; i < tmp1.length; i++) {
-							tmp1[i] = st.nextToken();
-						}
-						st = new StringTokenizer(tmp1[0], "_");
-						String[] tmp2 = new String[st.countTokens()];
-						for (int i = 0; i < tmp2.length; i++) {
-							tmp2[i] = st.nextToken();
-						}
-						String printerid = tmp2[0];
-						int repz = Integer.parseInt(tmp2[3]);
-						int nrec = Integer.parseInt(tmp2[4]);
-						String datetime = "20"+tmp2[1]+"T"+tmp2[2]+"00";
-						
-						Xml4SRT.runXmlCoder(XmlFilename, "", SRTPrinterExtension.isPRT(), printerid, repz, nrec, datetime, smtkamount, SmartTicket.smtkbarcodes, SmartTicket.Smart_Ticket_CustomerType, SmartTicket.Smart_Ticket_CustomerId, true, false, true);
-						Xml4SRT.runXmlUpdater(XmlFilename, textfile, true, false, true, key, false);
-				    	moveSmartTicket(PdfFilename, date[0].substring(0, 2), transactionnumber, "pdf", nrec, voiding);
-				    	moveSmartTicket(XmlFilename, date[0].substring(0, 2), transactionnumber, "xml", nrec, voiding);
-			    	}
-			    	else
-			    	{
-			    		System.out.println("SMTK - download failed.");
-			    		if (SmartTicket.Smart_Ticket_ReceiptMode == SmartTicket.ERECEIPT_DIGITAL)
-			    			fiscalPrinterDriver.reprintLastTicket();
-			    	}
-	    		}
+		    	String PdfPath = buildPdfPath(SharedPrinterFields.Printer_IPAddress, date[0]);
+		    	System.out.println("SMTK - PdfPath="+PdfPath);
+		    	String PdfFilename = buildPdfFilename(PdfPath, DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber);
+		    	if (PdfFilename != null && PdfFilename.length() > 0)
+		    	{
+			    	System.out.println("SMTK - PdfFilename="+PdfFilename);
+			    	String XmlFilename = buildXmlFilename(PdfFilename);
+			    	System.out.println("SMTK - XmlFilename="+XmlFilename);
+			    	SMTKdownload(PdfPath+PdfFilename);
+			    	SMTKdownload(PdfPath+XmlFilename);
+			    	Xml4SRT.runXmlUpdater(XmlFilename, textfile, true, false, true, key, false);
+			    	moveSmartTicket(PdfFilename, date[0].substring(0, 2), transactionnumber, "pdf", Integer.parseInt(DummyServerRT.CurrentReceiptNumber), voiding);
+			    	moveSmartTicket(XmlFilename, date[0].substring(0, 2), transactionnumber, "xml", Integer.parseInt(DummyServerRT.CurrentReceiptNumber), voiding);
+		    	}
+		    	else
+		    	{
+		    		System.out.println("SMTK - Http connection timeout : download failed.");
+		    		if (fiscalPrinterDriver.SMTKgetReceiptType() == SmartTicket.ERECEIPT_DIGITAL)
+		    			fiscalPrinterDriver.reprintLastTicket();
+		    	}
 	    	}
 		}
 		
@@ -259,42 +209,23 @@ public class SMTKCommands extends PrinterCommands {
 		if (fiscalPrinterDriver.isfwSMTKdisabled())
 			return ret;
 		
-		if (PrinterType.isEpsonModel())
-		{
-			String cmd = "wget --tries=1 --timeout=" + SmartTicket.Smart_Ticket_HttpTimeout + " "+url;
-			Runtime rt = Runtime.getRuntime();
-			Process proc;
-			try {
-				proc = rt.exec(cmd);
-			} catch (IOException e) {
-				System.out.println("SMTKdownload - e:"+e.getMessage());
-				return ret;
-			}					       
-			int exitVal = -1;
-			try {
-				exitVal = proc.waitFor();
-			} catch (InterruptedException e) {
-				System.out.println("SMTKdownload - e:"+e.getMessage());
-			}
-			if (exitVal != 0)
-				System.out.println("SMTKdownload - errore:"+exitVal);	   
+		String cmd = "wget --tries=1 --timeout=" + SmartTicket.Smart_Ticket_HttpTimeout + " "+url;
+		Runtime rt = Runtime.getRuntime();
+		Process proc;
+		try {
+			proc = rt.exec(cmd);
+		} catch (IOException e) {
+			System.out.println("SMTKdownload - e:"+e.getMessage());
+			return ret;
+		}					       
+		int exitVal = -1;
+		try {
+			exitVal = proc.waitFor();
+		} catch (InterruptedException e) {
+			System.out.println("SMTKdownload - e:"+e.getMessage());
 		}
-		
-		if (PrinterType.isDieboldRTOneModel())
-		{
-			//StringBuffer sbcmd = new StringBuffer(url);
-	      	//executeRTDirectIo(8600, 1, sbcmd);
-	        int Command = 8600;
-	        int[] dt={1};				// download last ticket
-	        String[] pString = {url};
-	        try {
-	        	fiscalPrinterDriver.directIO(Command, dt, pString);
-	        	ret = pString[0];
-				System.out.println("SMTKdownload - ret = "+ret);
-			} catch (JposException e) {
-				System.out.println("SMTKdownload - e:"+e.getMessage());
-			}
-		}
+		if (exitVal != 0)
+			System.out.println("SMTKdownload - errore:"+exitVal);	   
 		
 		return ret;
 	}
@@ -364,9 +295,8 @@ public class SMTKCommands extends PrinterCommands {
 	{
 		String path = "";
 		
-		if (PrinterType.isEpsonModel()) {
-			path = "http://"+ip+"/"+SmartTicket.ERECEIPT_SOURCE_FOLDER+date.substring(4,8)+date.substring(2, 4)+date.substring(0, 2)+"/";
-		}
+		path = "http://"+ip+"/"+SmartTicket.ERECEIPT_SOURCE_FOLDER+date.substring(4,8)+date.substring(2, 4)+date.substring(0, 2)+"/";
+		
 		return path;
 	}
 	
@@ -374,15 +304,14 @@ public class SMTKCommands extends PrinterCommands {
 	{
 		String filename = "";
 		
-		if (PrinterType.isEpsonModel()) {
-			String z = "Z"+Sprint.f("%04d", zrep);
-			String n = "N"+nrec;
-			String cmd = "wget --tries=1 --timeout=" + SmartTicket.Smart_Ticket_HttpTimeout +" --quiet -O - " + path + " | grep '.pdf' | grep " + z + "-" + n + " | cut -d\"\\\"\" -f2";
-			String[] rsh = RunShellScriptPoli20.runScript(true, cmd);
-			if ((rsh != null) && (rsh.length > 0)){
-				filename = rsh[0];
-			}
+		String z = "Z"+Sprint.f("%04d", zrep);
+		String n = "N"+nrec;
+		String cmd = "wget --tries=1 --timeout=" + SmartTicket.Smart_Ticket_HttpTimeout +" --quiet -O - " + path + " | grep '.pdf' | grep " + z + "-" + n + " | cut -d\"\\\"\" -f2";
+		String[] rsh = RunShellScriptPoli20.runScript(true, cmd);
+		if ((rsh != null) && (rsh.length > 0)){
+			filename = rsh[0];
 		}
+		
 		return filename;
 	}
 	

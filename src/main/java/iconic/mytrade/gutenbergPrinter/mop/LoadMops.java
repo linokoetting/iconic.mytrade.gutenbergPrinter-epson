@@ -106,7 +106,7 @@ public class LoadMops {
 
 	public static ArrayList<String> getVops()
 	{
-	    ArrayList<String> Vops = null;
+	    ArrayList<String> Vops = new ArrayList();
 	    
 	    for (String vdata : SharedPrinterFields.gvTypesMap) {
 	    	Vops.add(vdata);

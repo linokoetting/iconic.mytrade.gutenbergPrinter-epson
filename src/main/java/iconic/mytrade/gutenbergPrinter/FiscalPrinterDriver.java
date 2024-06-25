@@ -47,8 +47,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	
 	static boolean epsonClass4 = false;			// mi pare che sia così su tutti i pdv
 	
-    public static String myRchFiscalNumber = "";
-	
 	protected static final int PRINTALLRECEIPTBYDATE 	= 8001;
 	protected static final int PRINTSOMERECEIPTBYDATE	= 8002;
 	protected static final int DOWNLOADONFILE 		= 8004;
@@ -1907,7 +1905,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	}
 
 	public void directIO(int arg0, int[] arg1, Object arg2) throws JposException {
-		directIO(arg0, arg1, arg2);
+		fiscalPrinter.directIO(arg0, arg1, arg2);
 	}
 
 	public String getCheckHealthText() throws JposException {
@@ -2343,7 +2341,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
          	FiscalPrinterDataInformation.setDataInformation(jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC, "  " + as[0]);  	
          	System.out.println("getDataF out Fiscale - data=" + as[0]+"=");
             FiscalPrinterDataInformation.setNewDataAvailable(true);
-            myRchFiscalNumber = as[0];
         } 
         else if (i == jpos.FiscalPrinterConst.FPTR_GD_PRINTER_ID) 
         {

@@ -26,7 +26,6 @@ public class LoadMops {
 	
     public static ArrayList<Mop> Mops = null;		// method of payment
     public static ArrayList Vops = null;		// voucher of payment
-    public static ArrayList RchMops = null;
     
 	public static void loadMops(){
 		
@@ -67,13 +66,6 @@ public class LoadMops {
                     int rtMediaIndex = ((mediainfos[i].getRt_MediaCode() >= 100) ? Integer.parseInt((""+mediainfos[i].getRt_MediaCode()).substring(1, 3)) : 0);
                     String rtDesc = mediainfos[i].getDescription();
                     
-/*                    if (SRTPrinterExtension.isPRT() &&
-                    	(PrinterType.isDieboldRTOneModel() || PrinterType.isRchPrintFModel())) {
-                    	String prefix = mediainfos[i].getDescription().substring(0,3);
-                    	if (isNumeric(prefix))
-                    		rtDesc = mediainfos[i].getDescription().substring(3);
-                    }*/	// RIABILITARE
-                    
                     if ((mediainfos[i].getMediaType() == 1) && (mediainfos[i].getMediaNumber() == 1))
                     	SharedPrinterFields.DESCRIZIONE_CONTANTI = rtDesc;
                     if ((mediainfos[i].getMediaType() == 79) && (mediainfos[i].getMediaNumber() == 79))
@@ -108,35 +100,16 @@ public class LoadMops {
 	{
 	    ArrayList<String> Vops = new ArrayList();
 	    
-	    for (String vdata : SharedPrinterFields.gvTypesMap) {
-	    	Vops.add(vdata);
+	    if (SharedPrinterFields.gvTypesMap != null) {
+		    for (String vdata : SharedPrinterFields.gvTypesMap) {
+		    	Vops.add(vdata);
+		    }
 	    }
-		
+	    
 	    return Vops;
 	}
 	
 	private static boolean toIgnore(short mt, short mn, int mc) {
-/*		if (SRTPrinterExtension.isPRT() && (PrinterType.isDieboldRTOneModel() || PrinterType.isRchPrintFModel()))
-		{
-			if (mc < 0)
-				return true;
-		}*/ // RIABILITARE
-		
-/*		if (!Extra.isSkipLoadMedia())
-			return false;*/ // RIABILITARE
-		
-/*		if (SRTPrinterExtension.isPRT() && (PrinterType.isDieboldRTOneModel() || PrinterType.isRchPrintFModel()))
-		{
-			if (((mt == 6) && (mn == 55)) || 
-				((mt == 6) && (mn == 56)) || 
-				((mt == 8) && (mn == 8)) || 
-				((mt == 77) && (mn == 77)) || 
-				((mt == 23) && (mn == 23)))
-				return true;
-			
-			if (Extra.isSkipLoadMedia(mt,mn))
-				return true;
-		}*/ // RIABILITARE
 		return false;
 	}
 
@@ -236,32 +209,6 @@ public class LoadMops {
 		return(getPrefixPayment(description, Mops, fwRT2disabled));
 	}
 	
-	public static String getRCHPrefixPayment(String description){
-		String paymentprefix = "";
-		
-		for (int i=0; i<RchMops.size(); i++){
-			RchMop rchmop = (RchMop)RchMops.get(i);
-			if (rchmop.getDescription().equalsIgnoreCase(description)){
-				paymentprefix = ""+rchmop.getCode();
-				break;
-			}
-		}
-		return paymentprefix;
-	}
-
-	public static String getRCHDescriptionPayment(int prefix){
-		String paymentdescription = "";
-		
-		for (int i=0; i<RchMops.size(); i++){
-			RchMop rchmop = (RchMop)RchMops.get(i);
-			if (rchmop.getCode() == prefix){
-				paymentdescription = rchmop.getDescription();
-				break;
-			}
-		}
-		return paymentdescription;
-	}
-
 	public static boolean isNumeric (String s)
 	{
 		try 

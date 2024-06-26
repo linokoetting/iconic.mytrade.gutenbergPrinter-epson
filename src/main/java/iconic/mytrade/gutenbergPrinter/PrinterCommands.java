@@ -532,7 +532,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-		printNormalEFP90_F(i,s);
+		printNormal_I(i,s);
 		
 		lastwrittenstring = "";
 		
@@ -2721,7 +2721,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return ( fiscalPrinterDriver.getCapAdditionalLines() );
 	    }
 	    
-	    private void printNormalEFP90_F(int i, String s) throws JposException
+	    private void printNormal_I(int i, String s) throws JposException
 	    {
 	        final int DESC_LENGTH = 32;
 	        System.out.println("printNormal in i=" + i + " s=" + s);

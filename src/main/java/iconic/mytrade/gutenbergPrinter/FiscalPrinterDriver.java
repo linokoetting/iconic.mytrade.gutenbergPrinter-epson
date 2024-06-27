@@ -11,11 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.Beeping;
 import iconic.mytrade.gutenberg.jpos.printer.service.FiscalPrinterDataInformation;
-import iconic.mytrade.gutenberg.jpos.printer.service.MessageBox;
 import iconic.mytrade.gutenberg.jpos.printer.service.PleaseDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
@@ -47,20 +45,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	
 	static boolean epsonClass4 = false;			// mi pare che sia così su tutti i pdv
 	
-	protected static final int PRINTALLRECEIPTBYDATE 	= 8001;
-	protected static final int PRINTSOMERECEIPTBYDATE	= 8002;
-	protected static final int DOWNLOADONFILE 		= 8004;
-	protected static final int PRINTFISCALMEMBYDATE	= 8005;
-	protected static final int PRINTTOTFISCALMEMBYDATE= 8006;
-	protected static final int INITJOURNAL			= 8007;
-	
-	private static final byte JPOS_FPTR_PRN_FISCALREQUEST = 4;
+	private static final int PRINTSOMERECEIPTBYDATE	= 8002;
 	
 	private static String Rt2Fw_Epson_M="11";
 	private static String Rt2Fw_Epson_I="7";
 	private static String Rt2Fw_Epson_S="4";
-	private static String Rt2Fw_Rch="8";
-	private static String Rt2Fw_Diebold="8";
 			
     private static int RT_KO = -1;
     private static int RT_NOTINSERVICE = -2;
@@ -146,17 +135,17 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return (!isfwRT2enabled());
 	}
 	
-	static void setfwRT2enabled(boolean fwrT2enabled) {
+	protected static void setfwRT2enabled(boolean fwrT2enabled) {
 		System.out.println("RT2 - setfwRT2enabled : "+fwrT2enabled);
 		fwRT2enabled = fwrT2enabled;
 		DicoTaxLoad.setRT2enabled(fwRT2enabled);
 	}
 
-	public static boolean isfwLotteryenabled() {
+	private static boolean isfwLotteryenabled() {
 		return fwLotteryenabled;
 	}
 	
-	public static boolean isfwLotterydisabled() {
+	private static boolean isfwLotterydisabled() {
 		return (!isfwLotteryenabled());
 	}
 	
@@ -173,7 +162,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return (!isfwSMTKenabled());
 	}
 	
-	protected static void setfwSMTKenabled(boolean fwsMTKenabled) {
+	private static void setfwSMTKenabled(boolean fwsMTKenabled) {
 		System.out.println("SMTK - setfwSMTKenabled : "+fwsMTKenabled);
 		fwSMTKenabled = fwsMTKenabled;
 	}
@@ -182,7 +171,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return fwILotteryenabled;
 	}
 	
-	public static boolean isfwILotterydisabled() {
+	private static boolean isfwILotterydisabled() {
 		return (!isfwILotteryenabled());
 	}
 	
@@ -206,12 +195,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		RegistratoreTelematico = f.booleanValue();
 	}
 	
-	public static boolean isRTModel()
+	protected static boolean isRTModel()
 	{
 		return ( RegistratoreTelematico );
 	}
 	
-	protected boolean isNotRTModel()
+	private boolean isNotRTModel()
 	{
 		return ( ! this.isRTModel() );
 	}
@@ -226,12 +215,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		ServerRegistratoreTelematico = f.booleanValue();
 	}
 	
-	public boolean isSRTModel()
+	protected boolean isSRTModel()
 	{
 		return ( ServerRegistratoreTelematico );
 	}
 	
-	protected boolean isNotSRTModel()
+	private boolean isNotSRTModel()
 	{
 		return ( ! this.isSRTModel() );
 	}
@@ -250,7 +239,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return TakeYourTime.getOpenTimeout();
 	}
 	
-	public double doLoad(int PrinterModel, String PrinterName) {
+	double doLoad(int PrinterModel, String PrinterName) {
 	    double fw = 0;
 	    
 		setRTModel(SRTPrinterExtension.isPRT());
@@ -625,7 +614,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   return rtstatus;
 	   }
 	   
-	   protected String getPrinterIpAdd()
+	   private String getPrinterIpAdd()
 		{
 			String IpAdd = "";
 			
@@ -874,7 +863,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   return status;
 	   }
 	   
-		void LogPrinterLevel(String matricola, double firmware, boolean lotteria, boolean rt2, boolean smtk, boolean ilotteria)
+		private void LogPrinterLevel(String matricola, double firmware, boolean lotteria, boolean rt2, boolean smtk, boolean ilotteria)
 		{
 			if (isNotRTModel())
 				return;
@@ -924,7 +913,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    	return reply;
 	    }
 	  
-	    public String getRTSettings(String specificSetting)
+	    private String getRTSettings(String specificSetting)
 	    {
 	    	String reply = "";
 	    	
@@ -1290,7 +1279,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		
 	}
 
-	public void addDirectIOListener(DirectIOListener arg0) {
+	private void addDirectIOListener(DirectIOListener arg0) {
 		fiscalPrinter.addDirectIOListener(arg0);
 		
 	}
@@ -2018,7 +2007,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	 * 
 	 */
 
-	public void SMTKsetServerUrl(String url) {
+	protected void SMTKsetServerUrl(String url) {
 		if (isfwSMTKdisabled())
 			return;
 		
@@ -2114,7 +2103,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
       	return Integer.parseInt(Validity);
 	}
 	
-	protected void SMTKsetCustomerID(int type, String customerid) {
+	void SMTKsetCustomerID(int type, String customerid) {
 		if (isfwSMTKdisabled())
 			return;
 		
@@ -2132,7 +2121,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
       	System.out.println("SMTKsetCustomerID - CustomerId = <"+SMTKgetCustomerId()+">");
 	}
 	
-	protected int SMTKgetCustomerType() {
+	private int SMTKgetCustomerType() {
 		if (isfwSMTKdisabled())
 			return 0;
 		
@@ -2149,7 +2138,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
       	return Integer.parseInt(Type);
 	}
 	
-	protected String SMTKgetCustomerId() {
+	private String SMTKgetCustomerId() {
 		if (isfwSMTKdisabled())
 			return "";
 		
@@ -2273,10 +2262,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	 * 
 	 */
 	
-	public class DirectIOListener implements jpos.events.DirectIOListener
+	class DirectIOListener implements jpos.events.DirectIOListener
 	{
-	    public boolean started = true;
-	    public String buffer = "";
+	    private boolean started = true;
+	    private String buffer = "";
 	    
 		public void directIOOccurred(DirectIOEvent arg0) {
 			 if ((arg0.getSource().toString() != null) &&
@@ -2314,7 +2303,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		System.out.println ( "MAPOTO-getData out" );
 	}
 	
-    public void getDataF(int i, int ai[], String as[]) throws JposException
+    private void getDataF(int i, int ai[], String as[]) throws JposException
     {
     	if ( TicketErrorSupport.getGetDataBuffered() == false )
     	{
@@ -2375,7 +2364,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         } 
     }
     
-	public String getDataUnbufferedF(int i, int ai[], String as[]) throws JposException 
+	private String getDataUnbufferedF(int i, int ai[], String as[]) throws JposException 
     {
         System.out.println("getDataUnbuffered in - tipo data=" + i);
 
@@ -2472,7 +2461,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return ret;
 	}
 	
-	public void xgetData(int i, int ai[], String as[]) throws JposException
+	private void xgetData(int i, int ai[], String as[]) throws JposException
 	{
 		int o = 0;
 		
@@ -2602,7 +2591,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return PrinterCommands.checkCurrentDailyTotal(In);
 	}
 	
-	static boolean checkCurrentDailyTotalRounded ( String In, double rounding ) {
+	private static boolean checkCurrentDailyTotalRounded ( String In, double rounding ) {
 		return PrinterCommands.checkCurrentDailyTotalRounded(In, rounding);
 	}
 	

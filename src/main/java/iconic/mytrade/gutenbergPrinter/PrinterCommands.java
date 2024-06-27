@@ -36,7 +36,6 @@ import iconic.mytrade.gutenberg.jpos.printer.service.RTRounding;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;
 import iconic.mytrade.gutenberg.jpos.printer.service.SetVoidTrx;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
 import iconic.mytrade.gutenberg.jpos.printer.service.TransactionSale;
 import iconic.mytrade.gutenberg.jpos.printer.service.TxnHeader;
@@ -82,22 +81,20 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	static int staticMsgLen = 0;
 	
-	public static final String	LOGO_FOLDER	=	"/bs2coop/pos/image/header/";
 	static final String	LOGO_FILE			=	"MyLogo.bmp";
 	static final String	TRAILER_LOGO_FILE	=	"MyTrailerLogo.bmp";
 	static final int	LOGO_NUMBER			=	1;
 	static final int	TRAILER_LOGO_NUMBER	=	2;
 	
-	public static final String ALINER = "                                         ";
+	protected static final String ALINER = "                                         ";
 	
-	protected static final String	R3_DELETELASTTICKET_R3 = "R3_NEWCMD01_R3";
-	protected static final String	R3_PRINTNORMALLONGER_R3 = "R3_NEWCMD02_R3";
+	private static final String	R3_DELETELASTTICKET_R3 = "R3_NEWCMD01_R3";
 	private static	 final String	R3_DOUBLE_R3 = "R3double3R";
 	
 	static String OPERAZIONEANNULLATA = "OPERAZIONE ANNULLATA";
 	static String RESONONCORRETTO = "PREZZO NON CORRETTO ";
 
-    public static String barcodePrefix = "VAR";
+    private static String barcodePrefix = "VAR";
 	private String CF = "C.F. Cliente ";
 	private String PI = "P.IVA. Cliente ";
 	private int CFLEN = 16;
@@ -109,91 +106,91 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return CFPIvaTag;
 	}
 	
-    protected boolean isCFPIvaFlag() {
+    private boolean isCFPIvaFlag() {
 		return CFPIvaFlag;
 	}
     
-	protected void setCFPIvaFlag(boolean cFPIvaFlag) {
+	private void setCFPIvaFlag(boolean cFPIvaFlag) {
 		CFPIvaFlag = cFPIvaFlag;
 	}
     
     private static boolean CFcliente = false;
     
-    static boolean isCFcliente() {
+    private static boolean isCFcliente() {
  		return CFcliente;
  	}
 
- 	public static void setCFcliente(boolean cFcliente) {
+ 	private static void setCFcliente(boolean cFcliente) {
  		CFcliente = cFcliente;
  	}
  	
 	private boolean flagVoidRefund = false;
 	
-	protected boolean isFlagVoidRefund(long amt, long adj) 
+	private boolean isFlagVoidRefund(long amt, long adj) 
 	{
 		return ((flagVoidRefund) && (amt == 0) && (adj > 0));
 	}
 	
-	protected void setFlagVoidRefund(boolean flagVoidRefund) 
+	private void setFlagVoidRefund(boolean flagVoidRefund) 
 	{
 		this.flagVoidRefund = flagVoidRefund;
 	}
 	
 	private static boolean flagsVoidTicket = false;
 	
-	protected static boolean isFlagsVoidTicket() 
+	private static boolean isFlagsVoidTicket() 
 	{
 		return flagsVoidTicket;
 	}
 	
-	protected static void setFlagsVoidTicket(boolean flagsvoidticket) 
+	private static void setFlagsVoidTicket(boolean flagsvoidticket) 
 	{
 		flagsVoidTicket = flagsvoidticket;
 	}
 	
 	private boolean	prtDone;	// printrectotalDone
 	
-	public boolean isprtDone()
+	private boolean isprtDone()
 	{	
 		return ( prtDone );
 	}
 	
-	public boolean setprtDone()
+	private boolean setprtDone()
 	{
 		prtDone = true;
 		return ( isprtDone() );
 	}
 	
-	public boolean resetprtDone()
+	private boolean resetprtDone()
 	{
 		prtDone = false;
 		return ( isprtDone() );
 	}
 	
-	public static String lastticketsaved = null;
+	private static String lastticketsaved = null;
     private static String lastwrittenstring = "";
 	
 	private boolean	inReset;
 	
 	private long theBill;
 	
-	public long cleanTheBill( )
+	private long cleanTheBill( )
 	{
 		return ( this.setTheBill( 0 ) );
 	}
 	
-	public long setTheBill( long V )
+	private long setTheBill( long V )
 	{
 		theBill =  V;
 		return ( getTheBill() );
 	}
 	
-	public long getTheBill( )
+	private long getTheBill( )
 	{
 		return ( theBill );
 	}
 	
-	public boolean checkTheBill ( long T, long P )
+	private boolean checkTheBill ( long T, long P )
 	{
 		return ( (T <= setTheBill( getTheBill() + P ) ) );
 	}
@@ -206,14 +203,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private	static double 	currentTicket = 0.0;
     private static boolean 	provaErrori = false;		// attenzione versione di test per prova errori
 	private static int	   	countErrori = 1;
-	protected static long	totaleNonRiscosso = 0;
+	private static long	totaleNonRiscosso = 0;
 	
-	protected static boolean progress_cash = true;
-	protected static boolean progress_eft = true;
-	protected static long progress_amount = 0;
+	private static boolean progress_cash = true;
+	private static boolean progress_eft = true;
+	private static long progress_amount = 0;
 	private static int enabledLowerRoundedPay = -1;
 	
-	protected boolean AtLeastOnePrintedItem = false;
+	private boolean AtLeastOnePrintedItem = false;
 	
 	protected static double smtkamount = 0.;
 
@@ -221,32 +218,32 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private static int simulateState;
 	
-	public static int setMonitorState()
+	private static int setMonitorState()
 	{	
 		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_MONITOR ) );
 	}
 	
-	public static int setFiscalState()
+	private static int setFiscalState()
 	{	
 		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT ) );
 	}
 	
-	public static int setNonFiscalState()
+	private static int setNonFiscalState()
 	{	
 		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL ) );
 	}
 	
-	public int setEndingFiscalState()
+	private int setEndingFiscalState()
 	{	
 		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT_ENDING ) );
 	}
 	
-	public static int getSimulateState()
+	static int getSimulateState()
 	{	
 		return ( simulateState );
 	}
 	
-	public static int setSimulateState( int State )
+	private static int setSimulateState( int State )
 	{
 		simulateState = State;
 		return ( getSimulateState() );
@@ -259,7 +256,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private static FileOutputStream fos = null;
 	private static PrintStream ps = null;
 	
-	public static boolean isRT2On() {
+	protected static boolean isRT2On() {
 		if (SRTPrinterExtension.isPRT()) {
 			return (fiscalPrinterDriver.isfwRT2enabled() && DicoTaxLoad.isRT2enabled());
 		}
@@ -269,7 +266,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return (false);
 	}
 	
-	boolean isFiscalAndSRTModel()
+	private boolean isFiscalAndSRTModel()
 	{
 		return (SRTPrinterExtension.isSRT() && SRTPrinterExtension.isNotLikeNonFiscalMode());
 	}
@@ -287,29 +284,29 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
     /* printer commands - Start
      * 
-	public void open(int model,String device);
-	public void beginFiscalReceipt(boolean printHeader) throws JposException;
-	public void beginNonFiscal() throws JposException;
-	public void endFiscalReceipt(boolean printHeader) throws JposException;
-	public void endNonFiscal() throws JposException;
-	public void printNormal(int station, String data) throws JposException;
-	public void printRecItem(String description, long price, int quantity, int vatInfo, long unitPrice, String unitName) throws JposException;
-	public void printRecItemAdjustment(int adjustmentType, String description, long amount, int vatInfo) throws JposException;
-	public void printRecMessage(String message) throws JposException;
-	public void printRecRefund(String description, long amount, int vatInfo) throws JposException;
-	public void printRecSubtotal(long amount) throws JposException;
-	public void printRecSubtotalAdjustment(int adjustmentType, String description, long amount) throws JposException;
-	public void printRecTotal(long total, long payment, String description) throws JposException;
-	public void printRecVoid(String description) throws JposException;
-	public void printRecVoidItem(String description, long amount, int quantity, int adjustmentType, long adjustment, int vatInfo) throws JposException;
-	public void printReport(int reportType, String startNum, String endNum) throws JposException;
-	public void printXReport() throws JposException;
-	public void printZReport() throws JposException;
-	public void resetPrinter() throws JposException;
-	public void setDate(String date) throws JposException;
-	public void setHeaderLine(int lineNumber, String text, boolean doubleWidth) throws JposException;
-	public void setTrailerLine(int lineNumber, String text, boolean doubleWidth) throws JposException;
-	public void close();
+	private void open(int model,String device);
+	private void beginFiscalReceipt(boolean printHeader) throws JposException;
+	private void beginNonFiscal() throws JposException;
+	private void endFiscalReceipt(boolean printHeader) throws JposException;
+	private void endNonFiscal() throws JposException;
+	private void printNormal(int station, String data) throws JposException;
+	private void printRecItem(String description, long price, int quantity, int vatInfo, long unitPrice, String unitName) throws JposException;
+	private void printRecItemAdjustment(int adjustmentType, String description, long amount, int vatInfo) throws JposException;
+	private void printRecMessage(String message) throws JposException;
+	private void printRecRefund(String description, long amount, int vatInfo) throws JposException;
+	private void printRecSubtotal(long amount) throws JposException;
+	private void printRecSubtotalAdjustment(int adjustmentType, String description, long amount) throws JposException;
+	private void printRecTotal(long total, long payment, String description) throws JposException;
+	private void printRecVoid(String description) throws JposException;
+	private void printRecVoidItem(String description, long amount, int quantity, int adjustmentType, long adjustment, int vatInfo) throws JposException;
+	private void printReport(int reportType, String startNum, String endNum) throws JposException;
+	private void printXReport() throws JposException;
+	private void printZReport() throws JposException;
+	private void resetPrinter() throws JposException;
+	private void setDate(String date) throws JposException;
+	private void setHeaderLine(int lineNumber, String text, boolean doubleWidth) throws JposException;
+	private void setTrailerLine(int lineNumber, String text, boolean doubleWidth) throws JposException;
+	private void close();
 	*
 	*/
     
@@ -505,7 +502,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		printNormal_ejoff(i, s);
 	}
 	
-	public void printNormal_ejoff(int i, String s) throws JposException
+	private void printNormal_ejoff(int i, String s) throws JposException
 	{
 		System.out.println("MAPOTO-EXEC PRINT NORMAL "+s);
 		
@@ -1057,7 +1054,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    System.out.println ( "MAPOTO-EXEC PRINT MESSAGE FINITA "+arg0 );
 	}
 
-	public void printRecNormalRefund(String s, long l, int i) throws JposException
+	private void printRecNormalRefund(String s, long l, int i) throws JposException
 	{
 		System.out.println ( "MAPOTO-EXEC PRINT REFUND s="+s );
 		System.out.println ( "MAPOTO-EXEC PRINT REFUND l="+l);
@@ -1962,7 +1959,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public boolean getRecNearEnd()
+	private boolean getRecNearEnd()
 	{
 		boolean retv = false;
 		try
@@ -1976,7 +1973,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return retv;
 	}
 	
-	public static void getDate(String[] arg0) throws JposException {
+	protected static void getDate(String[] arg0) throws JposException {
 		try
 		{
 			fiscalPrinterDriver.getDate(arg0);
@@ -1996,13 +1993,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
      * 
      */
 	
-    protected String buildItem ( String desc, long price )
+    private String buildItem ( String desc, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
     	return ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     }
     
-    protected String buildItemVoid ( String de, long price )
+    private String buildItemVoid ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = de;
@@ -2010,7 +2007,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( "Storno\n"+lo+"-" );
     }
     
-    protected String buildItemRefund ( String de, long price )
+    private String buildItemRefund ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = de;
@@ -2018,7 +2015,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( "Reso\n"+lo+"-" );
     }
     
-   	protected String buildbuild ( int mx, String desc, long price )
+   	private String buildbuild ( int mx, String desc, long price )
     {
    		System.out.println("LONGPRICE:"+price);
         int MAXLNGHOFDESCR = 28;
@@ -2037,21 +2034,21 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( newMsg + ALINER.substring(0,mx-newMsg.length()-p.length())+ p);
     }
    	
-    protected String buildTotal ( String de, long price )
+    private String buildTotal ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = "TOTALE COMPLESSIVO "+de;
     	return ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     }
     
-    protected String buildChange ( String de, long price )
+    private String buildChange ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = "Resto "+de;
     	return ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     }
     
-    protected String buildItemAdjustment ( String de, long price )
+    private String buildItemAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = "Sconto "+de;
@@ -2059,7 +2056,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( lo+"-" );
     }
     
-    public String buildSubtotalAdjustment ( String de, long price )
+    private String buildSubtotalAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = "Sconto "+de;
@@ -2067,7 +2064,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( lo+"-" );
     }
     
-    protected String buildTotalIva ( String de, long price )
+    private String buildTotalIva ( String de, long price )
     {
     	if (RTTxnType.isVoidTrx(RTTxnType.getTypeTrx())){
     		price = (long)Math.rint((Math.rint((DummyServerRT.getOld_receiptVAT())*100)/100)*10000);
@@ -2079,7 +2076,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( out );
     }
     
-    protected String buildTotalAmount ( String de, long price )
+    private String buildTotalAmount ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = RTConsts.IMPORTOTOTALE+de;
@@ -2088,7 +2085,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( out );
     }
     
-    protected String buildAmountPaid ( String de, long price )
+    private String buildAmountPaid ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
         String desc = RTConsts.IMPORTOPAGATO+de;
@@ -2097,7 +2094,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	return ( out );
     }
     
-	public static String buildItemPlus ( String discount, String ivadesc )
+	private static String buildItemPlus ( String discount, String ivadesc )
 	{
 		int a = discount.lastIndexOf('-');
 		String amt = discount.substring(a);
@@ -2117,7 +2114,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return(des + ALINER.substring(0,RTConsts.getMAXITEMDESCRLENGTH()-des.length()-ivadesc.length()-amt.length()-1)+ amt);
 	}
     
-    protected String buildSRTSubtotalAdjustment ( String de, long price )
+    private String buildSRTSubtotalAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFDISCOUNT();
         String desc = "Sconto "+de;
@@ -2191,7 +2188,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		    return ( arr_data[0] );
 	}
 	
-	public static void cleanDailyTotal ( )
+	private static void cleanDailyTotal ( )
 	{
 		dailyTotal = (double)-1.0;	// distrugge il totale precedente
 	}
@@ -2201,7 +2198,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return ((dailyTotal == (double)-1.0) ? false : true );
 	}
 	
-	public static void storeDailyTotal ( String In )
+	private static void storeDailyTotal ( String In )
 	{
 		dailyTotal = (Double.valueOf(In).doubleValue()/100);
 		currentTicket = (double)0.0;
@@ -2256,7 +2253,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		  return (1);
 	  }
 	   
-		static String addIva(String desc, int max, String iva)
+		private static String addIva(String desc, int max, String iva)
 		{
 			if (desc.length() > max)
 				desc = desc.substring(0,max);
@@ -2447,7 +2444,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			setCFcliente(false);
 		}
 		
-		ArrayList splitFingerPrint(String fingerprint)
+		private ArrayList splitFingerPrint(String fingerprint)
 		{
 			int max = RTConsts.setMAXLNGHOFFINGERPRINT();
 			
@@ -2522,11 +2519,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return (fiscalPrinterDriver.getPrinterState());
 		}
 		
-		public void SetLogo(String name, int number)
+		private void SetLogo(String name, int number)
 		{
 		}
 		   
-		protected void PrintLogo(int number)
+		private void PrintLogo(int number)
 		{
 		}
 		
@@ -2589,7 +2586,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		     	 }
 		      }
 		   
-			public boolean leggiFile()
+			private boolean leggiFile()
 			{
 				char lastch;
 				
@@ -2716,7 +2713,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return(spaces+t);
 	    }
 		   
-	    public boolean  getCapAdditionalLines() throws jpos.JposException
+	    private boolean  getCapAdditionalLines() throws jpos.JposException
 	    {
 	    	return ( fiscalPrinterDriver.getCapAdditionalLines() );
 	    }
@@ -2836,7 +2833,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return ( out );
 	    }
 		   
-	    protected static int[] dobcc(String s)
+	    private static int[] dobcc(String s)
 	    {
 	    	int[] bcc = {0,0};
 	    	int a=0;
@@ -2868,7 +2865,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return (out);
 	    }
 		   
-		public void printDouble(int Mode, String data, int coloumn) throws JposException
+		private void printDouble(int Mode, String data, int coloumn) throws JposException
 		{
 			String	buff = "";
 			String	hdFsc = "014";
@@ -2967,7 +2964,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        }
 	    }
 	    
-//	    protected int executeRTDirectIo (int Command, int pData, StringBuffer bjct)
+//	    private int executeRTDirectIo (int Command, int pData, StringBuffer bjct)
 //	    {
 //	    	int reply = 0;
 //	    	
@@ -3022,7 +3019,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 //	    	return reply;
 //	    }
 
-		public String intestazione5(boolean fiscalreceipt)
+		private String intestazione5(boolean fiscalreceipt)
 		{
 			if (RTTxnType.isVoidTrx())
 				return "";
@@ -3039,7 +3036,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return intestazione;
 		}
 		
-		public String intestazione1(int type)
+		protected String intestazione1(int type)
 		{
 			String intestazione = "";
 			
@@ -3050,7 +3047,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return intestazione;
 		}
 		
-		public String intestazione2(int type)
+		protected String intestazione2(int type)
 		{
 			String intestazione = "";
 			
@@ -3070,7 +3067,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return intestazione;
 		}
 		
-		public String intestazione3(int type)
+		protected String intestazione3(int type)
 		{
 			String intestazione = "";
 			
@@ -3082,7 +3079,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return intestazione;
 		}
 		
-		public String intestazione4(int type)
+		private String intestazione4(int type)
 		{
 			String intestazione = "";
 			
@@ -3094,7 +3091,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return intestazione;
 		}
 		
-		void testata() throws JposException
+		private void testata() throws JposException
 		{
 			printNormal_ejoff(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, " ");
 			String s = intestazione1(RTTxnType.getTypeTrx());
@@ -3125,7 +3122,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return ( ALINER.substring(0,mx-newMsg.length())+ newMsg);
 	    }
 		
-		protected void stampaBarcodePerResi()
+		private void stampaBarcodePerResi()
 		{
 			// usata solo negli scontrini fiscali
 			
@@ -3196,7 +3193,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     		SmartTicket.SMTKbarcodes_add(bc);
 		}
 		
-		public void stampaBarcodePerResi(String bc, String lott)
+		private void stampaBarcodePerResi(String bc, String lott)
 		{
 			// usata solo negli scontrini regalo non fiscali
 			
@@ -3222,13 +3219,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 //    		SMTKbarcodes_add(bc);
 		}
 
-		public static String getBarcodePrefix() {
+		private static String getBarcodePrefix() {
 	    	String bcp = "";
 	    	bcp = convertiBarcodePerResi(barcodePrefix);
 	    	return bcp;
 		}
 		
-		protected static String convertiBarcodePerResi(String barcode)
+		private static String convertiBarcodePerResi(String barcode)
 		{
 			if (!Extra.isNumericVAR())
 				return barcode;
@@ -3272,7 +3269,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return subset;
 		}
 		
-		protected void abilitaTaglioCarta(boolean flag)
+		private void abilitaTaglioCarta(boolean flag)
 		{
 			if (SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
 				if (SmartTicket.Smart_Ticket_ReceiptMode != SmartTicket.ERECEIPT_PAPER)
@@ -3294,7 +3291,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			fiscalPrinterDriver.executeRTDirectIo(1137, 0, objb);
 		}
 		
-		public static boolean checkCurrentTicketTotal ( String Pr, long In )
+		static boolean checkCurrentTicketTotal ( String Pr, long In )
 		{
 		    if (Company.getNegTill() == 1)
 		    {
@@ -3322,13 +3319,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		
-		public static boolean isCurrentTicketZero (  )
+		private static boolean isCurrentTicketZero (  )
 		{
 			System.out.println("MAPOTO-TicketErrorSupport:isCurrentTicketZero <"+( currentTicket == (double)0.0 )+">");
 			return ( currentTicket == (double)0.0 );
 		}
 		
-		public static boolean checkCurrentDailyTotal ( String In )
+		static boolean checkCurrentDailyTotal ( String In )
 		{
 		    if (Company.getNegTill() == 1)
 		    {
@@ -3351,7 +3348,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return ( res );
 		}
 
-		public static boolean checkCurrentDailyTotalRounded ( String In, double rounding )
+		static boolean checkCurrentDailyTotalRounded ( String In, double rounding )
 		{
 		    if (Company.getNegTill() == 1)
 		    {
@@ -3374,7 +3371,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return ( res );
 		}
 
-		protected void printRecOmaggio(String s, long l, int i, int j, long l1, int kIvaPolipos) throws JposException
+		private void printRecOmaggio(String s, long l, int i, int j, long l1, int kIvaPolipos) throws JposException
 		{
 			System.out.println ( "MAPOTO-EXEC PRINT OMAGGIO s="+s );
 			System.out.println ( "MAPOTO-EXEC PRINT OMAGGIO l="+l);
@@ -3389,7 +3386,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			newModifierCommand(s, l, Command, k, kIvaPolipos);
 		}
 		
-		protected void printRecAcconto(String s, long l, int iIvaPolipos) throws JposException
+		private void printRecAcconto(String s, long l, int iIvaPolipos) throws JposException
 		{
 			System.out.println ( "MAPOTO-EXEC PRINT ACCONTO s="+s );
 			System.out.println ( "MAPOTO-EXEC PRINT ACCONTO l="+l);
@@ -3404,7 +3401,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			newModifierCommand(s, l, Command, i, iIvaPolipos);
 		}
 		
-		protected void printRecBMonoUso(String s, long l, int iIvaPolipos) throws JposException
+		private void printRecBMonoUso(String s, long l, int iIvaPolipos) throws JposException
 		{
 			System.out.println ( "MAPOTO-EXEC PRINT BMONOUSO s="+s );
 			System.out.println ( "MAPOTO-EXEC PRINT BMONOUSO l="+l);
@@ -3790,7 +3787,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		
-		static void pleasePrintFiscalReceipt(String filename) throws Exception
+		private static void pleasePrintFiscalReceipt(String filename) throws Exception
 		{
 			boolean lnfm = false;
 
@@ -3831,7 +3828,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			SRTPrinterExtension.setLikeNonFiscalMode(lnfm);
 		}
 		
-		static void pleasePrintFiscalReceipt() throws Exception
+		private static void pleasePrintFiscalReceipt() throws Exception
 		{
 			//String flag;
 			//int station;

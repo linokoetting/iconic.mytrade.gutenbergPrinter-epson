@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 public class CheckFw {
 	private static String list = "/bs2coop/epsonFw.lst";
 	
-	protected static boolean inList(String fw) {
+	static boolean inList(String fw) {
 		boolean ret = false;
 		log("list : "+list);
 		log("fw : "+fw);

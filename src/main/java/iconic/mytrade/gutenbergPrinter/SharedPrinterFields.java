@@ -3,15 +3,12 @@ package iconic.mytrade.gutenbergPrinter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTLottery;
 import iconic.mytrade.gutenberg.jpos.printer.service.mop.MediaInfo;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.AtecoInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.TaxInfo;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.mop.LoadMops;
-import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 
 public class SharedPrinterFields {
 	
@@ -26,8 +23,8 @@ public class SharedPrinterFields {
 		return fiscalEJenabled;
 	}
 	
-	public void setfiscalEJenabled(boolean fiscalEJenabled) {
-		this.fiscalEJenabled = fiscalEJenabled;
+	public void setfiscalEJenabled(boolean fiscalejenabled) {
+		fiscalEJenabled = fiscalejenabled;
 	}
 	
 	public static int INDEX_A = 0;

@@ -27,7 +27,7 @@ public class DicoTaxToPrinter {
 	 * questo metodo deve essere chiamato subito dopo la DicoTaxLoad
 	 * anzi facciamo che chiamarlo da li
 	 */
-	public static void DicoTaxToPrinterInit(){
+	static void DicoTaxToPrinterInit(){
 		getTaxConverted();
 		System.out.println("DicoTaxToPrinterInit - DicoTaxSize="+DicoTaxLoad.DicoTaxSize());
 		if ( DicoTaxLoad.DicoTaxSize() > 0 ){
@@ -50,7 +50,7 @@ public class DicoTaxToPrinter {
 	 * questo metodo torna il DicoTaxObjectCorrente da mandare alla printer
 	 * se torna NULL non ci sono più oggetti
 	 */
-	public static DicoTaxObject next(){
+	static DicoTaxObject next(){
 		if ( INDEXTOCALL >= DicoTaxLoad.DicoTaxSize()){
 			return ( null );
 		}
@@ -60,7 +60,7 @@ public class DicoTaxToPrinter {
 	 * questo metodo va chiamato dopo aver mandato il DicoTaxObject alla printer
 	 * e setta il codice taxPrinter mandato alla printer nell'oggetto.
 	 */
-	public static void setTaxPrinterCode ( int x ){
+	static void setTaxPrinterCode ( int x ){
 		if ( taxConverted == null ){
 			taxConverted = new HashMap();
 		}
@@ -75,7 +75,7 @@ public class DicoTaxToPrinter {
 	 * Questo metodo genera il file .dicotaxprinter.iva che contiene
 	 * l'ultima conversione (ivaPOLIPOS <> ivaPRINTER ) utilizzata
 	 */
-	public static void setTaxConverted()
+	static void setTaxConverted()
 	{
 		try
 		{
@@ -107,7 +107,7 @@ public class DicoTaxToPrinter {
 		}
 		return ( tx );
 	}
-	public static int getReallyFromPoliposToPrinter ( int tx ){
+	private static int getReallyFromPoliposToPrinter ( int tx ){
 		//if (!DicoTaxLoad.isIvaAllaPrinter() || taxConverted == null)
 		// return (0);
 
@@ -121,7 +121,7 @@ public class DicoTaxToPrinter {
 		}
 		return ( tx );
 	}
-	public static void delTaxConverted()
+	private static void delTaxConverted()
 	{
 		File FILE = new File(getName());
 		if (FILE.exists()) FILE.delete();
@@ -156,7 +156,7 @@ public class DicoTaxToPrinter {
 			System.out.println ("taxConverted ADD:"+tax.getTaxnumber() + " - "+(i+1));
 		}
 	}
-	public static String getName ( )
+	static String getName ( )
 	{
 		return ( NAME+".iva" );
 	}

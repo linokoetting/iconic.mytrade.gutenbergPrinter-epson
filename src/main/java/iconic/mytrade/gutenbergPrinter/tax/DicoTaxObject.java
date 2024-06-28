@@ -16,40 +16,40 @@ public class DicoTaxObject
 	
 	private static int		BASE_SERVICES_DEPT = 21;
 	
-	public int getTaxnumber() {
+	int getTaxnumber() {
 		return taxnumber;
 	}
-	public void setTaxnumber(int taxnumber) {
+	void setTaxnumber(int taxnumber) {
 		this.taxnumber = taxnumber;
 	}
 	public double getTaxrate() {
 		return taxrate;
 	}
-	public void setTaxrate(double taxrate) {
+	void setTaxrate(double taxrate) {
 		this.taxrate = taxrate;
 	}
-	public double getLordo() {
+	private double getLordo() {
 		return lordo;
 	}
-	public void setLordo(double amount) {
+	private void setLordo(double amount) {
 		this.lordo = amount;
 	}
-	public double getNetto() {
+	private double getNetto() {
 		return netto;
 	}
-	public void setNetto(double tax) {
+	private void setNetto(double tax) {
 		this.netto = tax;
 	}
-	public String getDescription() {
+	String getDescription() {
 		return description;
 	}
-	public void setDescription(String description) {
+	void setDescription(String description) {
 		this.description = description;
 	}
 	//
-	// public non getter non setter
+	// private non getter non setter
 	//
-	public void clean()
+	void clean()
 	{
 		setLordo ( (double)0.0 );
 		setNetto ( ( double )0.0 );
@@ -58,16 +58,16 @@ public class DicoTaxObject
 	public String getShortdescription() {
 		return shortdescription;
 	}
-	public void setShortdescription(String shortdescription) {
+	void setShortdescription(String shortdescription) {
 		this.shortdescription = shortdescription;
 	}
-	public String getPrinterTaxnumber() {
+	String getPrinterTaxnumber() {
 		return printerTaxnumber;
 	}
-	public void setPrinterTaxnumber(String printerTaxnumber) {
+	void setPrinterTaxnumber(String printerTaxnumber) {
 		this.printerTaxnumber = printerTaxnumber;
 	}
-/*	public void setPrinterTaxnumber(String printerTaxnumber, double rate, int atecoid) {
+/*	private void setPrinterTaxnumber(String printerTaxnumber, double rate, int atecoid) {
 		this.printerTaxnumber = printerTaxnumber;
 		if ((R3printers.getAtecoVI(atecoid) == 0) && (Integer.parseInt(printerTaxnumber) == 15) && (TaxData.isBeni(this.getTaxnumber()))) {
 			if (rate == 22)
@@ -82,28 +82,28 @@ public class DicoTaxObject
 			setPrinterDeptnumber(Integer.parseInt(printerTaxnumber));
 		}
 	}*/
-	public boolean isSold() {
+	private boolean isSold() {
 		return sold;
 	}
-	public void setSold(boolean sold) {
+	private void setSold(boolean sold) {
 		this.sold = sold;
 	}
-	public int getType() {
+	int getType() {
 		return type;
 	}
-	public void setType(int type) {
+	void setType(int type) {
 		this.type = type;
 	}
-	public int getAtecoId() {
+	int getAtecoId() {
 		return atecoId;
 	}
-	public void setAtecoId(int atecoId) {
+	void setAtecoId(int atecoId) {
 		this.atecoId = atecoId;
 	}
-	public int getPrinterDeptnumber() {
+	int getPrinterDeptnumber() {
 		return printerDeptnumber;
 	}
-	public void setPrinterDeptnumber(int printerDeptnumber) {
+	void setPrinterDeptnumber(int printerDeptnumber) {
 		if (TaxData.isServizi(this.getTaxnumber()))
 			printerDeptnumber+=getBASE_SERVICES_DEPT();
 		this.printerDeptnumber = printerDeptnumber;

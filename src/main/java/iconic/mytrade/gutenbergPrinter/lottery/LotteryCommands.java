@@ -1,25 +1,10 @@
 package iconic.mytrade.gutenbergPrinter.lottery;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
-import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.LotteriaInstant;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
-import iconic.mytrade.gutenberg.jpos.printer.srt.RTConsts;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
 import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
-import jpos.FiscalPrinterConst;
 
 public class LotteryCommands extends PrinterCommands {
 	
@@ -66,7 +51,7 @@ public class LotteryCommands extends PrinterCommands {
 		}
 	}
 	
-	String GetILotteryDate()
+	private String GetILotteryDate()
 	{
 		String result = "";
 		
@@ -107,7 +92,7 @@ public class LotteryCommands extends PrinterCommands {
 		
 	}
 
-	void SetILotteryDate(String date)
+	private void SetILotteryDate(String date)
 	{
 		if (!SRTPrinterExtension.isPRT())
 			return;
@@ -124,7 +109,7 @@ public class LotteryCommands extends PrinterCommands {
 		
 	}
 
-	int GetILotteryQRCodeSize()
+	private int GetILotteryQRCodeSize()
 	{
 		int result = 0;
 		
@@ -143,7 +128,7 @@ public class LotteryCommands extends PrinterCommands {
 		return result;
 	}
 
-	void SetILotteryQRCodeSize(int size)
+	private void SetILotteryQRCodeSize(int size)
 	{
 		if (!SRTPrinterExtension.isPRT())
 			return;

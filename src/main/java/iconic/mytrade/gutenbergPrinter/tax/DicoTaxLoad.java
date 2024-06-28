@@ -22,7 +22,7 @@ public class DicoTaxLoad
 		return RT2enabled;
 	}
 	
-	public static boolean isRT2disabled() {
+	private static boolean isRT2disabled() {
 		return (!isRT2enabled());
 	}
 	
@@ -34,12 +34,12 @@ public class DicoTaxLoad
 	private static void init() {
 	}
 	
-	public static int DicoTaxSize()
+	static int DicoTaxSize()
 	{
 		return ( (tax != null ) ? tax.size() : 0 );
 	}
 	
-	public static DicoTaxObject get ( int i )
+	static DicoTaxObject get ( int i )
 	{
 		if ( tax != null )
 		{
@@ -49,7 +49,7 @@ public class DicoTaxLoad
 		return ( null );
 	}
 	
-	public static ArrayList getTax() {
+	static ArrayList getTax() {
 		return tax;
 	}
 	
@@ -62,7 +62,7 @@ public class DicoTaxLoad
 		DicoTaxLoad.ivaAllaPrinter = RT;
 	}
 	
-	public static TaxInfo[] TaxInfoLookup (HashMap<String, TaxInfo> taxInfoMap)
+	private static TaxInfo[] TaxInfoLookup (HashMap<String, TaxInfo> taxInfoMap)
 	{
 	    TaxInfo[] ret = new TaxInfo[taxInfoMap.size()];
 		
@@ -82,7 +82,7 @@ public class DicoTaxLoad
 //		}
 	}
 	
-	public static void DicoTaxLoadInitInternal( )
+	private static void DicoTaxLoadInitInternal( )
 	{
 		init();
 		try {

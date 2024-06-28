@@ -1,10 +1,7 @@
 package iconic.mytrade.gutenbergPrinter.refund;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
-import iconic.mytrade.gutenbergPrinter.FiscalPrinterDriver;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
-import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import jpos.JposException;
 
 public class RefundCommands extends PrinterCommands {

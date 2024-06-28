@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.AtecoInfo;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
@@ -107,7 +106,7 @@ public class AtecoCommands extends PrinterCommands {
 		}
 	}
 
-	public static AtecoInfo[] AtecoInfoLookup (HashMap<String, AtecoInfo> atecoInfoMap)
+	private static AtecoInfo[] AtecoInfoLookup (HashMap<String, AtecoInfo> atecoInfoMap)
 	{
 		AtecoInfo[] ret = new AtecoInfo[atecoInfoMap.size()];
 		
@@ -119,14 +118,14 @@ public class AtecoCommands extends PrinterCommands {
 	    return ret;
 	}
 	
-	public static AtecoInfo AtecoInfoLookup (HashMap<String, AtecoInfo> atecoInfoMap, int atecoNr)
+	private static AtecoInfo AtecoInfoLookup (HashMap<String, AtecoInfo> atecoInfoMap, int atecoNr)
 	{
 		AtecoInfo ret = atecoInfoMap.get(""+atecoNr);
 		
 	    return ret;
 	}
 	
-	public static void setAtecoCode(int index, String code, int ventilazione, int printvi)
+	private static void setAtecoCode(int index, String code, int ventilazione, int printvi)
 	{
 		System.out.println("RT2 - setAtecoCode - index = "+index+" - code = "+code+" - ventilazione = "+ventilazione+" - printvi = "+printvi);
 		
@@ -220,7 +219,7 @@ public class AtecoCommands extends PrinterCommands {
 		return (atecocode);
 	}
 	
-	public static String getAtecoCode(int atecoNr){
+	private static String getAtecoCode(int atecoNr){
 		String atecoCode = "";
 		AtecoInfo atecoInfo;
 		

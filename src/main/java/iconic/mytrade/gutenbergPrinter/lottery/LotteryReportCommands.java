@@ -12,7 +12,6 @@ import java.util.Calendar;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.srt.RTConsts;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
@@ -116,7 +115,7 @@ public class LotteryReportCommands extends PrinterCommands {
 		printLTStatus(filename);
 	}
 	
-	public LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
+	private LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
 		LotteryStatus status = null;
 		
 		if (SharedPrinterFields.Lotteria.isLotteryOn())
@@ -137,7 +136,7 @@ public class LotteryReportCommands extends PrinterCommands {
 		return status;
 	}
 	
-	public LotteryReceiptStatus ReadLotteryReceiptStatus(String till, int repz, int recnum, String date, int type) {
+	private LotteryReceiptStatus ReadLotteryReceiptStatus(String till, int repz, int recnum, String date, int type) {
 		LotteryReceiptStatus status = null;
 		
 		if (SharedPrinterFields.Lotteria.isLotteryOn())

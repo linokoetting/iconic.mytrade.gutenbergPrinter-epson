@@ -9,12 +9,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.MessageBox;
-import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
-import iconic.mytrade.gutenbergPrinter.PrinterCommands;
-import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
-import jpos.JposException;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
+import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
+import iconic.mytrade.gutenbergPrinter.PrinterCommands;
+import jpos.JposException;
 
 public class Report extends PrinterCommands {
 	
@@ -365,7 +363,7 @@ public class Report extends PrinterCommands {
 		return ret;
     }
     
-	public static void printPeriodicTotalsReport(String ini,String end ) throws JposException
+	private static void printPeriodicTotalsReport(String ini,String end ) throws JposException
 	{
 		fiscalPrinterDriver.printPeriodicTotalsReport(ini,end);
 	}

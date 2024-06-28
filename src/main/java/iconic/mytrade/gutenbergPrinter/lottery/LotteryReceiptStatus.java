@@ -22,7 +22,7 @@ public class LotteryReceiptStatus {
 			this.kindOfReceipt = kindOfReceipt;
 	}
 	
-	public LotteryReceiptStatus(String result)
+	LotteryReceiptStatus(String result)
 	{
 		//System.out.println("LotteryReceiptStatus - result : "+result);
 		if((result.length()) >= 24)
@@ -38,67 +38,67 @@ public class LotteryReceiptStatus {
 		}
 	}
 
-	public String getTillId() {
+	String getTillId() {
 		return tillId;
 	}
 
-	public void setTillId(String tillId) {
+	void setTillId(String tillId) {
 		this.tillId = tillId;
 	}
 
-	public int getzRepNum() {
+	int getzRepNum() {
 		return zRepNum;
 	}
 
-	public void setzRepNum(int zRepNum) {
+	private void setzRepNum(int zRepNum) {
 		this.zRepNum = zRepNum;
 	}
 
-	public int getRecNum() {
+	int getRecNum() {
 		return recNum;
 	}
 
-	public void setRecNum(int recNum) {
+	private void setRecNum(int recNum) {
 		this.recNum = recNum;
 	}
 
-	public int getResult() {
+	int getResult() {
 		return result;
 	}
 
-	public void setResult(int result) {
+	private void setResult(int result) {
 		this.result = result;
 	}
 
-	public String getErrCode() {
+	String getErrCode() {
 		return errCode;
 	}
 
-	public void setErrCode(String errCode) {
+	private void setErrCode(String errCode) {
 		this.errCode = errCode;
 	}
 
-	public String getRecDate() {
+	String getRecDate() {
 		return recDate;
 	}
 
-	public void setRecDate(String recDate) {
+	private void setRecDate(String recDate) {
 		this.recDate = recDate;
 	}
 
-	public String getIdAnswer() {
+	String getIdAnswer() {
 		return idAnswer;
 	}
 
-	public void setIdAnswer(String idAnswer) {
+	private void setIdAnswer(String idAnswer) {
 		this.idAnswer = idAnswer;
 	}
 
-	public int getKindOfReceipt() {
+	int getKindOfReceipt() {
 		return kindOfReceipt;
 	}
 
-	public void setKindOfReceipt(int kindOfReceipt) {
+	private void setKindOfReceipt(int kindOfReceipt) {
 		this.kindOfReceipt = kindOfReceipt;
 	}
 	

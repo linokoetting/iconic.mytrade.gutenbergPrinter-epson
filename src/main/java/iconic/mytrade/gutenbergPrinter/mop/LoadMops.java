@@ -8,15 +8,15 @@ import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 
 public class LoadMops {
 	
-    public static int    CASH_TYPE		= -1;
-    public static int    NOPAY1_TYPE	= -1;
-    public static int    EFT_TYPE		= -1;
-    public static int    NOPAY2_TYPE	= -1;
+    private static int    CASH_TYPE		= -1;
+    private static int    NOPAY1_TYPE	= -1;
+    private static int    EFT_TYPE		= -1;
+    private static int    NOPAY2_TYPE	= -1;
     public static int    TICKETWN_TYPE	= -1;
-    public static int    NOPAID_TYPE	= -1;
-    public static int    DSCONPAY_TYPE = -1;
+    private static int    NOPAID_TYPE	= -1;
+    private static int    DSCONPAY_TYPE = -1;
     
-	public LoadMops()
+	private LoadMops()
 	{
 		
 	}
@@ -25,7 +25,7 @@ public class LoadMops {
 	}
 	
     public static ArrayList<Mop> Mops = null;		// method of payment
-    public static ArrayList Vops = null;		// voucher of payment
+    private static ArrayList Vops = null;		// voucher of payment
     
 	public static void loadMops(){
 		
@@ -34,14 +34,14 @@ public class LoadMops {
 		}
 	}
 	
-	public static void loadVops(){
+	private static void loadVops(){
 		
 		if (Vops == null){
 			Vops = getVops();
 		}
 	}
 	    
-	public static ArrayList getMops()
+	private static ArrayList getMops()
 	{
 		init ();	 
 		CASH_TYPE = SRTPrinterExtension.getCashType();
@@ -96,7 +96,7 @@ public class LoadMops {
 	    return ret;
 	}
 
-	public static ArrayList<String> getVops()
+	private static ArrayList<String> getVops()
 	{
 	    ArrayList<String> Vops = new ArrayList();
 	    
@@ -113,7 +113,7 @@ public class LoadMops {
 		return false;
 	}
 
-	public static String getSrtDescription(String description, ArrayList Mops)
+	private static String getSrtDescription(String description, ArrayList Mops)
 	{
 		String srtdescription = "Non Riscosso";
 		
@@ -141,7 +141,7 @@ public class LoadMops {
 		return "";
 	}
 	
-	public static boolean isNonRiscosso(ArrayList Mops, String srtdescription, boolean isRT2On)
+	private static boolean isNonRiscosso(ArrayList Mops, String srtdescription, boolean isRT2On)
 	{
 		for (int i = 0; i < Mops.size(); i++){
 			Mop mop = (Mop) Mops.get(i);
@@ -161,7 +161,7 @@ public class LoadMops {
 		return false;
 	}
 	
-	public static String getPrefixPayment(String description, ArrayList Mops, boolean oldfw)
+	private static String getPrefixPayment(String description, ArrayList Mops, boolean oldfw)
 	{
 		System.out.println("RT2 - LoadMops - getPrefixPayment - description = "+description+" - oldfw = "+oldfw);
 		
@@ -209,7 +209,7 @@ public class LoadMops {
 		return(getPrefixPayment(description, Mops, fwRT2disabled));
 	}
 	
-	public static boolean isNumeric (String s)
+	private static boolean isNumeric (String s)
 	{
 		try 
 		{

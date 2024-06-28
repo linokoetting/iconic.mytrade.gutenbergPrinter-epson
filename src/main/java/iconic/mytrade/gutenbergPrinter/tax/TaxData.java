@@ -70,11 +70,11 @@ public class TaxData {
 		}
 	}
 	
-	public static int getBeni() {
+	static int getBeni() {
 		return BENI;
 	}
 
-	public static boolean isServizi(int taxNumber) {
+	static boolean isServizi(int taxNumber) {
 		setTypeByTaxNumber(taxNumber);
 		return isServizi;
 	}

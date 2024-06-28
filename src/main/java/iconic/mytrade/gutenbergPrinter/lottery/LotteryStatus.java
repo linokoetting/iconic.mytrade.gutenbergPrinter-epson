@@ -38,7 +38,7 @@ public class LotteryStatus {
 	      	this.SubError = SubError;
 	}
 	
-	public LotteryStatus(String result)
+	LotteryStatus(String result)
 	{
 		//System.out.println("LotteryStatus - result : "+result);
 		if((result.length()) >= 26)
@@ -61,123 +61,123 @@ public class LotteryStatus {
 		}
 	}
 
-	public String getTillId() {
+	String getTillId() {
 		return tillId;
 	}
 
-	public void setTillId(String tillId) {
+	void setTillId(String tillId) {
 		this.tillId = tillId;
 	}
 
-	public String getDate() {
+	String getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	private void setDate(String date) {
 		this.date = date;
 	}
 
-	public int getzRepNum() {
+	int getzRepNum() {
 		return zRepNum;
 	}
 
-	public void setzRepNum(int zRepNum) {
+	private void setzRepNum(int zRepNum) {
 		this.zRepNum = zRepNum;
 	}
 
-	public int getKindOfRequest() {
+	int getKindOfRequest() {
 		return kindOfRequest;
 	}
 
-	public void setKindOfRequest(int kindOfRequest) {
+	private void setKindOfRequest(int kindOfRequest) {
 		this.kindOfRequest = kindOfRequest;
 	}
 
-	public int getFilesToSend() {
+	int getFilesToSend() {
 		return filesToSend;
 	}
 
-	public void setFilesToSend(int filesToSend) {
+	private void setFilesToSend(int filesToSend) {
 		this.filesToSend = filesToSend;
 	}
 
-	public int getOldFilesToSend() {
+	int getOldFilesToSend() {
 		return oldFilesToSend;
 	}
 
-	public void setOldFilesToSend(int oldFilesToSend) {
+	private void setOldFilesToSend(int oldFilesToSend) {
 		this.oldFilesToSend = oldFilesToSend;
 	}
 
-	public int getRejectedFiles() {
+	int getRejectedFiles() {
 		return rejectedFiles;
 	}
 
-	public void setRejectedFiles(int rejectedFiles) {
+	private void setRejectedFiles(int rejectedFiles) {
 		this.rejectedFiles = rejectedFiles;
 	}
 
-	public int getWaitingReceipts() {
+	int getWaitingReceipts() {
 		return waitingReceipts;
 	}
 
-	public void setWaitingReceipts(int waitingReceipts) {
+	private void setWaitingReceipts(int waitingReceipts) {
 		this.waitingReceipts = waitingReceipts;
 	}
 
-	public int getReceiptsToSend() {
+	int getReceiptsToSend() {
 		return receiptsToSend;
 	}
 
-	public void setReceiptsToSend(int receiptsToSend) {
+	private void setReceiptsToSend(int receiptsToSend) {
 		this.receiptsToSend = receiptsToSend;
 	}
 
-	public int getAcceptedReceipts() {
+	int getAcceptedReceipts() {
 		return acceptedReceipts;
 	}
 
-	public void setAcceptedReceipts(int acceptedReceipts) {
+	private void setAcceptedReceipts(int acceptedReceipts) {
 		this.acceptedReceipts = acceptedReceipts;
 	}
 
-	public int getRejectedReceipts() {
+	int getRejectedReceipts() {
 		return rejectedReceipts;
 	}
 
-	public void setRejectedReceipts(int rejectedReceipts) {
+	private void setRejectedReceipts(int rejectedReceipts) {
 		this.rejectedReceipts = rejectedReceipts;
 	}
 	
-	public int getNumRemainingCodes() {
+	int getNumRemainingCodes() {
 		return NumRemainingCodes;
 	}
 
-	public void setNumRemainingCodes(int numRemainingCodes) {
+	private void setNumRemainingCodes(int numRemainingCodes) {
 		NumRemainingCodes = numRemainingCodes;
 	}
 
-	public int getILVersion() {
+	int getILVersion() {
 		return ILVersion;
 	}
 
-	public void setILVersion(int iLVersion) {
+	private void setILVersion(int iLVersion) {
 		ILVersion = iLVersion;
 	}
 
-	public int getLastReqResult() {
+	int getLastReqResult() {
 		return LastReqResult;
 	}
 
-	public void setLastReqResult(int lastReqResult) {
+	private void setLastReqResult(int lastReqResult) {
 		LastReqResult = lastReqResult;
 	}
 
-	public String getSubError() {
+	String getSubError() {
 		return SubError;
 	}
 
-	public void setSubError(String subError) {
+	private void setSubError(String subError) {
 		SubError = subError;
 	}
 

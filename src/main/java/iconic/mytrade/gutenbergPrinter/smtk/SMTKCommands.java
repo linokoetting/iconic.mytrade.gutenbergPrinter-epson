@@ -5,14 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
 
-import iconic.mytrade.gutenberg.jpos.printer.service.LastTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.smtk.Base64;
 import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
@@ -202,7 +198,7 @@ public class SMTKCommands extends PrinterCommands {
     	SmartTicket.SMTKrestoreDefault();
 	}
 	
-	public static String SMTKdownload(String url)
+	private static String SMTKdownload(String url)
 	{
 		String ret = "";
 		

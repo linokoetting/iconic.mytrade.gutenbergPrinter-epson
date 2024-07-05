@@ -22,6 +22,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
+import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
 import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
@@ -282,6 +283,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return timeout;
 	}
 	
+	private boolean PrintAfterSuspendedCutting = false;
+	private int INDEX_A_START = -1;
+	private int INDEX_A_STOP = -1;
+	
     /* printer commands - Start
      * 
 	private void open(int model,String device);
@@ -352,6 +357,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public void beginFiscalReceipt(boolean arg0) throws JposException
 	{
 		System.out.println("MAPOTO-EXEC BEGINFISCAL");
+		
+		INDEX_A_START = -1;
+		INDEX_A_STOP = -1;
 		
 		SharedPrinterFields.setInTicket();
 		resetprtDone();
@@ -504,6 +512,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private void printNormal_ejoff(int i, String s) throws JposException
 	{
+		if (s.contains(Cancello.getTag()+R3define.CrLf)) {
+			String s1 = s.replaceAll(Cancello.getTag()+R3define.CrLf, "");
+			s = s1;
+			if (s.length() == 0)
+				return;
+		}
+		
 		System.out.println("MAPOTO-EXEC PRINT NORMAL "+s);
 		
 		if (isLNFMAndSRTModel())
@@ -843,7 +858,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
         	
        	fiscalPrinterDriver.endFiscalReceipt(arg0);
         	
-   		stampaBarcodePerResi();
+		if (Cancello.getPosizione() == 1)
+    		stampaBarcodeCancello();
+		stampaBarcodePerResi();
+		if (Cancello.getPosizione() == 2)
+			stampaBarcodeCancello();
    		abilitaTaglioCarta(true);
         
         SharedPrinterFields.resetInTicket();	    
@@ -987,6 +1006,26 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecMessage(String arg0) throws JposException {
+		if (SRTPrinterExtension.isPRT()) {
+			
+			if (Cancello.isFiscale() && Cancello.getPosizione() != 0) {			// se posizione = 0 stampiamo su fiscale in modalità vecchia
+				if (arg0.equalsIgnoreCase(Cancello.getTag())) {
+					PrintAfterSuspendedCutting = !PrintAfterSuspendedCutting;
+					if (PrintAfterSuspendedCutting)
+						INDEX_A_START = SharedPrinterFields.INDEX_A;
+					else
+						INDEX_A_STOP = SharedPrinterFields.INDEX_A;
+				}
+				
+				if ((PrintAfterSuspendedCutting) || (arg0.equalsIgnoreCase(Cancello.getTag()))) {
+					return;
+				}
+			}
+			
+		}
+		if (arg0.equalsIgnoreCase(Cancello.getTag()))
+			return;
+		
 		System.out.println ( "MAPOTO-EXEC PRINT MESSAGE "+arg0+" staticMsgLen=<"+staticMsgLen+">" );
 		
 		if (isLNFMAndSRTModel())
@@ -1203,6 +1242,16 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		
 		setFlagVoidRefund(false);
+		
+		if (SRTPrinterExtension.isPRT()) {
+			
+			if (Cancello.isFiscale() && Cancello.getPosizione() != 0) {		// se posizione = 0 stampiamo su fiscale in modalità vecchia
+				if (PrintAfterSuspendedCutting) {
+					return;
+				}
+			}
+			
+		}
 		
 		System.out.println ( "XDIRECTIO :"+ i +":"+data[0]+":"+s+":");
 		
@@ -3269,6 +3318,45 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return subset;
 		}
 		
+		private void stampaBarcodeCancello()
+		{
+			if (INDEX_A_START >= 0 && INDEX_A_STOP >= 0 && INDEX_A_STOP > INDEX_A_START) {
+				for  ( int idx = INDEX_A_START+1; idx < INDEX_A_STOP ; idx++ )
+				{
+					MethodE M = (MethodE)SharedPrinterFields.a.get(idx);
+					try
+					{
+						switch ( M.getM() )
+						{
+						case R3define.fprintRecMessage:
+							if (idx == INDEX_A_START+1) printRecText(R3define.CrLf, "2");
+							printRecText((String) M.getV().get(0), "2");
+							if (idx == INDEX_A_STOP-1) printRecText(R3define.CrLf, "2");
+							break;
+						case R3define.fdirectIO:
+							int[] data={(Integer) M.getV().get(1)};
+							int i = (Integer) M.getV().get(0);
+							StringBuffer s = new StringBuffer(""+M.getV().get(2));
+							fiscalPrinterDriver.executeRTDirectIo(data[0], i, s);
+							break;
+						}
+					} catch (Exception e) {
+						System.out.println("stampaBarcodeCancello - Exception:"+e.getMessage());
+					}
+				}
+			}
+		}
+		
+	    private void printRecText(String text, String type)
+	    {
+			String op;
+			StringBuffer objb = new StringBuffer("");
+			
+			op = "01";
+			objb = new StringBuffer(op + type + "01" + "1" + "1" + text);
+			executeDirectIo(1078, objb.toString());
+	    }
+	    
 		private void abilitaTaglioCarta(boolean flag)
 		{
 			if (SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON

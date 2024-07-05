@@ -2,6 +2,7 @@ package iconic.mytrade.gutenbergPrinter.ej;
 
 import java.util.ArrayList;
 
+import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo;
 import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
@@ -46,6 +47,10 @@ public class EjCommands {
 
 	public static void printNormal(int station, String data) throws JposException {
 		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			if (data.indexOf(Cancello.getTag()) >= 0) {
+				String s = data.replaceAll(Cancello.getTag()+R3define.CrLf, "");
+				data = s;
+			}
 			SharedPrinterFields.fiscalEJ.printNormal(station, data);
 		}
 	}
@@ -77,7 +82,8 @@ public class EjCommands {
 
 	public void printRecMessage(String message) throws JposException {
 		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
-			SharedPrinterFields.fiscalEJ.printRecMessage(message);
+			if (!message.equalsIgnoreCase(Cancello.getTag()))
+				SharedPrinterFields.fiscalEJ.printRecMessage(message);
 		}
 	}
 

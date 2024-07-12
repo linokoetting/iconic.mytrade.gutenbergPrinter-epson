@@ -283,9 +283,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return timeout;
 	}
 	
-	private boolean PrintAfterSuspendedCutting = false;
-	private int INDEX_A_START = -1;
-	private int INDEX_A_STOP = -1;
+	private static boolean PrintAfterSuspendedCutting = false;
+	private static int INDEX_A_START = -1;
+	private static int INDEX_A_STOP = -1;
 	
     /* printer commands - Start
      * 
@@ -1018,13 +1018,15 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				}
 				
 				if ((PrintAfterSuspendedCutting) || (arg0.equalsIgnoreCase(Cancello.getTag()))) {
+					System.out.println("printRecMessage - "+arg0+" - PrintAfterSuspendedCutting="+PrintAfterSuspendedCutting);
 					return;
 				}
 			}
 			
 		}
-		if (arg0.equalsIgnoreCase(Cancello.getTag()))
+		if (arg0.equalsIgnoreCase(Cancello.getTag())) {
 			return;
+		}
 		
 		System.out.println ( "MAPOTO-EXEC PRINT MESSAGE "+arg0+" staticMsgLen=<"+staticMsgLen+">" );
 		
@@ -1247,6 +1249,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (Cancello.isFiscale() && Cancello.getPosizione() != 0) {		// se posizione = 0 stampiamo su fiscale in modalità vecchia
 				if (PrintAfterSuspendedCutting) {
+					System.out.println("directIO - PrintAfterSuspendedCutting="+PrintAfterSuspendedCutting);
 					return;
 				}
 			}
@@ -3333,11 +3336,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							printRecText((String) M.getV().get(0), "2");
 							if (idx == INDEX_A_STOP-1) printRecText(R3define.CrLf, "2");
 							break;
-						case R3define.fdirectIO:
-							int[] data={(Integer) M.getV().get(1)};
-							int i = (Integer) M.getV().get(0);
-							StringBuffer s = new StringBuffer(""+M.getV().get(2));
-							fiscalPrinterDriver.executeRTDirectIo(data[0], i, s);
+						case R3define.fprintBarcode:
+							String bc = (String) M.getV().get(0);
+							printBarcode(bc);
+							break;
+						default:
+							System.out.println("stampaBarcodeCancello - Unhandled:"+M.getM());
 							break;
 						}
 					} catch (Exception e) {
@@ -3351,6 +3355,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    {
 			String op;
 			StringBuffer objb = new StringBuffer("");
+			
+			System.out.println ( "MAPOTO-EXEC PRINT TEXT "+text+" - "+type );
 			
 			op = "01";
 			objb = new StringBuffer(op + type + "01" + "1" + "1" + text);
@@ -4257,6 +4263,19 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			System.out.println("RT2 - enableLowerRoundedPay - ret = "+ret);
 			return ret;
+		}
+
+		public void printBarcode(String bc) {
+			int[] data = new int[25];
+
+			System.out.println ( "MAPOTO-EXEC PRINT BARCODE "+bc );
+				
+			int l13 = bc.length()-R3define.getBARCODEHEADEREAN13().length();
+			int l128 = bc.length()-R3define.getBARCODEHEADEREAN128().length();
+			int lqrc = bc.length()-R3define.getQRCODEHEADER().length();
+			int a = l13 -12;
+			
+			executeDirectIo(R3define.BARCODECOMMAND, bc);
 		}
 
 }

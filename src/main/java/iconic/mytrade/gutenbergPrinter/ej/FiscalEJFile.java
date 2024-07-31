@@ -42,7 +42,7 @@ public class FiscalEJFile extends FiscalEJ {
 		}
 		if (getRounding() != 0) {
 			ForFiscalEJFile.writeToFile( BASEROUNDING
-					+ formatAmount(getRounding()));
+					+ formatAmount(getRounding(), (getRounding() < 0)));
 			setRounding(0);
 		}
 	}
@@ -112,6 +112,18 @@ public class FiscalEJFile extends FiscalEJ {
 		String s = Long.toString(amount / 10000) + "." + decimals;
 		while (s.length() < 8)
 			s = " " + s;
+		return s;
+	}
+	
+	private String formatAmount(long amount, boolean negative) {
+		String s = formatAmount(amount);
+		if (negative)
+		{
+        	StringBuffer s1 = new StringBuffer(s);
+        	s = s1.reverse().toString().replaceFirst(" ", "-");
+        	s1 = new StringBuffer(s);
+        	s = s1.reverse().toString();
+		}
 		return s;
 	}
 

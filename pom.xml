@@ -6,20 +6,12 @@
   <name>gutenbergPrinter</name>
   
   <properties>
-  	<jpos113-systemPath>/home/lino/workspaceGit/mytrade30R/home/lib/jpos113.jar</jpos113-systemPath>
   	<jpos191-systemPath>/home/lino/workspaceGit/mytrade30R/home/lib/jpos191.jar</jpos191-systemPath>
     
     <printer.version>31.0.1-SNAPSHOT</printer.version>
   </properties>  
   
   <dependencies>     
-		<dependency>
-		    <groupId>com.jpos</groupId>
-		    <artifactId>jpos113</artifactId>
-		    <version>1.0</version>
-		    <scope>system</scope>
-	    	<systemPath>${jpos113-systemPath}</systemPath>
-		</dependency>
 		
 		<dependency>
 		    <groupId>com.jpos</groupId>

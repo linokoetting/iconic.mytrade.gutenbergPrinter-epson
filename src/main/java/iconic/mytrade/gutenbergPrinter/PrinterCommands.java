@@ -389,14 +389,21 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        String[] as = new String[1];
 	        fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_FISCAL_REC, ai, as);
             String n = as[0];
-            fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
+            
             String z = "";
-            try {
-            	z = Sprint.f("%04d",Integer.parseInt(as[0])+1);
-	        } catch (NumberFormatException e) {
-			   System.out.println("beginFiscalReceipt - NumberFormatException : " + e.getMessage());
-			   z = Sprint.f("%04d",0);
-	        }
+            if (DummyServerRT.CurrentFiscalClosure == 0) {
+	            fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
+	            try {
+	            	z = Sprint.f("%04d",Integer.parseInt(as[0])+1);
+		        } catch (NumberFormatException e) {
+				   System.out.println("beginFiscalReceipt - NumberFormatException : " + e.getMessage());
+				   z = Sprint.f("%04d",0);
+				   fiscalPrinterDriver.resetPrinter();
+		        }
+            }
+            else {
+            	z = Sprint.f("%04d",DummyServerRT.CurrentFiscalClosure);
+            }
             
             s = doc[0]+" N. "+z+"-"+n;
             ForFiscalEJFile.writeToFile("\t\t"+s);
@@ -1903,6 +1910,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			HardTotals.ProAzz.add(1);
 			HardTotals.delReportZ();
 		}
+		
+		if (SRTPrinterExtension.isPRT())
+			DummyServerRT.CurrentFiscalClosure++;
 	}
 
 	public void setDate(String arg0) throws JposException {

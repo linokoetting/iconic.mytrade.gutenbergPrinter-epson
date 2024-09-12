@@ -789,22 +789,41 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							MessageBox.showMessage("OPERAZIONE ANNULLATA", null, MessageBox.OK);
 						}
 						
-						printRecVoid("");
-						
-				  	    endTicket(DummyServerRT.CurrentReceiptNumber);
-				  	    endTicketSRT(DummyServerRT.SRTServerID, DummyServerRT.SRTTillID, DummyServerRT.currentFingerPrint);
-				  	    SharedPrinterFields.resetInTicket();
-						
-				  	    setFlagsVoidTicket( false );
-					    
-						endNonFiscal();
+	  	    			if (isFiscalAndSRTModel())
+	  	    			{
+	  	    				// ATTENZIONE: se si arriva qui lo scontrino successivo avrà lo stesso numero fiscale di quello annullato
+	  	    				// per cui quasi lo stesso filename nella cartella "printerRts", potrebbe causare qualche problema in qualche caso,
+	  	    				// ad esempio richiamando lo scontrino successivo per annullarlo la stampante va in errore.
+	  	    				fiscalPrinterDriver.resetPrinter();
+	  	    			}
+	  	    			else
+	  	    			{
+	  	    				// potremmo passare da qui a seguito della stampa di uno scontrino di rtvoid quindi in modalità LNFM 
+							printRecVoid("");
+					  	    endFiscalReceipt_I(arg0);
+					  	    SharedPrinterFields.resetInTicket();
+					  	    setFlagsVoidTicket( false );
+	  	    			}
 						
 						setMonitorState();
 						SharedPrinterFields.a = new ArrayList();
 				   		
 				   		RTTxnType.setSaleTrx();
 //						setCanPost(true);	// ???
-						return;
+	  	    			
+	  	    			while (true) {
+	  						PleaseDisplay.pleaseDisplay(DummyServerRT.SERVEROFF);
+	  						try {
+								Thread.sleep(3000);
+							} catch (InterruptedException e) {
+							}
+	  						PleaseDisplay.pleaseDisplay(DummyServerRT.TURNOFFON);
+	  						try {
+								Thread.sleep(3000);
+							} catch (InterruptedException e) {
+							}
+	  	    			}
+	  	    			//return;
 					}
 //				}
 				
@@ -820,6 +839,27 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
   	    	}
 		}
   	    
+  	    endFiscalReceipt_I(arg0);
+
+		if (isFiscalAndSRTModel())
+		{
+			HardTotals.doEndFiscalSRT(RTTxnType.getTypeTrx());
+			
+			DummyServerRT.StoreTicket4Reprint(DummyServerRT.CurrentReceiptNumber);
+			
+			RTTxnType.setSaleTrx();
+		}
+		
+		if (SRTPrinterExtension.isPRT())
+		{
+			HardTotals.doEndFiscalSRT(RTTxnType.getTypeTrx());
+		}
+		
+		SMTKCommands.Base64_Ticket(PosApp.getTransactionNumber()-1, false);
+		SMTKCommands.Smart_Ticket(PosApp.getTransactionNumber()-1, false);
+	}
+	
+	private void endFiscalReceipt_I(boolean arg0) throws JposException {
 		if (isLNFMAndSRTModel())
 		{
 			setFlagVoidRefund(false);
@@ -892,23 +932,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		SharedPrinterFields.a = new ArrayList();			// prova reset scontrino precedente
 		
 //		SharedPrinterFields.setCanPost(true);	// ???
-
-		if (isFiscalAndSRTModel())
-		{
-			HardTotals.doEndFiscalSRT(RTTxnType.getTypeTrx());
-			
-			DummyServerRT.StoreTicket4Reprint(DummyServerRT.CurrentReceiptNumber);
-			
-			RTTxnType.setSaleTrx();
-		}
-		
-		if (SRTPrinterExtension.isPRT())
-		{
-			HardTotals.doEndFiscalSRT(RTTxnType.getTypeTrx());
-		}
-		
-		SMTKCommands.Base64_Ticket(PosApp.getTransactionNumber()-1, false);
-		SMTKCommands.Smart_Ticket(PosApp.getTransactionNumber()-1, false);
 	}
 	
 	public void resetPrinter() throws JposException {

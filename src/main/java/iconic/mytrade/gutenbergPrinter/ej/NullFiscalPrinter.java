@@ -490,8 +490,7 @@ public class NullFiscalPrinter extends BasicSimulator implements FiscalPrinterSe
     {
     }
 
-    public void printRecItem(String s, long l, int i, int j, long l1, String s1)
-        throws JposException
+    public void printRecItem(String s, long l, int i, int j, long l1, String s1) throws JposException
     {
     }
 

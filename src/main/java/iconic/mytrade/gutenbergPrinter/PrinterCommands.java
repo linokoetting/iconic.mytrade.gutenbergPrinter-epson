@@ -287,6 +287,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private static int INDEX_A_START = -1;
 	private static int INDEX_A_STOP = -1;
 	
+	private boolean isPrintBarcodeCancello() {
+		// torna true soltanto se c'è un barcode cancello da stampare come additional lines dopo il taglio carta
+		// torna false se non c'è un barcode cancello da stampare
+		// oppure se c'è un barcode cancello da stampare nello scontrino fiscale ma non come additional lines
+		return(INDEX_A_START >= 0 && INDEX_A_STOP >= 0 && INDEX_A_STOP > INDEX_A_START);
+	}
+	
     /* printer commands - Start
      * 
 	private void open(int model,String device);
@@ -3356,7 +3363,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private void stampaBarcodeCancello()
 		{
-			if (INDEX_A_START >= 0 && INDEX_A_STOP >= 0 && INDEX_A_STOP > INDEX_A_START) {
+			if (isPrintBarcodeCancello()) {
 				for  ( int idx = INDEX_A_START+1; idx < INDEX_A_STOP ; idx++ )
 				{
 					MethodE M = (MethodE)SharedPrinterFields.a.get(idx);
@@ -3402,7 +3409,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (SmartTicket.Smart_Ticket_ReceiptMode != SmartTicket.ERECEIPT_PAPER)
 					return;
 			
-			if (!Lotteria.isPrintBarcode())
+			if (!Lotteria.isPrintBarcode() && !isPrintBarcodeCancello())
 				return;
 			
 			String op;

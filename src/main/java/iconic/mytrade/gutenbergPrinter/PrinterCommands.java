@@ -94,6 +94,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	static String OPERAZIONEANNULLATA = "OPERAZIONE ANNULLATA";
 	static String RESONONCORRETTO = "PREZZO NON CORRETTO ";
+    static String RESOANNULLATO = "<Void>          --------- SCONTRINO ANNULLATO --------- "+OPERAZIONEANNULLATA;
 
     private static String barcodePrefix = "VAR";
 	private String CF = "C.F. Cliente ";

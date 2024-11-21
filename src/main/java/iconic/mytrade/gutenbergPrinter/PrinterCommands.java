@@ -3057,61 +3057,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        }
 	    }
 	    
-//	    private int executeRTDirectIo (int Command, int pData, StringBuffer bjct)
-//	    {
-//	    	int reply = 0;
-//	    	
-//	    	if (PrinterType.isEpsonModel()){
-//		    	int[] dt={0};
-//		        try
-//		        {
-//		        	dt[0]=Command;
-////		        	if ((Command == 4002) || (Command == 4005) || (Command == 4037))
-////		        		System.out.println("EPSON - directIO(0,"+dt[0]+","+bjct.toString()+") - lunghezza="+bjct.toString().length());
-//		        	fiscalPrinterDriver.directIO(0, dt, bjct); 
-//		        }
-//		        catch(Exception e)
-//		        {
-//		        	reply = -1;
-//		        	System.out.println("Data error\nException: "+ e.getMessage());
-//		        }
-//	    	}
-//	    	
-//	    	if (PrinterType.isRCHPrintFModel()){
-//	            int[] dt={pData};
-//	            String[] pString = {new String(bjct)};
-//	            String str = bjct.toString();
-//	            try
-//	            {
-//	            	System.out.println("executeRTDirectIo - Command : "+Command+" - dt : "+dt[0]);
-//	            	if (Command >= 1000) {
-//	            		fiscalPrinterDriver.directIO(Command, dt, pString);
-//		            	System.out.println("executeRTDirectIo - pString : "+pString[0]);
-//		            	if (Command == 8003)
-//		            		bjct.append(pString[0]);
-//	            	}
-//	            	else {
-//		            	System.out.println("executeRTDirectIo - str input: "+str);
-//	            		fiscalPrinterDriver.directIO(Command, dt, str);
-//		            	System.out.println("executeRTDirectIo - str output: "+str);
-//	            	}
-//	            }
-//	            catch(Exception e)
-//	            {
-//	            	System.out.println("Data error\nException: "+ e.getMessage());
-//	            	
-//	            	if (((Command == 6000) || (Command == 6001)) && (pData == 1))
-//	            		dt[0] = 0;	// document not voidable/refundable
-//	            	
-//	            	if ((Command == 0) && (pData == 0))
-//	            		return -1;	// per non sporcare dt[0] assegnandogli -1 
-//	            }
-//	           reply = dt[0];
-//	    	}
-//	    	
-//	    	return reply;
-//	    }
-
 		private String intestazione5(boolean fiscalreceipt)
 		{
 			if (RTTxnType.isVoidTrx())

@@ -113,7 +113,7 @@ public class VatCommands extends PrinterCommands {
 			return;
 		}
 		
-		System.out.println("EPSON - setVatValue("+Integer.parseInt(taxnumber)+","+vatrate+")");
+		System.out.println("SetVatValue - setVatValue("+Integer.parseInt(taxnumber)+","+vatrate+")");
 		fiscalPrinterDriver.setVatValue(Integer.parseInt(taxnumber), vatrate);
 	}
 	
@@ -333,14 +333,14 @@ public class VatCommands extends PrinterCommands {
 			atecoIndex = "";
 		}
 		
-		System.out.println("EPSON - " + "|" + dept + "|" + desc + "|" + price1 + "|" + price2 + "|" + price3 + "|" + singleItem + "|" + VATGroup + "|" + 
+		System.out.println("SetDepartment - " + "|" + dept + "|" + desc + "|" + price1 + "|" + price2 + "|" + price3 + "|" + singleItem + "|" + VATGroup + "|" + 
 				 priceLimit + "|" + printGroup + "|" + superGruppoMerceologico + "|" + fatturaUnitMeasure + "|" + salesType + "|" + salesAttribute + "|" + atecoIndex);
 		
 		sbcmd = new StringBuffer(dept + desc + price1 + price2 + price3 + singleItem + VATGroup + 
 						 priceLimit + printGroup + superGruppoMerceologico + fatturaUnitMeasure +
 						 salesType + salesAttribute + atecoIndex);
 		
-		System.out.println("EPSON - executeRTDirectIo(4002,0,"+sbcmd.toString()+") - lunghezza="+sbcmd.toString().length());
+		System.out.println("SetDepartment - executeRTDirectIo(4002,0,"+sbcmd.toString()+") - lunghezza="+sbcmd.toString().length());
 		System.out.println("SetDepartment - command = executeRTDirectIo(4002,0,"+sbcmd.toString()+")");
 		fiscalPrinterDriver.executeRTDirectIo(4002, 0, sbcmd);
 	}

@@ -901,7 +901,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	        {
 	        	dt[0]=Command;
 //			        	if ((Command == 4002) || (Command == 4005) || (Command == 4037))
-//			        		System.out.println("EPSON - directIO(0,"+dt[0]+","+bjct.toString()+") - lunghezza="+bjct.toString().length());
+//			        		System.out.println("executeRTDirectIo - directIO(0,"+dt[0]+","+bjct.toString()+") - lunghezza="+bjct.toString().length());
 	        	fiscalPrinter.directIO(0, dt, bjct); 
 	        }
 	        catch(Exception e)

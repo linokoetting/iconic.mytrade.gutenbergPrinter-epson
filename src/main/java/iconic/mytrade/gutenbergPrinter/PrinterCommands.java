@@ -292,7 +292,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return ( getSimulateState() );
 	}
 	
-//	private static GuiPosPrinterDriver nonFiscal = null;
 	protected static GuiFiscalPrinterDriver fiscalPrinterDriver = null;
 	
 	private static File inout = null;		

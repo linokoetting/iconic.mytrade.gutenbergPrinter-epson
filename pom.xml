@@ -9,6 +9,15 @@
     <printer.version>31.0.1-SNAPSHOT</printer.version>
   </properties>  
   
+  <build>
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  			<filtering>true</filtering>
+  		</resource>
+  	</resources>
+  </build>
+   
   <dependencies>     
 		
 		<dependency>

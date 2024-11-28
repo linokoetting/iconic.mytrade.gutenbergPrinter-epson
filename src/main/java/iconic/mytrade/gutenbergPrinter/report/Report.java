@@ -12,6 +12,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.MessageBox;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
+import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
 import jpos.JposException;
 
 public class Report extends PrinterCommands {
@@ -150,7 +151,7 @@ public class Report extends PrinterCommands {
 
         do {
 			System.out.println ( "r3PrintSomeReceiptByDate Date<"+givenDate+"> ticketStart<"+ticketStart+">"+"> ticketEnd<"+ticketEnd+">");
-			PrinterCommands cmd = new PrinterCommands();
+			PrinterCommands cmd = SharedPrinterFields.getPrinterCommands();
 			cmd.executeDirectIo(3098, "01"+givenDate+ticketStart+ticketEnd);
             c1.add(Calendar.DATE, 1);
             givenDate = sdf.format(c1.getTime());

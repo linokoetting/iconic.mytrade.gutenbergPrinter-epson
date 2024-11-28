@@ -7,6 +7,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.RTLottery;
 import iconic.mytrade.gutenberg.jpos.printer.service.mop.MediaInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.AtecoInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.TaxInfo;
+import iconic.mytrade.gutenbergPrinter.ej.EjCommands;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.mop.LoadMops;
 
@@ -96,6 +97,24 @@ public class SharedPrinterFields {
 	{
 		inTicket = false;
 		return ( isInTicket() );
+	}
+	
+	private static PrinterCommands cmd = null;
+	
+	public static PrinterCommands getPrinterCommands()
+	{
+		if ( cmd == null)
+			cmd = new PrinterCommands();
+		return cmd;
+	}
+	
+	private static EjCommands ejcmd = null;
+	
+	public static EjCommands getEjCommands()
+	{
+		if ( ejcmd == null)
+			ejcmd = new EjCommands();
+		return ejcmd;
 	}
 	
 }

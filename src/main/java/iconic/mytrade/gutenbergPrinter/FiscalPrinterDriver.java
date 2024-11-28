@@ -2616,7 +2616,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   System.out.println("Reprinting ticket - Number="+as[0]+" Date="+dateFormat.format(date));
 		   try
 		   {
-			   PrinterCommands cmd = new PrinterCommands();
+			   PrinterCommands cmd = SharedPrinterFields.getPrinterCommands();
 			   cmd.printReport(PRINTSOMERECEIPTBYDATE, dateFormat.format(date)+as[0], dateFormat.format(date)+as[0]);
 		   }
 		   catch (JposException e)

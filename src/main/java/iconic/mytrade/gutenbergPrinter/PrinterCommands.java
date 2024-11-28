@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -75,6 +77,45 @@ import rtsTrxBuilder.support.ivaSEMPLICE;
 import rtsTrxBuilder.support.scontiSEMPLICI;
 
 public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCommands {
+	
+	private static boolean versioned = false;
+	
+	public PrinterCommands() {
+		Versioning();
+	}
+
+	private static void Versioning() {
+		if (versioned)
+			return;
+		versioned = true;
+		
+        Properties properties = new Properties();
+        InputStream input = null;
+        try {
+            input = PrinterCommands.class.getClassLoader().getResourceAsStream("gutenbergPrinter.properties");
+            if (input == null) {
+                System.out.println("Sorry, unable to find gutenbergPrinter.properties");
+                //return;
+            }
+            else {
+	            properties.load(input);
+	            System.out.println("\n---------------------------------------------------------------------");
+	            System.out.println("GutenbergPrinter Version: " + properties.getProperty("PrinterVersion"));
+	            System.out.println("GutenbergPrinter Type   : " + properties.getProperty("PrinterType"));
+	            System.out.println("---------------------------------------------------------------------\n");
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+	}
 	
 	private static int MyPrinterType = PrinterType.EFP90_F;		// oppure leggerlo dalla versione nel pom ?
 	
@@ -519,7 +560,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	public void printNormal(int i, String s) throws JposException
 	{
-		EjCommands ej = new EjCommands();
+		EjCommands ej = SharedPrinterFields.getEjCommands();
 		ej.printNormal(i, s+R3define.CrLf);
 		
 		printNormal_ejoff(i, s);
@@ -1678,7 +1719,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					if (SharedPrinterFields.Lotteria.getILotteryCode().length() > 0) {
 						out = LastTicket.getLottery()+SharedPrinterFields.Lotteria.getILotteryCode();
 						printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, out);
-						EjCommands ej = new EjCommands();
+						EjCommands ej = SharedPrinterFields.getEjCommands();
 						ej.printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, out+R3define.CrLf);
 					}
 					
@@ -3877,7 +3918,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			lnfm = SRTPrinterExtension.isLikeNonFiscalMode();
 			SRTPrinterExtension.setLikeNonFiscalMode(true);
 			
-			PrinterCommands prtcmd = new PrinterCommands();
+			PrinterCommands prtcmd = SharedPrinterFields.getPrinterCommands();
 			prtcmd.beginFiscalReceipt(false);
 			
 			prtcmd.printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, " ");
@@ -3931,7 +3972,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			int data[] = new int[1];
 			Object object;
 			
-			PrinterCommands prtcmd = new PrinterCommands();
+			PrinterCommands prtcmd = SharedPrinterFields.getPrinterCommands();
 			
 			SAXBuilder builder = new SAXBuilder();
 			FileInputStream fis = new FileInputStream(DummyServerRT.XMLfilePath);

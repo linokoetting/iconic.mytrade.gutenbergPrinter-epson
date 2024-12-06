@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import iconic.mytrade.gutenberg.jpos.printer.service.MessageBox;
+import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.MessageBox;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;

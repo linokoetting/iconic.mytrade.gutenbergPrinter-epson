@@ -29,9 +29,9 @@ import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.LastTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.MessageBox;
+import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.MessageBox;
 import iconic.mytrade.gutenberg.jpos.printer.service.MethodE;
-import iconic.mytrade.gutenberg.jpos.printer.service.PleaseDisplay;
+import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTLottery;
@@ -860,12 +860,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 //						setCanPost(true);	// ???
 	  	    			
 	  	    			while (true) {
-	  						PleaseDisplay.pleaseDisplay(DummyServerRT.SERVEROFF);
+	  						OperatorDisplay.pleaseDisplay(DummyServerRT.SERVEROFF);
 	  						try {
 								Thread.sleep(3000);
 							} catch (InterruptedException e) {
 							}
-	  						PleaseDisplay.pleaseDisplay(DummyServerRT.TURNOFFON);
+	  						OperatorDisplay.pleaseDisplay(DummyServerRT.TURNOFFON);
 	  						try {
 								Thread.sleep(3000);
 							} catch (InterruptedException e) {
@@ -2284,7 +2284,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			catch ( JposException e )
 			{
 				System.out.println ( "MAPOTO-RESETAFTERCLEAR <"+e.toString()+">");
-				PleaseDisplay.pleaseDisplayWait( " VERIFICA STAMPANTE ", 400);
+				OperatorDisplay.pleaseDisplayWait( " VERIFICA STAMPANTE ", 400);
 			}
 		}
 	}

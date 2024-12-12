@@ -1393,12 +1393,12 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		return false;
 	}
 
-	public String getPhysicalDeviceDescription() throws JposException {
+	public String getPhysicalDeviceDescription() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String getPhysicalDeviceName() throws JposException {
+	public String getPhysicalDeviceName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

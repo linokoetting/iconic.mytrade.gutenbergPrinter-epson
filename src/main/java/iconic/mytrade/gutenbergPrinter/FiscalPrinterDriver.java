@@ -283,6 +283,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    	if ( NoReactionStatus == false ) 
 	    	{
 	    		System.out.println ("FP-4");
+				System.out.println("Printer "+getPhysicalDeviceName()+"("+getPhysicalDeviceDescription()+") correctly open.");
 	    		break;
 	    	}
 	    	System.out.println ("FP-5");
@@ -1929,12 +1930,20 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return fiscalPrinter.getFreezeEvents();
 	}
 
-	public String getPhysicalDeviceDescription() throws JposException {
-		return fiscalPrinter.getPhysicalDeviceDescription();
+	public String getPhysicalDeviceDescription() /*throws JposException*/ {
+		try {
+			return fiscalPrinter.getPhysicalDeviceDescription();
+		} catch (JposException e) {
+			return "";
+		}
 	}
 
-	public String getPhysicalDeviceName() throws JposException {
-		return fiscalPrinter.getPhysicalDeviceName();
+	public String getPhysicalDeviceName() /*throws JposException*/ {
+		try {
+			return fiscalPrinter.getPhysicalDeviceName();
+		} catch (JposException e) {
+			return "";
+		}
 	}
 
 	public int getState() {

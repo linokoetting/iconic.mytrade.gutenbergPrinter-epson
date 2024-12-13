@@ -24,14 +24,14 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 
+import iconic.mytrade.gutenberg.jpos.linedisplay.service.MessageBox;
+import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
 import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.LastTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.MessageBox;
 import iconic.mytrade.gutenberg.jpos.printer.service.MethodE;
-import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PosApp;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTLottery;
@@ -3632,7 +3632,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				
 //				setTxnnumbertorefund(PosApp.getTransactionNumber());	// ??? non dovrebbe più servire visto che setVoided() sulla transazione non si farà più da qui immagino
 				
-				//posEngine.printSelectedDevices("EchoLineRefund", null, false, "OD");	// ???
+				OperatorDisplay.printSelectedDevices("EchoLineRefund", null, false, "OD");
 				
 				//Transazione.nuovaTransazione();						// ???
 				//GdONEData.statusTogdONE("main.state", "RtRefund");	// ???
@@ -3667,7 +3667,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				
 				System.out.println("RTRefund - negozio = <"+negozio+"> cassa = <"+cassa+"> repz = <"+repz+"> num = <"+num+"> data = <"+del+"> serverid = <"+serverid+">");
 				
-				//posEngine.printSelectedDevices("PleaseWait",null,false,"OD");	// ???
+				OperatorDisplay.printSelectedDevices("PleaseWait",null,false,"OD");
 				
 				boolean noSearch = false;
 				if (serialSRT == null || serialSRT.equalsIgnoreCase(DummyServerRT.SRTServerID) == false) {
@@ -3683,7 +3683,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				
 				DummyServerRT.pleaseSetRefoundFound(isRefundable,serialSRT);		
 				
-				//posEngine.printSelectedDevices("EchoLineRefund", null, false, "OD");	// ???	
+				OperatorDisplay.printSelectedDevices("EchoLineRefund", null, false, "OD");	
 				
 				SharedPrinterFields.Lotteria.setLotteryTill(Integer.parseInt(cassa));
 				DummyServerRT.setOriginalFiscalClosure(repz);

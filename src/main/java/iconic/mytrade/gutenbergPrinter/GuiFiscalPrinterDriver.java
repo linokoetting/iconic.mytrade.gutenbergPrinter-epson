@@ -2,7 +2,7 @@ package iconic.mytrade.gutenbergPrinter;
 
 import java.util.GregorianCalendar;
 
-import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.OperatorDisplay;
+import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;

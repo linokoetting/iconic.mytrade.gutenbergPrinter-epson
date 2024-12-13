@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.Beeping;
 import iconic.mytrade.gutenberg.jpos.printer.service.FiscalPrinterDataInformation;
-import iconic.mytrade.gutenberg.jpos.printer.service.OperatorDisplay.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;

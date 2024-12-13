@@ -1,5 +1,6 @@
 package iconic.mytrade.gutenbergPrinter.refund;
 
+import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenbergPrinter.PrinterCommands;
 import jpos.JposException;
@@ -20,8 +21,8 @@ public class RefundCommands extends PrinterCommands {
 		try{
 			StringBuffer command = new StringBuffer("1" + printerId + date + recId + zRepId);
 	      	System.out.println("isRefundableDocument - command : " + command.toString());
-			//posEngine.printSelectedDevices("R3getPhotoDisplay3R", null, false, "OD");	// ???
-			//posEngine.printSelectedDevices("PleaseWait",null,false,"OD");				// ???
+			OperatorDisplay.printSelectedDevices("R3getPhotoDisplay3R", null, false, "OD");
+			OperatorDisplay.printSelectedDevices("PleaseWait",null,false,"OD");
 	      	int ret = fiscalPrinterDriver.executeRTDirectIo(9205, 0, command);
 	      	System.out.println("isRefundableDocument - result : " + command.toString() + " - ret : " + ret);
 			if ((ret == 0) && (command.substring(0, 1).equals("0") || command.substring(0, 1).equals("1"))){
@@ -30,7 +31,7 @@ public class RefundCommands extends PrinterCommands {
 			}
 	        else{
 	            System.out.println("isRefundableDocument - Document is NOT refundable");
-				//posEngine.printSelectedDevices("R3setPhotoDisplay3R", null, false, "OD");	// ???
+				OperatorDisplay.printSelectedDevices("R3setPhotoDisplay3R", null, false, "OD");
 	            return false;
 	        }
 		}catch(Exception e){

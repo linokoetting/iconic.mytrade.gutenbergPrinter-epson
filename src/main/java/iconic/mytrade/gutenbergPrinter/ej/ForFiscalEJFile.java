@@ -135,13 +135,13 @@ public class ForFiscalEJFile {
 			int index = aStr.indexOf(FiscalEJFile.strippedStrs[i]);
 			if (index != -1) {
 				stripped = true;
-				//System.err.println("** searching substring: " + strippedStrs[i]);
-				//System.err.println("** in string: " + aStr);
+				//System.out.println("** searching substring: " + strippedStrs[i]);
+				//System.out.println("** in string: " + aStr);
 				newStr = aStr.substring(0, index);
-				//System.err.println("** before substring: " + newStr);
+				//System.out.println("** before substring: " + newStr);
 				newStr += aStr.substring(index
 						+ FiscalEJFile.strippedStrs[i].length());
-				//System.err.println("** without substring: " + newStr);
+				//System.out.println("** without substring: " + newStr);
 				aStr = newStr;
 			}
 		}

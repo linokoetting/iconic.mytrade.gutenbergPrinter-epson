@@ -2342,7 +2342,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public static boolean checkStoredDailyTotal(String Pr)
 	{
 		double	fromPrinter = Double.valueOf(Pr).doubleValue()/100;
-		return ( fromPrinter == dailyTotal );
+		System.out.println("checkStoredDailyTotal - fromPrinter="+fromPrinter+" - dailyTotal="+dailyTotal);
+		return ( fromPrinter <= dailyTotal );
 	}
 	
 	public static boolean timeToRecoveryTotal()

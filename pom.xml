@@ -7,6 +7,8 @@
   
   <properties>
     <printer.version>31.0.1-SNAPSHOT</printer.version>
+    <interface.version>0.0.1-SNAPSHOT</interface.version>
+    <common.version>0.0.1-SNAPSHOT</common.version>
   </properties>  
   
   <build>
@@ -19,17 +21,16 @@
   </build>
    
   <dependencies>     
-		
 		<dependency>
 			<groupId>iconic.mytrade.gutenberg</groupId>
 			<artifactId>gutenbergInterface</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${interface.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>iconic.mytrade.gutenberg</groupId>
 			<artifactId>gutenbergCommon</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${common.version}</version>
 		</dependency>
   </dependencies>
     

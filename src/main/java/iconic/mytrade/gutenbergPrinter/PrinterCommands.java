@@ -100,8 +100,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
             else {
 	            properties.load(input);
 	            System.out.println("\n---------------------------------------------------------------------");
-	            System.out.println("GutenbergPrinter Version: " + properties.getProperty("PrinterVersion"));
-	            System.out.println("GutenbergPrinter Type   : " + properties.getProperty("PrinterType"));
+	            System.out.println("GutenbergPrinter Version   : " + properties.getProperty("PrinterVersion"));
+	            System.out.println("GutenbergPrinter Type      : " + properties.getProperty("PrinterType"));
+	            System.out.println("Gutenberg Interface Version: " + properties.getProperty("InterfaceVersion"));
+	            System.out.println("Gutenberg Common Version   : " + properties.getProperty("CommonVersion"));
 	            System.out.println("---------------------------------------------------------------------\n");
             }
         } catch (IOException ex) {

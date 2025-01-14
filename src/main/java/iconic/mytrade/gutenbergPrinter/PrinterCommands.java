@@ -3304,10 +3304,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			// usata solo negli scontrini regalo non fiscali
 			
-//			if (isEpsonModel() && isSmart_Ticket() && isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
-//				if (Smart_Ticket_ReceiptMode != ERECEIPT_PAPER)
-//					return;
-			
 			if (!Lotteria.isPrintBarcode())
 				return;
 			

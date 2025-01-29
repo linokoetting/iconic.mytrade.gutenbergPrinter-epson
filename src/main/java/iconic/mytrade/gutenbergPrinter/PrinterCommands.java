@@ -3233,10 +3233,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			// usata solo negli scontrini fiscali
 			
-			if (SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
-				if (SmartTicket.Smart_Ticket_ReceiptMode != SmartTicket.ERECEIPT_PAPER)
-					return;
-			
 			if (!Lotteria.isPrintBarcode())
 				return;
 			
@@ -3416,10 +3412,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    
 		private void abilitaTaglioCarta(boolean flag)
 		{
-			if (SmartTicket.isSmart_Ticket() && fiscalPrinterDriver.isfwSMTKenabled())	// TEMPORANEO IN ATTESA DEL FIX FW EPSON
-				if (SmartTicket.Smart_Ticket_ReceiptMode != SmartTicket.ERECEIPT_PAPER)
-					return;
-			
 			if (!Lotteria.isPrintBarcode() && !isPrintBarcodeCancello())
 				return;
 			

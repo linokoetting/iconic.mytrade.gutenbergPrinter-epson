@@ -87,8 +87,16 @@ public class FiscalEJFile extends FiscalEJ {
 		
 //		super.endFiscalDocument();
 	}
-
 	
+	public void directIO(int command,int[] pData,Object pString) throws JposException
+	{
+		ForFiscalEJFile.writeToFile("<DirectIO>      "+command+" "+pData[0]+" "+pString.toString());
+	}
+	
+	public void printBarcode(String data) throws JposException
+	{
+		ForFiscalEJFile.writeToFile("<Barcode>       "+data);
+	}
 	
 	//////////////////////////////////////////////
 	private String getDataOra(GregorianCalendar greg){

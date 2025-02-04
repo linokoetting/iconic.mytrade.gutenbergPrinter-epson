@@ -165,6 +165,18 @@ public class EjCommands {
 		}
 	}
 
+	public void directIO(int i, int data[], Object o) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.directIO(i, data, o);
+		}
+	}
+	
+	public void printBarcode(String data) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.printBarcode(data);
+		}
+	}
+	
 	public void close() {
 	}
 

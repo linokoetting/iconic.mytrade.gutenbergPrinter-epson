@@ -363,8 +363,108 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private void setHeaderLine(int lineNumber, String text, boolean doubleWidth) throws JposException;
 	private void setTrailerLine(int lineNumber, String text, boolean doubleWidth) throws JposException;
 	private void close();
+    public void printPeriodicTotalsReport(String date1, String date2) throws JposException;
+    public void printPowerLossReport() throws JposException;
+    public void printRecNotPaid(String description, long amount) throws JposException;
+    public void setAdditionalTrailer(String text) throws JposException;
+    public void setPOSID(String POSID, String cashierID) throws JposException;
+    public void setStoreFiscalID(String ID) throws JposException;
+    public boolean getCapAdditionalLines() throws JposException;
+    public boolean getCapAdditionalTrailer() throws JposException;
+    public boolean getCapNonFiscalMode() throws JposException;
+    public boolean getCapPowerLossReport() throws JposException;
+    public boolean getCapSetHeader() throws JposException;
+    public boolean getCapSetPOSID() throws JposException;
+    public boolean getCapSetStoreFiscalID() throws JposException;
+    public boolean getCapSetTrailer() throws JposException;
+    public boolean getCapSubtotal() throws JposException;
+    public boolean getCapTrainingMode() throws JposException;
+    public boolean getCapXReport() throws JposException;
 	*
 	*/
+    
+    public static void printPeriodicTotalsReport(String date1, String date2) throws JposException {
+    	fiscalPrinterDriver.printPeriodicTotalsReport(date1, date2);
+    }
+    
+    public void printPowerLossReport() throws JposException {
+    	fiscalPrinterDriver.printPowerLossReport();
+    }
+    
+    public void printRecNotPaid(String description, long amount) throws JposException {
+    	fiscalPrinterDriver.printRecNotPaid(description, amount);
+    }
+    
+	public void setAdditionalHeader(String value)
+	{
+		try
+		{
+			fiscalPrinterDriver.setAdditionalHeader(value);
+		}
+		catch (Exception e)
+		{
+		}
+	}
+	   
+    public void setAdditionalTrailer(String text) throws JposException
+    {
+    	/* TEMPORANEO */
+    	return;
+    	/* TEMPORANEO */
+    }
+	   
+    public void setPOSID(String POSID, String cashierID) throws JposException {
+    	fiscalPrinterDriver.setPOSID(POSID, cashierID);
+    }
+    
+    public void setStoreFiscalID(String ID) throws JposException {
+    	fiscalPrinterDriver.setStoreFiscalID(ID);
+    }
+    
+    public boolean  getCapAdditionalLines() throws jpos.JposException
+    {
+    	return (fiscalPrinterDriver.getCapAdditionalLines());
+    }
+    
+    public boolean getCapAdditionalTrailer() throws JposException {
+    	return (fiscalPrinterDriver.getCapAdditionalTrailer());
+    }
+    
+    public boolean getCapNonFiscalMode() throws JposException {
+    	return (fiscalPrinterDriver.getCapNonFiscalMode());
+    }
+    
+    public boolean getCapPowerLossReport() throws JposException {
+    	return (fiscalPrinterDriver.getCapPowerLossReport());
+    }
+    
+    public boolean getCapSetHeader() throws JposException {
+    	return (fiscalPrinterDriver.getCapSetHeader());
+    }
+    
+    public boolean getCapSetPOSID() throws JposException {
+    	return (fiscalPrinterDriver.getCapSetPOSID());
+    }
+    
+    public boolean getCapSetStoreFiscalID() throws JposException {
+    	return (fiscalPrinterDriver.getCapSetStoreFiscalID());
+    }
+    
+    public boolean getCapSetTrailer() throws JposException {
+    	return (fiscalPrinterDriver.getCapSetTrailer());
+    }
+    
+    public boolean getCapSubtotal() throws JposException {
+    	return (fiscalPrinterDriver.getCapSubtotal());
+    }
+    
+    public boolean getCapTrainingMode() throws JposException {
+    	return (fiscalPrinterDriver.getCapTrainingMode());
+    }
+    
+    public boolean getCapXReport() throws JposException {
+    	return (fiscalPrinterDriver.getCapXReport());
+    }
     
 	public void open(int arg0, String arg1) {
 		if (arg0 != MyPrinterType) {
@@ -2037,24 +2137,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		fiscalPrinterDriver.setTrailerLine(arg0,arg1,arg2);
 	}
 	
-	public void setAdditionalHeader(String value)
-	{
-		try
-		{
-			fiscalPrinterDriver.setAdditionalHeader(value);
-		}
-		catch (Exception e)
-		{
-		}
-	}
-	   
-	   public void setAdditionalTrailer(String text) throws JposException
-	   {
-		   /* TEMPORANEO */
-		   return;
-		   /* TEMPORANEO */
-	   }
-	   
 	public static int getState() throws JposException
 	{
        	 System.out.println("MAPOTO-FISICAL_PRINTER-STATE " + getFiscalPrinterState());
@@ -2875,11 +2957,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return(spaces+t);
 	    }
 		   
-	    private boolean  getCapAdditionalLines() throws jpos.JposException
-	    {
-	    	return ( fiscalPrinterDriver.getCapAdditionalLines() );
-	    }
-	    
 	    private void printNormal_I(int i, String s) throws JposException
 	    {
 	        final int DESC_LENGTH = 32;

@@ -421,7 +421,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     	fiscalPrinterDriver.setStoreFiscalID(ID);
     }
     
-    public boolean  getCapAdditionalLines() throws jpos.JposException
+    public boolean getCapAdditionalLines() throws jpos.JposException
     {
     	return (fiscalPrinterDriver.getCapAdditionalLines());
     }
@@ -4421,6 +4421,26 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			//System.out.println("MixedVat - ret = " + ret);
 			return ret;
+		}
+		
+		public void beginFiscalDocument(int amount) throws JposException {
+			fiscalPrinterDriver.beginFiscalDocument(amount);
+		}
+		
+		public void beginTraining() throws JposException {
+			fiscalPrinterDriver.beginTraining();
+		}
+		
+		public void endFiscalDocument() throws JposException {
+			fiscalPrinterDriver.endFiscalDocument();
+		}
+		
+		public void endTraining() throws JposException {
+			fiscalPrinterDriver.endTraining();
+		}
+		
+		public void printFiscalDocumentLine(String documentLine) throws JposException {
+			fiscalPrinterDriver.printFiscalDocumentLine(documentLine);
 		}
 		
 }

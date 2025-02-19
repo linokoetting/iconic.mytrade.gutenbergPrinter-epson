@@ -190,5 +190,65 @@ public class EjCommands {
 			System.out.println("EJCommands - Write: exception="+e.getMessage());
 		}
 	}
+
+	public void beginFiscalDocument(int docAmount) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.beginFiscalDocument(docAmount);
+		}
+	}
+
+	public void beginTraining() throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.beginTraining();
+		}
+	}
+
+	public void endFiscalDocument() throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.endFiscalDocument();
+		}
+	}
+
+	public void endTraining() throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.endTraining();
+		}
+	}
+
+	public void printFiscalDocumentLine(String docLine) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.printFiscalDocumentLine(docLine);
+		}
+	}
+
+	public void printPeriodicTotalsReport(String date1, String date2) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.printPeriodicTotalsReport(date1, date2);
+		}
+	}
+
+	public void printPowerLossReport() throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.printPowerLossReport();
+		}
+	}
+
+	public void printRecNotPaid(String descr, long amount) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.printRecNotPaid(descr, amount);
+		}
+	}
+
+	public void setPOSID(String posId, String cashierId) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.setPOSID(posId, cashierId);
+		}
+	}
+
+	public void setStoreFiscalID(String id) throws JposException {
+		if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+			SharedPrinterFields.fiscalEJ.setStoreFiscalID(id);
+		}
+	}
 	
 }

@@ -227,8 +227,6 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	    
 //	    if (isRTModel())
 //	    {
-//	    	SmartTicket.setSmart_Ticket(SmartTicket.isSmart_Ticket() && isfwSMTKenabled());
-//			System.out.println("SMTK - SmartTicket : "+SmartTicket.isSmart_Ticket());
 //    		setLocalAccessControl();
 //    		setFidelityOption(1);
 //    		setAppendixOption(1,0);
@@ -242,41 +240,6 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //    		Printer_IPAddress = getPrinterIpAdd();
 //			PrinterInfo.SavePrinterInfo("IPAddress", Printer_IPAddress);
 //	    }
-	    
-	    if (SmartTicket.isSmart_Ticket())
-	    {
-	    	SmartTicket.Smart_Ticket_Mode = SmartTicketProperties.getServerUrl();
-	    	if (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase("OFF"))
-	    		SmartTicket.Smart_Ticket_Mode = SmartTicket.ERECEIPT_URL_SERVER_DISABLE;
-	    	else if (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase("PULL"))
-	    		SmartTicket.Smart_Ticket_Mode = SmartTicket.ERECEIPT_URL_SERVER_PULL;
-	    	
-	    	if (SmartTicket.Smart_Ticket_Mode.equalsIgnoreCase(SmartTicket.ERECEIPT_URL_SERVER_DISABLE)) {
-	    		SmartTicket.setSmart_Ticket(false);
-	    		SmartTicket.Smart_Ticket_ReceiptMode = SmartTicket.ERECEIPT_PAPER;
-	    		SmartTicket.Smart_Ticket_Validity = SmartTicket.ERECEIPT_VALIDITY_ALL;
-	    	}
-	    	else {
-	    		// Default setting
-	    		SmartTicket.Smart_Ticket_ReceiptMode = SmartTicket._Smart_Ticket_ReceiptMode;
-	    		SmartTicket.Smart_Ticket_Validity = SmartTicket.ERECEIPT_VALIDITY_ALL;
-	    	}
-    		
-	    	SmartTicket.SMTKsaveDefault();
-    		
-	    	if (isRTModel()) {
-	    		SMTKsetServerUrl(SmartTicket.Smart_Ticket_Mode);
-	    		SMTKsetReceiptType(SmartTicket.Smart_Ticket_ReceiptMode, SmartTicket.Smart_Ticket_Validity);
-	    		SMTKsetCustomerID(SmartTicket.Smart_Ticket_CustomerType, SmartTicket.Smart_Ticket_CustomerId);
-	    		SMTKStatus();
-	    	}
-	    }
-	    else
-	    {
-	    	// se ci  fosse già il fw per smart ticket disabilito tutto
-    		SMTKsetServerUrl(SmartTicket.ERECEIPT_URL_SERVER_DISABLE);
-    		SMTKsetReceiptType(SmartTicket.ERECEIPT_PAPER, SmartTicket.ERECEIPT_VALIDITY_ALL);
-	    }
 	    
 //		LogPrinterLevel(RTPrinterId, fw, isfwLotteryenabled(), SharedPrinterFields.isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();

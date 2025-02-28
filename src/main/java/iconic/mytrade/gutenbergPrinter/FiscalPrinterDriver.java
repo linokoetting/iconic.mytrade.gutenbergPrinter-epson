@@ -582,7 +582,14 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		{
 			String IpAdd = "";
 			
-			StringBuffer sbcmd = new StringBuffer("01");
+			StringBuffer sbcmd = new StringBuffer("31");
+			executeRTDirectIo(4219, 0, sbcmd);
+			int dhcp = Integer.parseInt(sbcmd.toString().substring(3, 4));
+			System.out.println("getPrinterIpAdd - dhcp : "+dhcp);
+			if (dhcp == 0)
+				sbcmd = new StringBuffer("01");
+			else
+				sbcmd = new StringBuffer("32");
 			executeRTDirectIo(4219, 0, sbcmd);
 	        String[] tmp = String13Fix.split(sbcmd.toString().substring(3).trim(),".");
 	        for (int i=0; i<tmp.length; i++) {

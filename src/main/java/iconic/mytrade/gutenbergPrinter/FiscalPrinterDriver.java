@@ -21,7 +21,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
-import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
+import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;

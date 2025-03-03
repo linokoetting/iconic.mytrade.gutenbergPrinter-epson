@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
-import iconic.mytrade.gutenberg.jpos.printer.service.hardTotals.HardTotals;
+import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;

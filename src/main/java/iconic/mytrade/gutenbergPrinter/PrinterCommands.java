@@ -141,7 +141,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	static String RESONONCORRETTO = "PREZZO NON CORRETTO ";
     static String RESOANNULLATO = "<Void>          --------- SCONTRINO ANNULLATO --------- "+OPERAZIONEANNULLATA;
 
-    private static String barcodePrefix = "VAR";
 	private String CF = "C.F. Cliente ";
 	private String PI = "P.IVA. Cliente ";
 	private int CFLEN = 16;
@@ -3359,7 +3358,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
                 }
 			}
             
-            String bc = barcodePrefix;
+            String bc = R3define.getBarcodePrefix();
 			bc = bc + PosApp.getTillNumber() + giorno + mese + anno + repz + num;
 			bc = bc + SharedPrinterFields.Lotteria.getLotteryCode();
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
@@ -3369,12 +3368,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			String width = setwidth(SharedPrinterFields.Lotteria.getLotteryCode());
 			String subset = setsubset();
 			objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
-			fiscalPrinterDriver.executeRTDirectIo(1075, 0, objb);
+			fiscalPrinterDriver.executeRTDirectIo(R3define.BARCODECOMMAND, 0, objb);
     		
     		SmartTicket.SMTKbarcodes_add(bc);
 		}
 		
-		private void stampaBarcodePerResi(String bc, String lott)
+		public void stampaBarcodePerResi(String bc, String lott)
 		{
 			// usata solo negli scontrini regalo non fiscali
 			
@@ -3391,17 +3390,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			String width = setwidth(lott);
 			String subset = setsubset();
 			objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
-			executeDirectIo(1075, objb.toString());
-    		
-//    		SMTKbarcodes_add(bc);
+			executeDirectIo(R3define.BARCODECOMMAND, objb.toString());
 		}
 
-		private static String getBarcodePrefix() {
-	    	String bcp = "";
-	    	bcp = convertiBarcodePerResi(barcodePrefix);
-	    	return bcp;
-		}
-		
 		private static String convertiBarcodePerResi(String barcode)
 		{
 			if (!Extra.isNumericVAR())
@@ -3427,9 +3418,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		private String setwidth(String lott)
 		{
 			int width = 2;
-			if (getBarcodePrefix().length() == 6)
+			if (R3define.getBarcodePrefix().length() == 6)
 				width = 3;
-			else if (getBarcodePrefix().length() == 3)
+			else if (R3define.getBarcodePrefix().length() == 3)
 				width = 2;
 			if (lott.length() > 0)
 				width--;
@@ -3439,9 +3430,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		private String setsubset()
 		{
 			String subset = "{B";
-			if (getBarcodePrefix().length() == 6)
+			if (R3define.getBarcodePrefix().length() == 6)
 				subset = "{C";
-			else if (getBarcodePrefix().length() == 3)
+			else if (R3define.getBarcodePrefix().length() == 3)
 				subset = "{B";
 			return subset;
 		}
@@ -4497,6 +4488,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    		fiscalPrinterDriver.SMTKsetServerUrl(SmartTicket.ERECEIPT_URL_SERVER_DISABLE);
 	    		fiscalPrinterDriver.SMTKsetReceiptType(SmartTicket.ERECEIPT_PAPER, SmartTicket.ERECEIPT_VALIDITY_ALL);
 		    }
+		}
+		
+		public void reprintLastTicket() {
+			fiscalPrinterDriver.reprintLastTicket();
 		}
 		
 }

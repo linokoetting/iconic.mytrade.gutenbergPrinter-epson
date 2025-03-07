@@ -27,6 +27,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtens
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
+import iconic.mytrade.gutenbergPrinter.FiscalPrinterDriver.DirectIOListener;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
@@ -1667,6 +1668,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		return fiscalPrinter.getRecNearEnd();
 	}
 
+	public boolean getSlipNearEnd() throws JposException {
+		return false;
+	}
+
 	public int getRemainingFiscalMemory() throws JposException {
 		return fiscalPrinter.getRemainingFiscalMemory();
 	}
@@ -2605,6 +2610,19 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   {
 			   System.out.println(e.getMessage());
 		   }
+	   }
+
+	   String checkEJStatus()
+	   {
+		   String reply = "";
+		   
+		   StringBuffer sbcmd = new StringBuffer("");
+		   sbcmd = new StringBuffer("01");
+		   executeRTDirectIo(1077, 0, sbcmd);
+		   System.out.println("checkEJStatus - result : "+sbcmd);
+		   reply = sbcmd.toString().substring(3, 5);	// percentuale di utilizzo
+		   
+		   return reply;
 	   }
 
 }

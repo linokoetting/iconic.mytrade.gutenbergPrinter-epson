@@ -9,6 +9,7 @@ import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
+import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
 import iconic.mytrade.gutenbergGuiPrinter.PrinterGUI;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import jpos.JposException;
@@ -182,21 +183,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //			}
 //		}
         
-//        String oldS = as[0];
-//        String newS = "";
-//		for ( int j = 0 ; j < oldS.length(); j++ )
-//		{
-//	    	  if (((oldS.charAt(j) >= (char)48) && (oldS.charAt(j) <= (char)57)) || (oldS.charAt(j) == (char)46))
-//	    	  {
-//	    		  // è un numero o un punto
-//	    		  newS = newS + oldS.charAt(j);
-//	    	  }
-//	    	  else if (oldS.charAt(j) == (char)44)
-//	    	  {
-//	    		  // è una virgola
-//	    		  newS = newS + (char)46;
-//	    	  }
-//		}
+//        String newS = String13Fix.cleandoublestr(as[0]);
 //		as[0] = newS;
 		
 //	    if (PrinterType.isEpsonModel()) {
@@ -240,6 +227,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //    		Printer_IPAddress = getPrinterIpAdd();
 //			PrinterInfo.SavePrinterInfo("IPAddress", Printer_IPAddress);
 //	    }
+		SharedPrinterFields.Printer_IPAddress = "123.456.789.012";
 	    
 //		LogPrinterLevel(RTPrinterId, fw, isfwLotteryenabled(), SharedPrinterFields.isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();
@@ -854,7 +842,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		
 		PrinterGUI.addText("-- getData --"+arg0);
 		
-		arg2[0] = "001";
+		arg2[0] = "10.0.2";
 	}
 
 	public void getDate(String[] arg0) throws JposException {
@@ -1481,7 +1469,11 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 	
 	public String checkEJStatus() {
-		return "0";
+		return "33";
+	}
+
+	public void fwUpdate()
+	{
 	}
     
 }

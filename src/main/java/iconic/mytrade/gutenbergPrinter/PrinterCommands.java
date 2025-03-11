@@ -301,9 +301,23 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private static FileOutputStream fos = null;
 	private static PrintStream ps = null;
 	
-	protected static boolean isRT2On() {
+	public boolean GetFwRT2enabled() {
+		return (fiscalPrinterDriver.isfwRT2enabled());
+	}
+	
+	public static boolean isRT2On() {
 		if (SRTPrinterExtension.isPRT()) {
 			return (fiscalPrinterDriver.isfwRT2enabled() && DicoTaxLoad.isRT2enabled());
+		}
+		else if (SRTPrinterExtension.isSRT()){
+			return (Extra.isServerRt20() && DicoTaxLoad.isRT2enabled());
+		}
+		return (false);
+	}
+	
+	public static boolean isFwRT2On() {
+		if (SRTPrinterExtension.isPRT()) {
+			return (fiscalPrinterDriver.isfwRT2enabled());
 		}
 		else if (SRTPrinterExtension.isSRT()){
 			return (Extra.isServerRt20() && DicoTaxLoad.isRT2enabled());
@@ -4511,6 +4525,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		public void reprintLastTicket() {
 			fiscalPrinterDriver.reprintLastTicket();
+		}
+		
+		public void fwUpdate() {
+			fiscalPrinterDriver.fwUpdate();
 		}
 		
 }

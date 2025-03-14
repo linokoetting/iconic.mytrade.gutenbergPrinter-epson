@@ -4468,6 +4468,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			fiscalPrinterDriver.printFiscalDocumentLine(documentLine);
 		}
 		
+		public boolean getTrainingModeActive() throws JposException {
+			return fiscalPrinterDriver.getTrainingModeActive();
+		}
+		
+		public boolean getNoReactionStatus() throws JposException {
+			return fiscalPrinterDriver.getNoReactionStatus();
+		}
+		
 		public void SMTKreadProperties()
 		{
 			SmartTicket.setSmart_Ticket(SmartTicketProperties.isSmartTicket());
@@ -4531,4 +4539,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			fiscalPrinterDriver.fwUpdate();
 		}
 		
+		public static String getBarcodePrefix() {
+	    	String bcp = "";
+	    	bcp = convertiBarcodePerResi(R3define.getBarcodePrefix());
+	    	return bcp;
+		}
+
 }

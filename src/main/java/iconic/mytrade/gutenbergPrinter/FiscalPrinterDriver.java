@@ -72,6 +72,17 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     private static boolean fwSMTKenabled = false;	// abilita/disabilita i comandi per SmartTicket
     private static boolean fwILotteryenabled = false;
     
+	private boolean 	noReactionStatus = false;
+	
+	public boolean getNoReactionStatus() {
+		return noReactionStatus;
+	}
+			
+	public void setNoReactionStatus(boolean value) 
+	{
+		noReactionStatus = value;
+	}
+			
 	private static double getRT2fw() {
 		System.out.println("RT2 - getRT2fw : "+RT2fw);
 		return RT2fw;
@@ -279,9 +290,9 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    while ( true ) 
 	    {
 	    	System.out.println ("FP-2");
-	    	boolean NoReactionStatus = pleaseCheck();
+	    	setNoReactionStatus ( pleaseCheck() );
 	    	System.out.println ("FP-3");
-	    	if ( NoReactionStatus == false ) 
+	    	if ( getNoReactionStatus () == false ) 
 	    	{
 	    		System.out.println ("FP-4");
 				System.out.println("Printer "+getPhysicalDeviceName()+"("+getPhysicalDeviceDescription()+") correctly open.");

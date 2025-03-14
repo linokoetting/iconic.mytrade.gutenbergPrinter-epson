@@ -62,9 +62,9 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //	    while ( true ) 
 //	    {
 //	    	System.out.println ("FP-2");
-//	    	boolean NoReactionStatus = pleaseCheck();
+//    		setNoReactionStatus ( pleaseCheck() );
 //	    	System.out.println ("FP-3");
-//	    	if ( NoReactionStatus == false ) 
+//    		if ( getNoReactionStatus () == false ) 
 //	    	{
 //	    		System.out.println ("FP-4");
 //	    		break;

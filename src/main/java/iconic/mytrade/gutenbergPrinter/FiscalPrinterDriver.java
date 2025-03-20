@@ -1,7 +1,10 @@
 package iconic.mytrade.gutenbergPrinter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -2626,4 +2629,63 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	   {
 	   }
 		
+	   public void bitmap(String filename,int width,int height,int align) //throws PrinterException
+	   {
+		   int[] dD={0};
+		   File f=new File(filename);
+		   dD[0] = 1099;	 
+		   byte [] data=null;
+		   try{ 
+			   data=getbytesFromFile(f);
+		   } catch(IOException ex){System.out.println("Errore -> "+ex.getMessage()); data = null;}
+
+		   if (data!=null)
+			   try {
+				   StringBuffer ss = new StringBuffer(getStringBuffer(data));
+				   beginNonFiscal();
+				   fiscalPrinter.directIO(0,dD,ss);
+				   fiscalPrinter.directIO(data.length,dD,data);
+				   fiscalPrinter.endNonFiscal();
+			   } catch (Exception e) {
+				   // TODO Auto-generated catch block
+				   e.printStackTrace();
+			   }
+	   }
+		   
+	   public static byte[] getbytesFromFile(File file) throws IOException {
+		   InputStream is = new FileInputStream(file);
+		   long length = file.length();
+		   if (length > 32767) {
+			   throw new IOException("File "+file.getName() + " troppo grande per essere stampato");
+		   }
+			  
+		   // Crea il byte array che contiene il contenuto del file
+		   byte[] bytes = new byte[(int)length];
+			  
+		   // Read in the bytes
+		   int offset = 0;
+		   int numRead = 0;
+		   while (offset < bytes.length
+				   && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+			   offset += numRead;
+		   }
+			  
+		   // Controllo che tutti i bytes siano stati letti
+		   if (offset < bytes.length) {
+			   throw new IOException("Lettura del file non completata "+file.getName());
+		   }
+			  
+		   // Chiude l'input Stream
+		   is.close();
+		   return bytes;
+	   }
+		   
+	   private String getStringBuffer(byte[] data){
+		   int nb=data.length;
+		   String s=String.valueOf(nb);
+		   for(int i=0;i<=6-s.length();i++)s="0"+s;
+		   s="01"+s+"00000";
+		   return s;
+	   }
+		   
 }

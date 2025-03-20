@@ -137,10 +137,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	private static final String	R3_DELETELASTTICKET_R3 = "R3_NEWCMD01_R3";
 	private static	 final String	R3_DOUBLE_R3 = "R3double3R";
 	
-	static String OPERAZIONEANNULLATA = "OPERAZIONE ANNULLATA";
-	static String RESONONCORRETTO = "PREZZO NON CORRETTO ";
-    static String RESOANNULLATO = "<Void>          --------- SCONTRINO ANNULLATO --------- "+OPERAZIONEANNULLATA;
-
 	private String CF = "C.F. Cliente ";
 	private String PI = "P.IVA. Cliente ";
 	private int CFLEN = 16;
@@ -630,7 +626,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     		
     		SmartTicket.SMTKbarcodes_reset();
 	    }
-	    
+
 		setFlagVoidRefund(false);
 		AtLeastOnePrintedItem = false;
 		SharedPrinterFields.inRetryFiscal = true;				// per le volte successive alla prima è una retry
@@ -684,7 +680,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private void printNormal_ejoff(int i, String s) throws JposException
 	{
-		if (s.contains(Cancello.getTag()+R3define.CrLf)) {
+	    if (s.contains(Cancello.getTag()+R3define.CrLf)) {
 			String s1 = s.replaceAll(Cancello.getTag()+R3define.CrLf, "");
 			s = s1;
 			if (s.length() == 0)
@@ -748,7 +744,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		
-		AtLeastOnePrintedItem = true;
+	    AtLeastOnePrintedItem = true;
 		
 		int j = DicoTaxToPrinter.getFromPoliposToPrinter(jIvaPolipos);
 		if ((DicoTaxLoad.isIvaAllaPrinter()) && (j == SharedPrinterFields.VAT_N4_Index))
@@ -810,7 +806,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		if (SRTPrinterExtension.isPRT())
 			setFlagsVoidTicket( true );
 		
-		setFlagVoidRefund(false);
+	    setFlagVoidRefund(false);
 		
 		pleaseVoid ( arg0 );
 	}
@@ -1186,7 +1182,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public void printRecItemAdjustment(int arg0, String arg1, long arg2, int arg3) throws JposException {
 		System.out.println ( "MAPOTO-EXEC PRINT ITEM ADJUSTMENT" );
 		
-		setFlagVoidRefund(false);
+	    setFlagVoidRefund(false);
 		System.out.println("printRecItemAdj. in - arg0=" + arg0 + " arg1=" + arg1 + " arg2="
                 + arg2 + " arg3=" + arg3);
         fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
@@ -1201,7 +1197,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecMessage(String arg0) throws JposException {
-		if (SRTPrinterExtension.isPRT()) {
+	    if (SRTPrinterExtension.isPRT()) {
 			
 			if (Cancello.isFiscale() && Cancello.getPosizione() != 0) {			// se posizione = 0 stampiamo su fiscale in modalità vecchia
 				if (arg0.equalsIgnoreCase(Cancello.getTag())) {
@@ -1340,7 +1336,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-		int i = DicoTaxToPrinter.getFromPoliposToPrinter(iIvaPolipos);
+	    int i = DicoTaxToPrinter.getFromPoliposToPrinter(iIvaPolipos);
 		if ((DicoTaxLoad.isIvaAllaPrinter()) && (i == SharedPrinterFields.VAT_N4_Index))
 			i = Integer.parseInt(SharedPrinterFields.VAT_N4_Dept);
 		
@@ -1378,7 +1374,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecSubtotal(long arg0) throws JposException {
-		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL "+arg0 );
+	    System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL "+arg0 );
 		
 		setFlagVoidRefund(false);
 		
@@ -1940,7 +1936,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-		int k = DicoTaxToPrinter.getFromPoliposToPrinter(kIvaPolipos);
+	    int k = DicoTaxToPrinter.getFromPoliposToPrinter(kIvaPolipos);
 		if ((DicoTaxLoad.isIvaAllaPrinter()) && (k == SharedPrinterFields.VAT_N4_Index))
 			k = Integer.parseInt(SharedPrinterFields.VAT_N4_Dept);
 		
@@ -2432,10 +2428,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	public void AnnullaResoRT_Posponed()
 	{
 		if (!isFlagsVoidTicket())
-			MessageBox.showMessage(RESONONCORRETTO, null, MessageBox.OK);
+			MessageBox.showMessage(RTConsts.RESONONCORRETTO, null, MessageBox.OK);
 		
 		try {
-			printRecVoid(OPERAZIONEANNULLATA);
+			printRecVoid(RTConsts.OPERAZIONEANNULLATA);
 			endFiscalReceipt(true);
 		} catch (JposException e) {
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
@@ -2444,7 +2440,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 //		setTxnnumbertorefund(LineRefundSRT.getTxnnumbertorefund());	// ??? non dovrebbe più servire visto che setVoided() sulla transazione non si farà più da qui immagino
 		
 		if (!isFlagsVoidTicket())
-			MessageBox.showMessage(OPERAZIONEANNULLATA, null, MessageBox.OK);
+			MessageBox.showMessage(RTConsts.OPERAZIONEANNULLATA, null, MessageBox.OK);
 	}
 	
 	public static String currentFiscalTotal(int what) throws JposException
@@ -4545,4 +4541,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return bcp;
 		}
 
+		public static String myRchFiscalNumber() {
+			return "";
+		}
+
+		public void bitmap(String filename, int width, int height, int align) {
+			fiscalPrinterDriver.bitmap(filename, width, height, align);
+		}
+		
 }

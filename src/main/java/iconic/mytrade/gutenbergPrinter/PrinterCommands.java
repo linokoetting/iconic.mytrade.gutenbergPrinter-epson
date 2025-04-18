@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -4548,5 +4549,35 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		public void bitmap(String filename, int width, int height, int align) {
 			fiscalPrinterDriver.bitmap(filename, width, height, align);
 		}
+		
+	    public static String readFile(String filePath, boolean appendLf) {
+	        StringBuilder sb = new StringBuilder();
+	        BufferedReader in = null;
+	        
+	        try {
+	            in = new BufferedReader(new FileReader(filePath));
+	            String line;
+	            while ((line = in.readLine()) != null) {
+	                sb.append(line);
+	                if (appendLf) {
+	                    sb.append(R3define.Lf);
+	                }
+	            }
+	        } catch (Exception e) {
+	            System.out.println("readFile - Exception : " + e.getMessage());
+	            return "";
+	        } finally {
+	            if (in != null) {
+	                try {
+	                    in.close();
+	                } catch (IOException e) {
+	                    System.out.println("readFile - Exception : " + e.getMessage());
+	                    return "";
+	                }
+	            }
+	        }
+	        
+	        return sb.toString();
+	    }
 		
 }

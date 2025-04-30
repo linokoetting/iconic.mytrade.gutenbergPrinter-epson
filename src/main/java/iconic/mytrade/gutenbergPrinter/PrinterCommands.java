@@ -63,6 +63,7 @@ import iconic.mytrade.gutenberg.jpos.printer.utils.RunShellScriptPoli20;
 import iconic.mytrade.gutenberg.jpos.printer.utils.SRTCheckInput;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
+import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.EjCommands;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.lottery.LotteryCommands;
@@ -1656,9 +1657,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		else
 		{
+			boolean isEftPayment = false;
+			
 			if (SRTPrinterExtension.isPRT()) {
 		        DummyServerRT.srtRecTotal tendermerge = null;
-		        tendermerge = new DummyServerRT.srtRecTotal(LoadMops.getSrtDescription(arg2), arg1);
+		        String srtdescription = "";
+	        	srtdescription = LoadMops.getSrtDescription(arg2);
+		        tendermerge = new DummyServerRT.srtRecTotal(srtdescription, arg1);
+		        isEftPayment = LoadMops.isPagElettronico(srtdescription);
 			}
 			
 			System.out.println ( "MAPOTO before driver.printRecTotal - arg0="+arg0+" arg1="+arg1+" arg2="+arg2);
@@ -1698,6 +1704,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				}
         	}
         	
+        	if (isEftPayment) {
+        		EftPos.OfflineEftHandling(arg1, EftPos.getEFTAuthorizationCode(arg1));
+        	}
         	fiscalPrinterDriver.printRecTotal(arg0, arg1, arg2);
 			System.out.println ( "MAPOTO after driver.printRecTotal");
 			

@@ -161,6 +161,17 @@ public class LoadMops {
 		return false;
 	}
 	
+	private static boolean isPagElettronico(ArrayList Mops, String srtdescription)
+	{
+		for (int i = 0; i < Mops.size(); i++){
+			Mop mop = (Mop) Mops.get(i);
+			if (mop.getSrtdescription() != null && mop.getSrtdescription().equalsIgnoreCase(srtdescription)) {
+				return (mop.getType() == EFT_TYPE);
+			}
+		}
+		return false;
+	}
+	
 	private static String getPrefixPayment(String description, ArrayList Mops, boolean oldfw)
 	{
 		System.out.println("RT2 - LoadMops - getPrefixPayment - description = "+description+" - oldfw = "+oldfw);
@@ -201,6 +212,12 @@ public class LoadMops {
 		loadMops();
 		
 		return isNonRiscosso(Mops, srtdescr, isRT2On);
+	}
+
+	public static boolean isPagElettronico(String srtdescr){
+		loadMops();
+		
+		return isPagElettronico(Mops, srtdescr);
 	}
 
 	public static String getPrefixPayment(String description, boolean fwRT2disabled){

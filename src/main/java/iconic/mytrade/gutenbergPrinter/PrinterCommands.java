@@ -995,7 +995,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (RTTxnType.isVoidTrx())
 				{
 					Files.moveFile(SetVoidTrx.getSourcefiletovoid(), SetVoidTrx.getSourcefiletovoid()+".voided");
-//					setPrelevaDenaro(VoidTrx(SetVoidTrx.getTxnheadertovoid()));	// aggiorna il flag Voided della transazione sul db		// ???
 				}
 				
 				SSCO = null;
@@ -3686,11 +3685,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println("RT2 - newModifierCommand - sbcmd = "+sbcmd.toString());
 		}
 
-		public void RTRefund(String data, String serialSRT, boolean freerefund) {
+		public boolean RTRefund(String data, String serialSRT, boolean freerefund) {
 			
 			if (!SRTCheckInput.checkInput(data, freerefund)) {
 				MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-				return;
+				return false;
 			}
 		
 			if (SRTPrinterExtension.isPRT()) {
@@ -3728,18 +3727,18 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!isRefundable){
 					System.out.println("RTRefund - isRefundable="+isRefundable);
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				try {
 					RefundCommands refcmd = new RefundCommands();
 					if (!refcmd.RefundDocument(repz, num, date.toString(), printerid, freerefund)){
 						MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-						return;
+						return false;
 					}
 				} catch (JposException e) {
 					System.out.println("RTRefund - errore:"+e.getMessage());
-					return;
+					return false;
 				}
 				
 				SharedPrinterFields.Lotteria.setLotteryTill(Integer.parseInt(cassa));
@@ -3752,14 +3751,9 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				
 				RTTxnType.setRefundTrx();
 				
-//				setTxnnumbertorefund(PosApp.getTransactionNumber());	// ??? non dovrebbe più servire visto che setVoided() sulla transazione non si farà più da qui immagino
-				
 				OperatorDisplay.printSelectedDevices("EchoLineRefund", null, false, "OD");
 				
-				//Transazione.nuovaTransazione();						// ???
-				//GdONEData.statusTogdONE("main.state", "RtRefund");	// ???
-				
-				return;
+				return true;
 			}
 			
 			if (SRTPrinterExtension.isSRT()) {
@@ -3814,27 +3808,27 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					SharedPrinterFields.Lotteria.setLotteryCode(data.substring(SRTCheckInput.INPUTSRT.length()));
 				}
 				else {
-					//Transazione.nuovaTransazione();						// ???
-					//GdONEData.statusTogdONE("main.state", "RtRefund");	// ???
 					RTTxnType.setRefundTrx();
 				}
 				
-				return;
+				return true;
 			}
+			
+			return false;
 		}
 		
-		public void RTVoid(String data) {
+		public boolean RTVoid(String data) {
 			
 			if (!SRTCheckInput.checkInput(data, false)) {
 				MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-				return;
+				return false;
 			}
 			
 			if (SRTPrinterExtension.isPRT()) {
 				if (Extra.isDeniedPostVoid()) {
 					System.out.println("RTVoid - funzionalita' disabilitata");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				boolean isVoidable = false;
@@ -3861,14 +3855,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!SRTCheckInput.chkValidDate(date.toString())) {
 					System.out.println("RTVoid - funzionalita' fuori tempo massimo");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 
 				// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa 
 				if (!printerid.equalsIgnoreCase(SharedPrinterFields.RTPrinterId)) {
 					System.out.println("RTVoid - funzionalita' disabilitata");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa 
 				
@@ -3876,7 +3870,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if(txnHeader == null){
 					System.out.println("RTVoid - txnHeader = null");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 
 				try {
@@ -3890,7 +3884,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!isVoidable){
 					System.out.println("RTVoid - isVoidable="+isVoidable);
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				SharedPrinterFields.Lotteria.setLotteryTill(Integer.parseInt(cassa));
@@ -3902,18 +3896,19 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				try {
 					SMTKCommands.SMTKsetVoidReceiptType();
 					VoidCommands voidcmd = new VoidCommands();
-					if (!voidcmd.VoidDocument(repz, num, date.toString(), printerid))
+					if (!voidcmd.VoidDocument(repz, num, date.toString(), printerid)) {
 						MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+						return false;
+					}
 					else {
 						SMTKCommands.Base64_Ticket(txnHeader.getTransactionNumber(), true);
 						SMTKCommands.Smart_Ticket(txnHeader.getTransactionNumber(), true);
-//						setPrelevaDenaro(VoidTrx(SetVoidTrx.getTxnheadertovoid()));	// aggiorna il flag Voided della transazione sul db		// ???
 					}
 				} catch (JposException e) {
 					System.out.println("RTVoid - e:"+e.getMessage());
 				}
 				
-				return;
+				return true;
 			}
 			
 			if (SRTPrinterExtension.isSRT()) {
@@ -3940,7 +3935,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if ((rsh == null) || (rsh.length == 0)){
 					System.out.println("RTVoid - <"+filename+"> non esistente");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				String source = rtsTrxBuilder.storerecallticket.Default.getRtsStorePath()+rsh[0];
 				String destin = rtsTrxBuilder.storerecallticket.Default.getExchangeRtsName();
@@ -3951,28 +3946,28 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				} catch (NumberFormatException e) {
 					System.out.println("RTVoid - scontrino gia' annullato - trxnum="+source.substring(source.lastIndexOf(".")+1));
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				TxnHeader txnHeader = SetVoidTrx.getTxnheadertovoid();
 				if(txnHeader == null){
 					System.out.println("RTVoid - txnHeader = null");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				String txndate = Sprint.f("%02d%02d%d", txnHeader.getStartDateTime().getDay(), txnHeader.getStartDateTime().getMonth()+1, txnHeader.getStartDateTime().getYear()+1900);
 				if (!SRTCheckInput.chkValidDate(txndate)) {
 					System.out.println("RTVoid - funzionalita' fuori tempo massimo");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				File f = new File(source);
 				if (f.exists() == false){
 					System.out.println("RTVoid - <"+source+"> non esistente");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				repz = Sprint.f("%04d", data.substring(SRTCheckInput.INPUT.indexOf(SRTCheckInput.ZZZZ), SRTCheckInput.INPUT.indexOf(SRTCheckInput.ZZZZ)+SRTCheckInput.ZZZZ.length()));
@@ -3985,12 +3980,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!isVoidable){
 					System.out.println("RTVoid - isVoidable="+isVoidable);
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				if (!Files.copyFile(source, destin)){
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
-					return;
+					return false;
 				}
 				
 				SharedPrinterFields.Lotteria.setLotteryTill(Integer.parseInt(cassa));
@@ -4007,7 +4002,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				
 				DummyServerRT.ReadVoided();		// legge i dati dello scontrino da annullare
 				
-	//			R3printersSRT.PrintVoided();	// stampa lo scontrino annullato
 				repz = Sprint.f("%05d", data.substring(SRTCheckInput.INPUT.indexOf(SRTCheckInput.ZZZZ), SRTCheckInput.INPUT.indexOf(SRTCheckInput.ZZZZ)+SRTCheckInput.ZZZZ.length()));
 				String toprint = DummyServerRT.PrintVoided(cassa, repz, num);	// stampa lo scontrino annullato
 				try {
@@ -4028,8 +4022,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				
 				SetVoidTrx.resetVoidTrx();
 				
-				return;
+				return true;
 			}
+			
+			return false;
 		}
 		
 		private static void pleasePrintFiscalReceipt(String filename) throws Exception

@@ -117,4 +117,14 @@ public class SharedPrinterFields {
 		return ejcmd;
 	}
 	
+	private static boolean myReply = false;
+	
+	public static boolean getMyReply() {
+		return myReply;
+	}
+
+	public static void setMyReply(boolean myReply) {
+		SharedPrinterFields.myReply = myReply;
+	}
+
 }

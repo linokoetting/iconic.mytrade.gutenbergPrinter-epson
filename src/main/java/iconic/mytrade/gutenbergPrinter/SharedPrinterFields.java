@@ -99,6 +99,16 @@ public class SharedPrinterFields {
 		return ( isInTicket() );
 	}
 	
+    private static boolean CFcliente = false;
+    
+    static boolean isCFcliente() {
+ 		return CFcliente;
+ 	}
+
+ 	public static void setCFcliente(boolean cFcliente) {
+ 		CFcliente = cFcliente;
+ 	}
+ 	
 	private static PrinterCommands cmd = null;
 	
 	public static PrinterCommands getPrinterCommands()

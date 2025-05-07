@@ -158,16 +158,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		CFPIvaFlag = cFPIvaFlag;
 	}
     
-    private static boolean CFcliente = false;
-    
-    private static boolean isCFcliente() {
- 		return CFcliente;
- 	}
-
- 	private static void setCFcliente(boolean cFcliente) {
- 		CFcliente = cFcliente;
- 	}
- 	
 	private boolean flagVoidRefund = false;
 	
 	private boolean isFlagVoidRefund(long amt, long adj) 
@@ -2714,13 +2704,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, " ");
 			
-			if (!isCFcliente()){
+			if (!SharedPrinterFields.isCFcliente()){
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, RTConsts.INTERPELLO141);
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, RTConsts.INTERPELLO142);
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, RTConsts.INTERPELLO143);
 				printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, " ");
 			}
-			setCFcliente(false);
+			SharedPrinterFields.setCFcliente(false);
 		}
 		
 		private ArrayList splitFingerPrint(String fingerprint)

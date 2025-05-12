@@ -10,6 +10,7 @@ import java.awt.Label;
 import java.awt.Panel;
 
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
+import iconic.mytrade.gutenberg.jpos.printer.service.EjTokens;
 import iconic.mytrade.gutenbergPrinter.tax.TaxData;
 import jpos.FiscalPrinterConst;
 import jpos.JposConst;
@@ -176,6 +177,8 @@ public class FiscalEJ extends NullFiscalPrinter implements FiscalPrinterConst,Jp
 		dummyPrinter = dummyPrinters[index];
 
 		data = convertEscapes(data,false);
+		
+		data = hideSomething(data);
 
 		for (int i=0; i<data.length(); i++)
 		{
@@ -419,4 +422,78 @@ public class FiscalEJ extends NullFiscalPrinter implements FiscalPrinterConst,Jp
 		this.rounding = rounding;
 	}
 
+    private static String fixToken(String in, String token)
+    {
+    	// non essendo sicuro della lunghezza della linea (35 ?)
+    	// vado a prendermi la linea del token dentro alle righe da stampare
+    	// e la battezzo come token
+    	
+    	String reply = "";
+    	
+    	if (in.indexOf(token) < 0)
+    		return reply;
+    	
+        String[] lines = in.split("[\\n|]+");	// uso come delimitatori "\n" e "|"
+        
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].indexOf(token) >= 0) {
+                reply = lines[i];
+                break;
+            }
+        }
+		
+    	return reply;
+    }
+    
+    public static String hideSomething(String in)
+    {
+    	String tokenstart = EjTokens.getTokenStart();
+    	String tokenstop  = EjTokens.getTokenStop();
+    	
+    	String out = "";
+    	if (in == null || in.length() == 0) {
+    		return out;
+    	}
+    	
+    	if (in.indexOf(tokenstart.trim()) < 0)
+    		return in;	// lascio tutto com'è
+    	
+    	//System.out.println("hideSomething - in = "+in);
+    	
+    	String token = fixToken(in, tokenstart.trim());
+    	if (token != null && token.length() > 0)
+    		tokenstart = token;
+    	token = fixToken(in, tokenstop.trim());
+    	if (token != null && token.length() > 0)
+    		tokenstop = token;
+    	
+    	out = in;
+    	
+    	int indexstart = in.indexOf(tokenstart);
+    	int indexstop = in.indexOf(tokenstop);
+    	
+    	if (indexstart < 0 && indexstop < 0) {
+    		return out;
+    	}
+    	
+        if (indexstart > indexstop && indexstop >= 0 && indexstart >= 0) {
+            // nel caso i token siano invertiti per errore
+        	// in teoria non dovremmo mai passare di qui
+            int temp = indexstart;
+            indexstart = indexstop;
+            indexstop = temp;
+        }
+    	
+    	if (indexstart >= 0)
+    		out = in.substring(0, indexstart);
+    	else
+    		out = in.substring(0, indexstop);
+    	if (indexstop > indexstart)
+    		out = out + in.substring(indexstop+tokenstop.length());
+    	
+    	//System.out.println("hideSomething - out = "+out);
+    	
+    	return out;
+    }
+	
 }

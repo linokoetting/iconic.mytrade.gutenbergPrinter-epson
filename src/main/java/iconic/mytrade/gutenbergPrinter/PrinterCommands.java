@@ -30,6 +30,7 @@ import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
 import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
+import iconic.mytrade.gutenberg.jpos.printer.service.EjTokens;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
 import iconic.mytrade.gutenberg.jpos.printer.service.LastTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.MethodE;
@@ -680,6 +681,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		
 		System.out.println("MAPOTO-EXEC PRINT NORMAL "+s);
+		
+		s = hideSomething(s);
 		
 		if (isLNFMAndSRTModel())
 		{
@@ -4575,4 +4578,46 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	        return sb.toString();
 	    }
 		
+	    private static String hideSomething(String in)
+	    {
+	    	String tokenstart = EjTokens.getTokenStart().trim();
+	    	String tokenstop  = EjTokens.getTokenStop().trim();
+	    	
+	    	String out = "";
+	    	if (in == null || in.length() == 0) {
+	    		return out;
+	    	}
+	    	
+	    	if (in.indexOf(tokenstart.trim()) < 0)
+	    		return in;	// lascio tutto com'è
+	    	
+	    	//System.out.println("hideSomething - in = "+in);
+	    	
+	        String[] lines = in.split("\n");
+	        
+	        boolean betweenMarkers = false;
+
+	        for (String line : lines) {
+	            if (line.contains(tokenstart)) {
+	                betweenMarkers = true;
+	                continue;
+	            }
+
+	            if (line.contains(tokenstop)) {
+	                betweenMarkers = false;
+	                continue;
+	            }
+
+	            if (betweenMarkers && (line.trim().isEmpty())) {
+	                continue;
+	            }
+
+	            out = out + line + "\n";
+	        }
+	        
+	    	//System.out.println("hideSomething - out = "+out);
+	    	
+	    	return out;
+	    }
+				
 }

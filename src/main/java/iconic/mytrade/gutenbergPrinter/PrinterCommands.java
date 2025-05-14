@@ -940,7 +940,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					if (DummyServerRT.sendToSRT(xmlticket, SRTPrinterExtension.getSecureModePort(), SRTPrinterExtension.getSecureModeTimeout()) == false)
 					{
 						if (RTTxnType.isSaleTrx() || RTTxnType.isRefundTrx())
-							AutoVoidTrx();	// ???
+							AutoVoidTrx();
 						else {
 							MessageBox.showMessage("OPERAZIONE ANNULLATA", null, MessageBox.OK);
 						}
@@ -2741,34 +2741,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private void AutoVoidTrx()
 		{
-/*			ITransactionSale tSale = (ITransactionSale) getTranstovoid();				// ???
-			if (tSale == null)
-				System.out.println ("AutoVoidTrx - tSale = null");
-			else{
-				VoidTransaction voiding = new VoidTransaction();
-				boolean av = false;
-				boolean at = false;
-				try {
-					System.out.println ("AutoVoidTrx - Voiding");
-					voiding.initialize(posEngine);
-					av = voiding.getAutoVoid();
-					at = voiding.getAutoTender();
-					IInput data = new Input(fingerprinterror,fingerprinterror,true,false);
-					voiding.setAutoVoid(true);
-					voiding.setAutoTender(true);
-					voiding.allowInteraction(null, tSale);
-					voiding.setAutoVoid(true);
-					voiding.setAutoTender(true);
-					voiding.doInteraction(data, tSale);
-					voiding.setAutoVoid(av);
-					voiding.setAutoTender(at);
-					voiding.destroy();
-				} catch (Exception e) {
-					System.out.println ("AutoVoidTrx - exception = "+e.getMessage());
-					voiding.setAutoVoid(av);
-					voiding.setAutoTender(at);
-				}
-			}*/
+			SharedPrinterFields.setMyReply(false);
 		}
 		
 		public static int  getPrinterState() throws JposException

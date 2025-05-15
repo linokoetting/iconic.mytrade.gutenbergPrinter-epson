@@ -1678,6 +1678,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						int howmany = prefix % 100;
 						if (howmany > 1) {
 							long singleamount = arg1 / howmany;
+						    if (singleamount % 100 != 0) {
+						    	// tre cifre decimali non è normale
+								// probabilmente sono passati piu' buoni pasto di taglio diverso 
+						        singleamount -= (singleamount % 100);
+						    }
 							long totalamount = singleamount * howmany;
 							System.out.println ( "MAPOTO before driver.printRecTotal - singleamount="+singleamount+" howmany="+howmany+" totalamount="+totalamount);
 							if (totalamount == arg1) {
@@ -1686,6 +1691,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							}
 							else {
 								// singleamount ko, problemi di arrotondamento ?
+								// oppure sono passati piu' buoni pasto di taglio diverso 
 								System.out.println ( "MAPOTO before driver.printRecTotal - WARNING B.PASTO - "+"MAYBE ROUNDING PROBLEMS");
 								String s = arg2.replaceFirst(""+prefix, LoadMops.TICKETWN_TYPE+"01");
 								arg2 = s;

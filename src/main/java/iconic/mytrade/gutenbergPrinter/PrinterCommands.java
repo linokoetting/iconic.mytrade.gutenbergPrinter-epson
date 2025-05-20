@@ -4562,6 +4562,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	String tokenstart = EjTokens.getTokenStart().trim();
 	    	String tokenstop  = EjTokens.getTokenStop().trim();
 	    	
+	    	if (tokenstart == null || tokenstart.length() == 0)
+	    		return in;
+	    	if (tokenstop == null || tokenstop.length() == 0)
+	    		return in;
+	    	
 	    	String out = "";
 	    	if (in == null || in.length() == 0) {
 	    		return out;

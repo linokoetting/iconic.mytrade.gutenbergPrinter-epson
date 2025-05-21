@@ -27,6 +27,7 @@ import org.jdom.input.SAXBuilder;
 
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.MessageBox;
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
+import iconic.mytrade.gutenberg.jpos.printer.service.CanPost;
 import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
 import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
@@ -965,7 +966,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						SharedPrinterFields.a = new ArrayList();
 				   		
 				   		RTTxnType.setSaleTrx();
-//						setCanPost(true);	// ???
+						CanPost.setCanPost(true);
 	  	    			
 	  	    			while (true) {
 	  						OperatorDisplay.pleaseDisplay(DummyServerRT.SERVEROFF);
@@ -1035,7 +1036,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			SharedPrinterFields.a = new ArrayList();
 
 			RTTxnType.setSaleTrx();
-//			setCanPost(true);	// ???
+			CanPost.setCanPost(true);
 			return;
 		}
 		
@@ -1086,7 +1087,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		setMonitorState();
 		SharedPrinterFields.a = new ArrayList();			// prova reset scontrino precedente
 		
-//		SharedPrinterFields.setCanPost(true);	// ???
+		CanPost.setCanPost(true);
 	}
 	
 	public void resetPrinter() throws JposException {

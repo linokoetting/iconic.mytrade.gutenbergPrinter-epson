@@ -2446,7 +2446,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
 		}
 		
-//		setTxnnumbertorefund(LineRefundSRT.getTxnnumbertorefund());	// ??? non dovrebbe più servire visto che setVoided() sulla transazione non si farà più da qui immagino
+		SharedPrinterFields.setMyReply(false);
 		
 		if (!isFlagsVoidTicket())
 			MessageBox.showMessage(RTConsts.OPERAZIONEANNULLATA, null, MessageBox.OK);

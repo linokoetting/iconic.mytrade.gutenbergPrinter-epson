@@ -448,7 +448,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     		DicoTaxObject.setBASE_SERVICES_DEPT(Integer.parseInt(SharedPrinterFields.VAT_N4_Dept)+1);
     		SharedPrinterFields.Printer_IPAddress = getPrinterIpAdd();
 			PrinterInfo.SavePrinterInfo("IPAddress", SharedPrinterFields.Printer_IPAddress);
-    		EftPos.OfflineEftSetting(EftPos.getEFTAuthorizationCode(0));
 	    }
 	    
     	RTchecks.checkLottery(isfwLotteryenabled());

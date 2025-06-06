@@ -893,10 +893,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							DummyServerRT.CurrentDailyAmount = ""+(int)((Double.parseDouble(DummyServerRT.CurrentDailyAmount)+(HardTotals.Totale.getDouble()*100)));
 					}
 					
-					if (isRT2On()) {
-//						J14Data.setrsAllTicket(RoungickTax.getCompleteVatTable());	// ???
-					}
-					
 					DummyServerRT.pleaseDoFiscalReceipt(sco,
 													   	xml,
 													   	LoadMops.Mops,

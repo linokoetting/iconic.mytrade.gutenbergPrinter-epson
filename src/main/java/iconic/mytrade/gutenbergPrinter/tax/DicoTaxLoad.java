@@ -92,7 +92,6 @@ public class DicoTaxLoad
 				TaxInfo[] taxInfo = TaxInfoLookup(SharedPrinterFields.taxInfoMap);
 				if ( taxInfo != null )
 				{		
-//					RoungickTax.setTaxInfo(taxInfo);	// ??? non credo serva più perchè taxInfoMap la carico già prima
 					File FILE = new File(DicoTaxToPrinter.getName());
 					FileOutputStream fstream = new FileOutputStream(FILE);
 					DataOutputStream out = new DataOutputStream(fstream);	

@@ -2442,7 +2442,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
 		}
 		
-		SharedPrinterFields.setMyReply(false);
+		SharedPrinterFields.setMyReply(R3define.PRINTER_REFUND_ERR);
 		
 		if (!isFlagsVoidTicket())
 			MessageBox.showMessage(RTConsts.OPERAZIONEANNULLATA, null, MessageBox.OK);
@@ -2744,7 +2744,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private void AutoVoidTrx()
 		{
-			SharedPrinterFields.setMyReply(false);
+			SharedPrinterFields.setMyReply(R3define.PRINTER_SRT_ERR);
 		}
 		
 		public static int  getPrinterState() throws JposException

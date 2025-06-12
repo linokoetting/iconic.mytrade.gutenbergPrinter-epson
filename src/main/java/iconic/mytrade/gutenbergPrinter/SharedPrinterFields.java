@@ -25,7 +25,7 @@ public class SharedPrinterFields {
 		return fiscalEJenabled;
 	}
 	
-	public void setfiscalEJenabled(boolean fiscalejenabled) {
+	public static void setfiscalEJenabled(boolean fiscalejenabled) {
 		fiscalEJenabled = fiscalejenabled;
 	}
 	

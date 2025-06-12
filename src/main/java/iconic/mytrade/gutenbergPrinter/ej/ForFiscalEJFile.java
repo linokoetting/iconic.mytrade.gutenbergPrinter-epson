@@ -74,7 +74,7 @@ public class ForFiscalEJFile {
 
 		str = maskPin(str);
 		printStream.println(str);
-/*		if(CompanyData.getString("PATO.isPATO").equalsIgnoreCase("true")){	// ???
+/*		if(CompanyData.getString("PATO.isPATO").equalsIgnoreCase("true")){
 			if ( CompanyData.getRemoteWatcher())
 			{
 				SendCommand.spedisciMessaggio(TabellaComandi.PRINTEJ+"|"+str);

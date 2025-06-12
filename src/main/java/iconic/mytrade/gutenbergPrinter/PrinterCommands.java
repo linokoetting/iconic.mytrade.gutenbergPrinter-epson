@@ -527,18 +527,18 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			String[] doc = {""};
     		String s = intestazione1(RTTxnType.getTypeTrx());
     		if (s.length() > 0){
-    			ForFiscalEJFile.writeToFile("\n\t\t"+s.trim());
+    			if (SharedPrinterFields.isfiscalEJenabled()) ForFiscalEJFile.writeToFile("\n\t\t"+s.trim());
     			doc = s.trim().split(" ");
     		}
     		s = intestazione2(RTTxnType.getTypeTrx());
     		if (s.length() > 0)
-    			ForFiscalEJFile.writeToFile("\t\t"+s.trim());
+    			if (SharedPrinterFields.isfiscalEJenabled()) ForFiscalEJFile.writeToFile("\t\t"+s.trim());
     		s = intestazione3(RTTxnType.getTypeTrx());
     		if (s.length() > 0)
-    			ForFiscalEJFile.writeToFile("\t\t"+s.trim());
+    			if (SharedPrinterFields.isfiscalEJenabled()) ForFiscalEJFile.writeToFile("\t\t"+s.trim());
     		s = intestazione4(RTTxnType.getTypeTrx());
     		if (s.length() > 0)
-    			ForFiscalEJFile.writeToFile("\t\t"+s.trim());
+    			if (SharedPrinterFields.isfiscalEJenabled()) ForFiscalEJFile.writeToFile("\t\t"+s.trim());
     		
 	        int[] ai = new int[1];
 	        String[] as = new String[1];
@@ -561,7 +561,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
             }
             
             s = doc[0]+" N. "+z+"-"+n;
-            ForFiscalEJFile.writeToFile("\t\t"+s);
+            if (SharedPrinterFields.isfiscalEJenabled()) ForFiscalEJFile.writeToFile("\t\t"+s);
             LastTicket.setDocnum(ALINER.substring(0, (int)((RTConsts.setMAXLNGHOFLENGTH()-s.length())/2))+s);
             
             intestazione5(false);

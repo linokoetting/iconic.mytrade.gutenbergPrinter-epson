@@ -73,6 +73,9 @@ public class VoidCommands extends PrinterCommands {
 	
 	private void VoidDocumentToEJ(String zRepId, String recId, String date, String printerId) throws JposException
 	{
+		if (!SharedPrinterFields.isfiscalEJenabled())
+			return;
+		
   		String barre = "========================================";
 		String[] doc = {""};
 		ForFiscalEJFile.writeToFile("\n\t\t"+barre);

@@ -163,6 +163,14 @@ public class RTStatus {
 			this.outOfService = outOfService;
 		}
 		
+		public int getTrainingMode() {
+			return trainingMode;
+		}
+
+		public void setTrainingMode(int trainingMode) {
+			this.trainingMode = trainingMode;
+		}
+		
 /*				public String toString() {
 			return "RTStatus [rtType=" + rtType + ", mainStatus=" + mainStatus + ", subStatus=" + subStatus + ", dailyOpen="
 					+ dailyOpen + ", rtNoWorkingPeriod=" + rtNoWorkingPeriod + ", rtFileToSend=" + rtFileToSend

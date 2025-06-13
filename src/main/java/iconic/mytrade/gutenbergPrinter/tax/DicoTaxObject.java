@@ -16,7 +16,7 @@ public class DicoTaxObject
 	
 	private static int		BASE_SERVICES_DEPT = 21;
 	
-	int getTaxnumber() {
+	public int getTaxnumber() {
 		return taxnumber;
 	}
 	void setTaxnumber(int taxnumber) {
@@ -100,7 +100,7 @@ public class DicoTaxObject
 	void setAtecoId(int atecoId) {
 		this.atecoId = atecoId;
 	}
-	int getPrinterDeptnumber() {
+	public int getPrinterDeptnumber() {
 		return printerDeptnumber;
 	}
 	void setPrinterDeptnumber(int printerDeptnumber) {

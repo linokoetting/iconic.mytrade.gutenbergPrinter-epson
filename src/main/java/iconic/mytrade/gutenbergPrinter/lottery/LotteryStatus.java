@@ -61,7 +61,7 @@ public class LotteryStatus {
 		}
 	}
 
-	String getTillId() {
+	public String getTillId() {
 		return tillId;
 	}
 
@@ -69,7 +69,7 @@ public class LotteryStatus {
 		this.tillId = tillId;
 	}
 
-	String getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -77,7 +77,7 @@ public class LotteryStatus {
 		this.date = date;
 	}
 
-	int getzRepNum() {
+	public int getzRepNum() {
 		return zRepNum;
 	}
 
@@ -85,7 +85,7 @@ public class LotteryStatus {
 		this.zRepNum = zRepNum;
 	}
 
-	int getKindOfRequest() {
+	public int getKindOfRequest() {
 		return kindOfRequest;
 	}
 
@@ -93,7 +93,7 @@ public class LotteryStatus {
 		this.kindOfRequest = kindOfRequest;
 	}
 
-	int getFilesToSend() {
+	public int getFilesToSend() {
 		return filesToSend;
 	}
 
@@ -101,7 +101,7 @@ public class LotteryStatus {
 		this.filesToSend = filesToSend;
 	}
 
-	int getOldFilesToSend() {
+	public int getOldFilesToSend() {
 		return oldFilesToSend;
 	}
 
@@ -109,7 +109,7 @@ public class LotteryStatus {
 		this.oldFilesToSend = oldFilesToSend;
 	}
 
-	int getRejectedFiles() {
+	public int getRejectedFiles() {
 		return rejectedFiles;
 	}
 
@@ -117,7 +117,7 @@ public class LotteryStatus {
 		this.rejectedFiles = rejectedFiles;
 	}
 
-	int getWaitingReceipts() {
+	public int getWaitingReceipts() {
 		return waitingReceipts;
 	}
 
@@ -125,7 +125,7 @@ public class LotteryStatus {
 		this.waitingReceipts = waitingReceipts;
 	}
 
-	int getReceiptsToSend() {
+	public int getReceiptsToSend() {
 		return receiptsToSend;
 	}
 
@@ -133,7 +133,7 @@ public class LotteryStatus {
 		this.receiptsToSend = receiptsToSend;
 	}
 
-	int getAcceptedReceipts() {
+	public int getAcceptedReceipts() {
 		return acceptedReceipts;
 	}
 
@@ -141,7 +141,7 @@ public class LotteryStatus {
 		this.acceptedReceipts = acceptedReceipts;
 	}
 
-	int getRejectedReceipts() {
+	public int getRejectedReceipts() {
 		return rejectedReceipts;
 	}
 
@@ -149,7 +149,7 @@ public class LotteryStatus {
 		this.rejectedReceipts = rejectedReceipts;
 	}
 	
-	int getNumRemainingCodes() {
+	public int getNumRemainingCodes() {
 		return NumRemainingCodes;
 	}
 
@@ -157,7 +157,7 @@ public class LotteryStatus {
 		NumRemainingCodes = numRemainingCodes;
 	}
 
-	int getILVersion() {
+	public int getILVersion() {
 		return ILVersion;
 	}
 
@@ -165,7 +165,7 @@ public class LotteryStatus {
 		ILVersion = iLVersion;
 	}
 
-	int getLastReqResult() {
+	public int getLastReqResult() {
 		return LastReqResult;
 	}
 
@@ -173,7 +173,7 @@ public class LotteryStatus {
 		LastReqResult = lastReqResult;
 	}
 
-	String getSubError() {
+	public String getSubError() {
 		return SubError;
 	}
 

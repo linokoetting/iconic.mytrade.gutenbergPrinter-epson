@@ -156,4 +156,8 @@ public class LotteryCommands extends PrinterCommands {
 		
 	}
 	
+    public static int getLotteryRec(String till, String date, int repz) {
+    	return fiscalPrinterDriver.getLotteryRec(till, date, repz);
+    }
+	
 }

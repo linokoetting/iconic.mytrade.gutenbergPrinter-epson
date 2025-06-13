@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.Beeping;
@@ -33,6 +34,8 @@ import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
 import iconic.mytrade.gutenbergPrinter.FiscalPrinterDriver.DirectIOListener;
 import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
+import iconic.mytrade.gutenbergPrinter.lottery.LotteryReportCommands;
+import iconic.mytrade.gutenbergPrinter.lottery.LotteryStatus;
 import iconic.mytrade.gutenbergPrinter.rtchecks.RTchecks;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
@@ -2427,9 +2430,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         
 		double ret = 0;
 		
-    	int command = 2050;
-		StringBuffer sbcmd = new StringBuffer("3700");
-		executeRTDirectIo(command, 0, sbcmd);
+//    	int command = 2050;
+//		StringBuffer sbcmd = new StringBuffer("3700");
+//		executeRTDirectIo(command, 0, sbcmd);
+		String[] reply = DailyPeriodicReport(0, 37);
+		String sbcmd = reply[0];
       	if (sbcmd.toString().length() > "3700".length()) {
 	      	System.out.println("getDailyVoid - type = "+sbcmd.toString().substring(0, 2));
 	      	System.out.println("getDailyVoid - number = "+sbcmd.toString().substring(2, 4));
@@ -2451,9 +2456,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
         
 		double ret = 0;
 		
-    	int command = 2050;
-		StringBuffer sbcmd = new StringBuffer("3600");
-		executeRTDirectIo(command, 0, sbcmd);
+//    	int command = 2050;
+//		StringBuffer sbcmd = new StringBuffer("3600");
+//		executeRTDirectIo(command, 0, sbcmd);
+		String[] reply = DailyPeriodicReport(0, 36);
+		String sbcmd = reply[0];
       	if (sbcmd.toString().length() > "3700".length()) {
 	      	System.out.println("getDailyRefund - type = "+sbcmd.toString().substring(0, 2));
 	      	System.out.println("getDailyRefund - number = "+sbcmd.toString().substring(2, 4));
@@ -2710,4 +2717,177 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		   return s;
 	   }
 		   
+		public int getLotteryRec(String till, String date, int repz) {
+			int ret = 0;
+			
+			int lotterytype = 0;	// Deferred lottery
+			LotteryStatus status = LotteryReportCommands.ReadLotteryStatus(lotterytype, till, date, repz);
+				
+			if (status != null)
+			{
+				System.out.println("checkLTStatus - LT tillId : " + status.getTillId());
+				System.out.println("checkLTStatus - LT zRepNum : " + status.getzRepNum());
+				System.out.println("checkLTStatus - LT date : " + status.getDate());
+				System.out.println("checkLTStatus - LT kindOfRequest : " + status.getKindOfRequest());
+				System.out.println("checkLTStatus - LT filesToSend : " + status.getFilesToSend());
+				System.out.println("checkLTStatus - LT oldFilesToSend : " + status.getOldFilesToSend());
+				System.out.println("checkLTStatus - LT rejectedFiles : " + status.getRejectedFiles());
+				System.out.println("checkLTStatus - LT waitingReceipts : " + status.getWaitingReceipts());
+				System.out.println("checkLTStatus - LT receiptsToSend : " + status.getReceiptsToSend());
+				System.out.println("checkLTStatus - LT acceptedReceipts : " + status.getAcceptedReceipts());
+				System.out.println("checkLTStatus - LT rejectedReceipts : " + status.getRejectedReceipts());
+					
+				ret = status.getAcceptedReceipts() + status.getRejectedReceipts() + status.getReceiptsToSend() + status.getWaitingReceipts();	// sommo accettati + rifiutati + da trasmettere
+			}
+			
+			return ret;
+		}
+		
+		protected int getSimulation()
+		{
+			   int ret = 0;
+			   
+			   RTStatus status = getRTStatus();
+			   ret = status.getTrainingMode();
+			   
+			   return ret;
+		}
+
+		String[] DailyPeriodicReport(int reporttype, int type)
+		{
+			String reply[] = new String[0];
+			
+	    	int command = 2050;		// daily report
+	    	if (reporttype == 1)
+	    		command = 2051;		// periodical report
+	    	
+	    	ArrayList ret = new ArrayList();
+	    	
+			if (type == 40 ||		// Sales documents (Ex-VAT and VAT)
+				type == 41 ||		// Refund documents (Ex-VAT and VAT)
+				type == 42 ||		// Void documents (Ex-VAT and VAT)
+				type == 43 ||		// Sales documents minus the sum of refund and void documents (Ex-VAT and VAT)
+				type == 44)			// Current sale, refund or void or direct invoice open document (Ex-VAT and VAT)
+			{
+		    	for (int vat=0; vat<=59; vat++) {
+					String index = Sprint.f("%02d", vat);
+			    	StringBuffer sbcmd = new StringBuffer(""+type+index);
+					executeRTDirectIo(command, 0, sbcmd);
+			      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+			      	ret.add(sbcmd.toString());
+		    	}
+			}
+			else if (type == 13)	// Total current cash
+			{
+				// leggo qui in sequenza i dati di tutte le forme di pagamento (non solo contanti)
+				
+				type = 13;	// Total current cash
+		    	StringBuffer sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+		      	
+		      	type = 17;	// Current cheques
+		    	for (int number=1; number<=6; number++) {
+					String index = Sprint.f("%02d", number);
+			    	sbcmd = new StringBuffer(""+type+index);
+					executeRTDirectIo(command, 0, sbcmd);
+			      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+			      	ret.add(sbcmd.toString());
+		    	}
+		      	
+		      	type = 18;	// Credit card payments
+		    	for (int number=1; number<=10; number++) {
+					String index = Sprint.f("%02d", number);
+			    	sbcmd = new StringBuffer(""+type+index);
+					executeRTDirectIo(command, 0, sbcmd);
+			      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+			      	ret.add(sbcmd.toString());
+		    	}
+		    	
+		    	type = 19;	// Ticket payments
+		    	for (int number=1; number<=10; number++) {
+					String index = Sprint.f("%02d", number);
+			    	sbcmd = new StringBuffer(""+type+index);
+					executeRTDirectIo(command, 0, sbcmd);
+			      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+			      	ret.add(sbcmd.toString());
+		    	}
+				
+				type = 73;	// Not paid goods and services
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+				
+				type = 74;	// Not paid goods only
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+				
+				type = 75;	// Not paid services only
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+				
+				type = 76;	// Not paid invoices based on a commercial document
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+				
+				type = 78;	// Not paid SSN pharmacy
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+		      	
+		      	type = 80;	// Multi-use voucher payment discounts
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+		      	
+		      	type = 81;	// Cash rounding downs
+		    	sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+			}
+			else if (type == 36)	// daily refund
+			{
+		    	StringBuffer sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+			}
+			else if (type == 37)	// daily void
+			{
+		    	StringBuffer sbcmd = new StringBuffer(""+type+"00");
+				executeRTDirectIo(command, 0, sbcmd);
+		      	System.out.println("DailyPeriodicReport - command = "+command+" - sbcmd = "+sbcmd.toString());
+		      	ret.add(sbcmd.toString());
+			}
+	        else
+	        {
+	        	// da implementare caso per caso
+	        }
+	    	
+	    	reply = new String[ret.size()];
+	    	for (int i=0; i<ret.size(); i++) {
+	    		reply[i] = ret.get(i).toString();
+	    	}
+			
+			return reply;
+		}
+
+		private String[] SingleDocumentReport(int type, int zrepnum, String docnum, String date)
+		{
+			String reply[] = new String[0];
+			
+			return reply;
+		}
+
 }

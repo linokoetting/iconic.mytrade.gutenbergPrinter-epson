@@ -52,6 +52,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.PaperSavingPrope
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.XRData;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.RoungickTax;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.VatInOutHandling;
 import iconic.mytrade.gutenberg.jpos.printer.srt.DummyServerRT;
@@ -69,6 +70,7 @@ import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.EjCommands;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.lottery.LotteryCommands;
+import iconic.mytrade.gutenbergPrinter.monitorrt.MonitorRT;
 import iconic.mytrade.gutenbergPrinter.mop.LoadMops;
 import iconic.mytrade.gutenbergPrinter.refund.RefundCommands;
 import iconic.mytrade.gutenbergPrinter.report.Report;
@@ -284,6 +286,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		simulateState = State;
 		return ( getSimulateState() );
 	}
+	
+	public static MonitorRT monitorRT = null;
 	
 	protected static GuiFiscalPrinterDriver fiscalPrinterDriver = null;
 	
@@ -814,6 +818,21 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	public void endFiscalReceipt(boolean arg0) throws JposException {
 
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+				
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+				try {
+//			    	String[] date = new String[1];
+//			    	fiscalPrinterDriver.getDate(date);
+					monitorRT.MonitorRT_Ticket(PosApp.getTransactionNumber()-1, DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber, SharedPrinterFields.RTPrinterId/*, date[0]*/);
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+			}
+		}
+		
         if (SRTPrinterExtension.isPRT())
         	SharedPrinterFields.Lotteria.resetLottery();
         
@@ -1009,6 +1028,25 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		SMTKCommands.Base64_Ticket(PosApp.getTransactionNumber()-1, false);
 		SMTKCommands.Smart_Ticket(PosApp.getTransactionNumber()-1, false);
+		
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+			
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+		    	String[] date = new String[1];
+				try {
+					fiscalPrinterDriver.getDate(date);
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+		    	
+		        String textfile = readFile(SharedPrinterFields.lastticket, true);
+		        
+		        monitorRT.GetTicketDetails(SharedPrinterFields.RTPrinterId, date[0], DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber,
+		        						   currentTicket/100, monitorRT.AliquoteTicket, textfile);
+			}
+		}
 	}
 	
 	private void endFiscalReceipt_I(boolean arg0) throws JposException {
@@ -2114,12 +2152,48 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
   	    
   	    setFlagVoidRefund(false);
   	    
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+				
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+				try {
+					monitorRT.preMonitorRT();
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+			}
+		}
+		
   	    fiscalPrinterDriver.printZReport();
   	    
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
 		{
 			HardTotals.ProAzz.add(1);
 			HardTotals.delReportZ();
+		}
+		
+		if (XRData.MonitorRTisActive()) {
+			if (SRTPrinterExtension.isPRT()) {
+				
+				if (monitorRT == null) monitorRT = new MonitorRT();
+				
+				try {
+			    	if (DummyServerRT.CurrentFiscalClosure == 0) {
+		    	        int[] ai = new int[1];
+		    	        String[] as = new String[1];
+		                getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
+		                DummyServerRT.CurrentFiscalClosure = Integer.parseInt(as[0])+1;
+			    	}
+			    	
+			    	String[] date = new String[1];
+			    	fiscalPrinterDriver.getDate(date);
+			    	
+					monitorRT.doMonitorRT(SharedPrinterFields.Printer_IPAddress, DummyServerRT.CurrentFiscalClosure, SharedPrinterFields.RTPrinterId, date[0], PosApp.getTillNumber());
+				} catch (Exception e) {
+					monitorRT.logMRT("Exception : "+e.getMessage());
+				}
+			}
 		}
 		
 		if (SRTPrinterExtension.isPRT())
@@ -4394,6 +4468,31 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			executeDirectIo(R3define.BARCODECOMMAND, bc);
 		}
 
+		protected boolean MixedVat()
+		{
+			// controlla se siamo in regime di Iva Ventilata
+			
+			//System.out.println("MixedVat - vat = " + vat);
+			
+			boolean ret = false;
+			
+			String VATid = "97";
+			
+			StringBuffer sbcmd = new StringBuffer(VATid);
+			fiscalPrinterDriver.executeRTDirectIo(4205, 0, sbcmd);
+			//System.out.println("MixedVat - sbcmd = " + sbcmd.toString());
+	      	
+			if (sbcmd.length() == 6)
+			{
+				int ventilazione = Integer.parseInt(sbcmd.substring(2, 3));
+				//System.out.println("MixedVat - ventilazione = "+ventilazione);
+				ret = (ventilazione == 1 ? true : false);
+			}
+			
+			//System.out.println("MixedVat - ret = " + ret);
+			return ret;
+		}
+		
 		private boolean MixedVat(String vat)
 		{
 			// controlla se siamo in regime di Iva Ventilata
@@ -4601,4 +4700,77 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	return out;
 	    }
 				
+	    protected int getSimulation()
+	    {
+	    	return fiscalPrinterDriver.getSimulation();
+	    }
+	    
+		protected String getZRepIdAnswer(int zrep)
+		{
+			String ZRepId = "";
+			
+			String zrepnum = Sprint.f("%04d", zrep);
+			StringBuffer sbcmd = new StringBuffer(zrepnum);
+			int retry = 0;
+			while (true) {
+				fiscalPrinterDriver.executeRTDirectIo(9217, 0, sbcmd);
+				int result = Integer.parseInt(sbcmd.substring(0, 1));
+				System.out.println("getZRepIdAnswer - result = "+result);
+				
+				if (result == 0) {
+					// 0 = OK found the Z report
+					if (sbcmd.length() > 13)
+						ZRepId = sbcmd.substring(13, 25);
+					break;
+				}
+				else if (result == 1) {
+					// 1 = Out of range
+					break;
+				}
+				else if (result == 2) {
+					// 2 = Z report in the queue
+					System.out.println("getZRepIdAnswer - waiting...");
+				}
+				else if (result == 3) {
+					// 3 = Not found
+					break;
+				}
+				
+				sbcmd = new StringBuffer(zrepnum);
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				
+				retry++;
+				if (retry == 360)	// dopo 3 minuti ci rinuncio
+					break;
+			}
+			
+			System.out.println("getZRepIdAnswer - returning : "+ZRepId);
+			return ZRepId;
+		}
+		
+		protected String[] VatReport(int reporttype, int type)
+		{
+			String reply[] = new String[0];
+			
+			return (fiscalPrinterDriver.DailyPeriodicReport(reporttype, type));
+		}
+		
+		private String[] VatReport(int type, int zrepnum, String docnum, String date)
+		{
+			String reply[] = new String[0];
+			
+			return reply;
+		}
+		
+		protected String[] PaymentReport(int reporttype, int type)
+		{
+			String reply[] = new String[0];
+			
+			return (fiscalPrinterDriver.DailyPeriodicReport(reporttype, type));
+		}
+		
 }

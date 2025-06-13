@@ -34,12 +34,12 @@ public class DicoTaxLoad
 	private static void init() {
 	}
 	
-	static int DicoTaxSize()
+	public static int DicoTaxSize()
 	{
 		return ( (tax != null ) ? tax.size() : 0 );
 	}
 	
-	static DicoTaxObject get ( int i )
+	public static DicoTaxObject get ( int i )
 	{
 		if ( tax != null )
 		{

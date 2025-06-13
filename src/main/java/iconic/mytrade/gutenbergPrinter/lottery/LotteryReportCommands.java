@@ -42,11 +42,11 @@ public class LotteryReportCommands extends PrinterCommands {
         
         System.out.println("printLotteryReport - till = " + till + " date = " + date + " repz = " + repz);
         
-		checkLTStatus_Epson(till, date, repz);
-		checkILTStatus_Epson(till, date, repz);
+		checkLTStatus(till, date, repz);
+		checkILTStatus(till, date, repz);
 	}
 	
-	private void checkLTStatus_Epson(String till, String date, int repz)
+	private void checkLTStatus(String till, String date, int repz)
 	{
 		Calendar c = Calendar.getInstance();
 		String dayofmonth = Sprint.f("%02d", c.getTime().getDate());
@@ -115,7 +115,7 @@ public class LotteryReportCommands extends PrinterCommands {
 		printLTStatus(filename);
 	}
 	
-	private LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
+	public static LotteryStatus ReadLotteryStatus(int requesttype, String till, String date, int repz) {
 		LotteryStatus status = null;
 		
 		if (SharedPrinterFields.Lotteria.isLotteryOn())
@@ -157,7 +157,7 @@ public class LotteryReportCommands extends PrinterCommands {
 		return status;
 	}
 	
-	private void checkILTStatus_Epson(String till, String date, int repz)
+	private void checkILTStatus(String till, String date, int repz)
 	{
 		Calendar c = Calendar.getInstance();
 		String dayofmonth = Sprint.f("%02d", c.getTime().getDate());

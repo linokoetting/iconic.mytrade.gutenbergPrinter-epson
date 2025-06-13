@@ -14,7 +14,7 @@ public class Mop {
 		this.setInd(ind);
 	}
 
-	String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
@@ -22,7 +22,7 @@ public class Mop {
 		this.description = description;
 	}
 
-	int getType() {
+	public int getType() {
 		return type;
 	}
 
@@ -38,7 +38,7 @@ public class Mop {
 		this.srtdescription = srtdescription;
 	}
 
-	int getInd() {
+	public int getInd() {
 		return ind;
 	}
 

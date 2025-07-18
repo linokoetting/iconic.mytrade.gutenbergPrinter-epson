@@ -2481,7 +2481,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	{
 		int o = 0;
 		
-		if (PrinterCommands.getSimulateState() == jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL)
+		if (SharedPrinterFields.getSimulateState() == jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL)
 		{
 			try
 			{

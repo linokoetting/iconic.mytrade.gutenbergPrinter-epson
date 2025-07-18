@@ -100,6 +100,96 @@ public class SharedPrinterFields {
 		return ( isInTicket() );
 	}
 	
+	private static boolean	prtDone;	// printrectotalDone
+	
+	static boolean isprtDone()
+	{	
+		return ( prtDone );
+	}
+	
+	static boolean setprtDone()
+	{
+		prtDone = true;
+		return ( isprtDone() );
+	}
+	
+	public static boolean resetprtDone()
+	{
+		prtDone = false;
+		return ( isprtDone() );
+	}
+	
+	private static long theBill;
+	
+	public static long cleanTheBill( )
+	{
+		return ( setTheBill( 0 ) );
+	}
+	
+	private static long setTheBill( long V )
+	{
+		theBill =  V;
+		return ( getTheBill() );
+	}
+	
+	private static long getTheBill( )
+	{
+		return ( theBill );
+	}
+	
+	private boolean checkTheBill ( long T, long P )
+	{
+		return ( (T <= setTheBill( getTheBill() + P ) ) );
+	}
+   
+	private static int simulateState;
+	
+	static int setMonitorState()
+	{	
+		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_MONITOR ) );
+	}
+	
+	public static int setFiscalState()
+	{	
+		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT ) );
+	}
+	
+	public static int setNonFiscalState()
+	{	
+		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL ) );
+	}
+	
+	private int setEndingFiscalState()
+	{	
+		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT_ENDING ) );
+	}
+	
+	static int getSimulateState()
+	{	
+		return ( simulateState );
+	}
+	
+	private static int setSimulateState( int State )
+	{
+		simulateState = State;
+		return ( getSimulateState() );
+	}
+	
+	private static String CFPIvaTag = "CoDICefiSCAlepaRTItaiVA:";
+	private static boolean CFPIvaFlag = false;
+	
+	static String getCFPIvaTag() {
+		return CFPIvaTag;
+	}
+	
+    static boolean isCFPIvaFlag() {
+		return CFPIvaFlag;
+	}
+    
+	public static void setCFPIvaFlag(boolean cFPIvaFlag) {
+		CFPIvaFlag = cFPIvaFlag;
+	}
+    
     private static boolean CFcliente = false;
     
     static boolean isCFcliente() {

@@ -10,12 +10,15 @@ import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
+
 public class ForFiscalEJFile {
 	
 	private static String dir = "";
 	private static final String PINstr = "PIN:";
 	
 	public static String getEJFileName() {
+		dir = SharedPrinterFields.WorkingFolder+"/";
 		String txt = ".txt";
 		String fn = dir+"EJfile";
 		int i = fn.indexOf(txt);

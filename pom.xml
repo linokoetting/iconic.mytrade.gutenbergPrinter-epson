@@ -1,17 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>iconic.mytrade.gutenberg</groupId>
-  <artifactId>gutenbergPrinter</artifactId>
+  <artifactId>gutenbergprinter</artifactId>
   <version>${printer.version}</version>
   <name>gutenbergPrinter</name>
   
   <properties>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <printer.version>31.0.1-SNAPSHOT</printer.version>
     <interface.version>0.0.1-SNAPSHOT</interface.version>
     <common.version>0.0.1-SNAPSHOT</common.version>
   </properties>  
   
   <build>
+  <finalName>gutenbergPrinter-${version}</finalName>
   	<resources>
   		<resource>
   			<directory>src/main/resources</directory>
@@ -23,15 +25,31 @@
   <dependencies>     
 		<dependency>
 			<groupId>iconic.mytrade.gutenberg</groupId>
-			<artifactId>gutenbergInterface</artifactId>
+			<artifactId>gutenberginterface</artifactId>
 			<version>${interface.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>iconic.mytrade.gutenberg</groupId>
-			<artifactId>gutenbergCommon</artifactId>
+			<artifactId>gutenbergcommon</artifactId>
 			<version>${common.version}</version>
 		</dependency>
   </dependencies>
+    
+  <scm>
+	<connection>
+		scm:git:https://github.com/retex-iconic/iconic.mytrade-suite.git</connection>
+	<developerConnection>
+		scm:git:https://github.com/retex-iconic/iconic.mytrade-suite.git</developerConnection>
+	<url>https://github.com/retex-iconic/iconic.mytrade-suite</url>
+  </scm>
+  
+	<distributionManagement>
+		<repository>
+			<id>suite</id>
+			<name>GitHub retex-iconic Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/retex-iconic/iconic.mytrade-suite</url>
+		</repository>
+	</distributionManagement>
     
 </project>

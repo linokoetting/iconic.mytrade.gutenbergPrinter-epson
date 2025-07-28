@@ -137,7 +137,7 @@ public class SharedPrinterFields {
 		return ( theBill );
 	}
 	
-	private boolean checkTheBill ( long T, long P )
+	public static boolean checkTheBill ( long T, long P )
 	{
 		return ( (T <= setTheBill( getTheBill() + P ) ) );
 	}
@@ -159,7 +159,7 @@ public class SharedPrinterFields {
 		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL ) );
 	}
 	
-	private int setEndingFiscalState()
+	public static int setEndingFiscalState()
 	{	
 		return ( setSimulateState ( jpos.FiscalPrinterConst.FPTR_PS_FISCAL_RECEIPT_ENDING ) );
 	}

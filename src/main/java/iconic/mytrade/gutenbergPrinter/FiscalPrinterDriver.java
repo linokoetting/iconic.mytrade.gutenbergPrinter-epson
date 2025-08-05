@@ -25,7 +25,11 @@ import iconic.mytrade.gutenberg.jpos.printer.service.RTTxnType;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.TakeYourTime;
 import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
+import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.AsynchronousEvent;
+import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.GutenbergAction;
+import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.GutenbergActions;
 import rtsTrxBuilder.hardTotals.HardTotals;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.Lotteria;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
@@ -453,7 +457,10 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			PrinterInfo.SavePrinterInfo("IPAddress", SharedPrinterFields.Printer_IPAddress);
 	    }
 	    
-    	RTchecks.checkLottery(isfwLotteryenabled());
+    	if (RTchecks.checkLottery(isfwLotteryenabled())) {
+    		SharedPrinterFields.Lotteria.setLotteryOn(SharedPrinterFields.Lotteria.getLottery_disabled() == 0);
+	    	AsynchronousEvent.go(null, new GutenbergAction(GutenbergActions.PleaseReloadLottery, Lotteria.isEnable(), Lotteria.isPrintBarcode()));
+    	}
     	
 		LogPrinterLevel(SharedPrinterFields.RTPrinterId, fw, isfwLotteryenabled(), isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();
@@ -571,16 +578,16 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 						 expiryDateCD, expiryDateCA, Integer.parseInt(dgfeFileSystem),
 						 Integer.parseInt(trainingMode), Integer.parseInt(archivedFileRejected), Integer.parseInt(ripristinoCertif));
 			   
-			   int lottery_disabled = Integer.parseInt(outOfService);
-			   if (lottery_disabled == 1) {
+			   SharedPrinterFields.Lotteria.setLottery_disabled(Integer.parseInt(outOfService));
+			   if (SharedPrinterFields.Lotteria.getLottery_disabled() == 1) {
 				   SharedPrinterFields.Lotteria.LotteryTrace("checkRTStatus - ATTENZIONE --------------------------------------");
 				   SharedPrinterFields.Lotteria.LotteryTrace("checkRTStatus - FORZATO REPORT Z");
 				   SharedPrinterFields.Lotteria.LotteryTrace("checkRTStatus - ATTENZIONE --------------------------------------");
 				   fiscalPrinter.printZReport();
 				   RTStatus lstatus = getRTStatus();
-				   lottery_disabled = lstatus.getOutOfService();
+				   SharedPrinterFields.Lotteria.setLottery_disabled(lstatus.getOutOfService());
 			   }
-			   SharedPrinterFields.Lotteria.setLotteryOn(lottery_disabled == 0);
+			   SharedPrinterFields.Lotteria.setLotteryOn(SharedPrinterFields.Lotteria.getLottery_disabled() == 0);
 			   
 			   SetLotteryMessages();
 			   ReadLotteryMessages();

@@ -697,7 +697,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 			HardTotals.doPrintRecItem(l);
 			
-			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(j).getTaxrate())+"%";
+			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(jIvaPolipos).getTaxrate())+"%";
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 			
 			scriviLastTicket(buildItem ( s, l ));
@@ -1295,7 +1295,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		{
 		  	HardTotals.doPrintRecRefund(l);
 		  	
-			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(i).getTaxrate())+"%";
+			String ivadesc = String.format("%.2f", DicoTaxLoad.getDTO(iIvaPolipos).getTaxrate())+"%";
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 			
 			scriviLastTicket(buildItemRefund ( s, l ));

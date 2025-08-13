@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
+import iconic.mytrade.gutenbergPrinter.SharedPrinterFields;
+
 /* 
  * il costruttore prepara la tabella con le varie IVA da mandare alla printer
  * 
@@ -158,6 +160,6 @@ public class DicoTaxToPrinter {
 	}
 	static String getName ( )
 	{
-		return ( NAME+".iva" );
+		return ( SharedPrinterFields.WorkingFolder+"/"+NAME+".iva" );
 	}
 }

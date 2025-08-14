@@ -4619,7 +4619,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			while (true) {
 				fiscalPrinterDriver.executeRTDirectIo(9217, 0, sbcmd);
 				int result = Integer.parseInt(sbcmd.substring(0, 1));
-				System.out.println("getZRepIdAnswer - result = "+result);
+				monitorRT.logMRT("getZRepIdAnswer - result = "+result);
 				
 				if (result == 0) {
 					// 0 = OK found the Z report
@@ -4633,7 +4633,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				}
 				else if (result == 2) {
 					// 2 = Z report in the queue
-					System.out.println("getZRepIdAnswer - waiting...");
+					monitorRT.logMRT("getZRepIdAnswer - waiting...");
 				}
 				else if (result == 3) {
 					// 3 = Not found
@@ -4652,7 +4652,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					break;
 			}
 			
-			System.out.println("getZRepIdAnswer - returning : "+ZRepId);
+			monitorRT.logMRT("getZRepIdAnswer - returning : "+ZRepId);
 			return ZRepId;
 		}
 		

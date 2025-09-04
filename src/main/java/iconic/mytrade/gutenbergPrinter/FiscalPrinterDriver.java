@@ -14,10 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.Beeping;
+import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.FiscalPrinterDataInformation;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
 import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
@@ -28,15 +28,11 @@ import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
 import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.AsynchronousEvent;
 import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.GutenbergAction;
 import iconic.mytrade.gutenberg.jpos.printer.service.Asynchronous.GutenbergActions;
-import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.Lotteria;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
-import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
-import iconic.mytrade.gutenbergPrinter.FiscalPrinterDriver.DirectIOListener;
-import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.FiscalEJFile;
 import iconic.mytrade.gutenbergPrinter.lottery.LotteryReportCommands;
 import iconic.mytrade.gutenbergPrinter.lottery.LotteryStatus;
@@ -51,6 +47,7 @@ import jpos.events.ErrorListener;
 import jpos.events.OutputCompleteListener;
 import jpos.events.StatusUpdateEvent;
 import jpos.events.StatusUpdateListener;
+import rtsTrxBuilder.hardTotals.HardTotals;
 
 public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusUpdateListener {
 
@@ -2272,6 +2269,26 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		}
         
         SMTKgetStatus(repz, date[0].substring(0, 4)+date[0].substring(6, 8));
+	}
+	
+	public void SMTKsetReceiptParameters()
+	{
+		if ((SmartTicket.getCustomerType() == SmartTicket._Smart_Ticket_CustomerType) && (SmartTicket.getCustomerId().equalsIgnoreCase(SmartTicket._Smart_Ticket_CustomerId))) {
+			if (CarteFidelity.getCartaFidelity() != null && CarteFidelity.getCartaFidelity().length() > 0) {
+				// se non è stato specificato nessun customerid ma è stata passata la tessera fidelity allora usiamo questa
+				SmartTicket.setCustomerType(SmartTicket.ERECEIPT_DEFAULT_CUSTOMER);
+				SmartTicket.setCustomerId(CarteFidelity.getCartaFidelity());
+			}
+		}
+	
+		if (SRTPrinterExtension.isPRT()) {
+			// qui setto i parametri per lo scontrino che sta per andare in stampa, secondo le impostazioni decise dall'interfaccia grafica
+			// oppure con le impostazioni di default se non sono state specificate tramite l'interfaccia grafica
+			SMTKsetReceiptType(SmartTicket.Smart_Ticket_ReceiptMode, SmartTicket.Smart_Ticket_Validity);
+			SMTKsetCustomerID(SmartTicket.Smart_Ticket_CustomerType, SmartTicket.Smart_Ticket_CustomerId);
+		}
+		
+		SmartTicket.SMTKbarcodes_reset();
 	}
 	
 	/* SmartTicket commands - End

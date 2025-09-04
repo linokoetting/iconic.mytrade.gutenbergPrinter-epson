@@ -29,7 +29,6 @@ import iconic.mytrade.gutenberg.jpos.linedisplay.service.MessageBox;
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.CanPost;
 import iconic.mytrade.gutenberg.jpos.printer.service.Cancello;
-import iconic.mytrade.gutenberg.jpos.printer.service.CarteFidelity;
 import iconic.mytrade.gutenberg.jpos.printer.service.Company;
 import iconic.mytrade.gutenberg.jpos.printer.service.EjTokens;
 import iconic.mytrade.gutenberg.jpos.printer.service.Extra;
@@ -45,7 +44,6 @@ import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import iconic.mytrade.gutenberg.jpos.printer.service.TicketErrorSupport;
 import iconic.mytrade.gutenberg.jpos.printer.service.TransactionSale;
 import iconic.mytrade.gutenberg.jpos.printer.service.TxnHeader;
-import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.Lotteria;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.MyTradeProperties;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PaperSavingProperties;
@@ -81,6 +79,7 @@ import iconic.mytrade.gutenbergPrinter.tax.DicoTaxToPrinter;
 import iconic.mytrade.gutenbergPrinter.tax.TaxData;
 import jpos.FiscalPrinterConst;
 import jpos.JposException;
+import rtsTrxBuilder.hardTotals.HardTotals;
 import rtsTrxBuilder.support.ivaSEMPLICE;
 import rtsTrxBuilder.support.scontiSEMPLICI;
 
@@ -509,24 +508,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-	    if (SmartTicket.isSmart_Ticket())
+	    if (SmartTicket.isSmart_Ticket() && (RTTxnType.isSaleTrx() || SRTPrinterExtension.isSRT()))
 	    {
-    		if ((SmartTicket.getCustomerType() == SmartTicket._Smart_Ticket_CustomerType) && (SmartTicket.getCustomerId().equalsIgnoreCase(SmartTicket._Smart_Ticket_CustomerId))) {
-    			if (CarteFidelity.getCartaFidelity() != null && CarteFidelity.getCartaFidelity().length() > 0) {
-    				// se non è stato specificato nessun customerid ma è stata passata la tessera fidelity allora usiamo questa
-    				SmartTicket.setCustomerType(SmartTicket.ERECEIPT_DEFAULT_CUSTOMER);
-    				SmartTicket.setCustomerId(CarteFidelity.getCartaFidelity());
-    			}
-    		}
-    		
-	    	if (SRTPrinterExtension.isPRT()) {
-	    		// qui setto i parametri per lo scontrino che sta per andare in stampa, secondo le impostazioni decise dall'interfaccia grafica
-	    		// oppure con le impostazioni di default se non sono state specificate tramite l'interfaccia grafica
-	    		fiscalPrinterDriver.SMTKsetReceiptType(SmartTicket.Smart_Ticket_ReceiptMode, SmartTicket.Smart_Ticket_Validity);
-	    		fiscalPrinterDriver.SMTKsetCustomerID(SmartTicket.Smart_Ticket_CustomerType, SmartTicket.Smart_Ticket_CustomerId);
-	    	}
-    		
-    		SmartTicket.SMTKbarcodes_reset();
+	    	// in uno scontrino di reso questi comandi andrebbero in errore
+	    	// se mandati a questo punto cioè dopo il comando di refund
+    		fiscalPrinterDriver.SMTKsetReceiptParameters();
 	    }
 
 		setFlagVoidRefund(false);
@@ -1725,7 +1711,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					long resto = HardTotals.TotalePagato.getLongX100()-HardTotals.Totale.getLongX100();
 					
 					long rounding = 0;
-					if (RTTxnType.isSaleTrx() && progress_cash)
+					if (RTTxnType.isSaleTrx() && progress_cash && RTConsts.getCURRENTROUNDING() != RTConsts.ROUNDINGDISABLE)
 						rounding = (long)(Rounding.roundingSimulation(((double)arg0/10000))*10000);
 					
 					if (rounding > 0) {		// a favore del pdv
@@ -3673,6 +3659,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					return false;
 				}
 				
+			    if (SmartTicket.isSmart_Ticket())
+			    {
+			    	// devo mandare questi comandi prima del comando di refund altrimenti vanno in errore
+			    	fiscalPrinterDriver.SMTKsetReceiptParameters();
+			    }
+			    
 				try {
 					RefundCommands refcmd = new RefundCommands();
 					if (!refcmd.RefundDocument(repz, num, date.toString(), printerid, freerefund)){

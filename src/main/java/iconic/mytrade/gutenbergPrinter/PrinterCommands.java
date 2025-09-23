@@ -3618,6 +3618,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (!SRTCheckInput.checkInput(data, freerefund)) {
 				MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+				RTTxnType.setSaleTrx();
 				return false;
 			}
 		
@@ -3656,6 +3657,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!isRefundable){
 					System.out.println("RTRefund - isRefundable="+isRefundable);
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3669,10 +3671,12 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					RefundCommands refcmd = new RefundCommands();
 					if (!refcmd.RefundDocument(repz, num, date.toString(), printerid, freerefund)){
 						MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+						RTTxnType.setSaleTrx();
 						return false;
 					}
 				} catch (JposException e) {
 					System.out.println("RTRefund - errore:"+e.getMessage());
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3756,6 +3760,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			if (!SRTCheckInput.checkInput(data, false)) {
 				MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+				RTTxnType.setSaleTrx();
 				return false;
 			}
 			
@@ -3763,6 +3768,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (Extra.isDeniedPostVoid()) {
 					System.out.println("RTVoid - funzionalita' disabilitata");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3790,6 +3796,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!SRTCheckInput.chkValidDate(date.toString())) {
 					System.out.println("RTVoid - funzionalita' fuori tempo massimo");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 
@@ -3797,6 +3804,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!printerid.equalsIgnoreCase(SharedPrinterFields.RTPrinterId)) {
 					System.out.println("RTVoid - funzionalita' disabilitata");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				// TEMPORANEO fino a quando non si implementerà il postVoid su printer diversa 
@@ -3805,6 +3813,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if(txnHeader == null){
 					System.out.println("RTVoid - txnHeader = null");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 
@@ -3819,6 +3828,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!isVoidable){
 					System.out.println("RTVoid - isVoidable="+isVoidable);
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3833,6 +3843,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					VoidCommands voidcmd = new VoidCommands();
 					if (!voidcmd.VoidDocument(repz, num, date.toString(), printerid)) {
 						MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+						RTTxnType.setSaleTrx();
 						return false;
 					}
 					else {
@@ -3874,6 +3885,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if ((rsh == null) || (rsh.length == 0)){
 					System.out.println("RTVoid - <"+filename+"> non esistente");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				String source = rtsTrxBuilder.storerecallticket.Default.getRtsStorePath()+rsh[0];
@@ -3885,6 +3897,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				} catch (NumberFormatException e) {
 					System.out.println("RTVoid - scontrino gia' annullato - trxnum="+source.substring(source.lastIndexOf(".")+1));
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3892,6 +3905,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if(txnHeader == null){
 					System.out.println("RTVoid - txnHeader = null");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3899,6 +3913,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!SRTCheckInput.chkValidDate(txndate)) {
 					System.out.println("RTVoid - funzionalita' fuori tempo massimo");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3906,6 +3921,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (f.exists() == false){
 					System.out.println("RTVoid - <"+source+"> non esistente");
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
@@ -3919,11 +3935,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				if (!isVoidable){
 					System.out.println("RTVoid - isVoidable="+isVoidable);
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				
 				if (!Files.copyFile(source, destin)){
 					MessageBox.showMessage("WrongSequence", null, MessageBox.OK);
+					RTTxnType.setSaleTrx();
 					return false;
 				}
 				

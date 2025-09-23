@@ -97,17 +97,17 @@ public class Report extends PrinterCommands {
 					break;
 					
 				case INITJOURNAL:
-					do {
+//					do {
 						TakeYourTime.takeYourTime(200);
 						ret = r3InitJournal();
-					} while (ret == 111);
+//					} while (ret == 111);
 					break;
 					
 				default:
 					// debug(  "Report type unknown");
-				break;
+					break;
 			}
-      return;
+			return;
     }
     
 	private static void r3PrintSomeReceiptByDate (String startNum, String endNum)
@@ -333,8 +333,8 @@ public class Report extends PrinterCommands {
     	int data[] = new int[1];
     	int ret = 0;
     	
-		if (MessageBox.showMessage("INIZIALIZZ. GIORNALE?", MessageBox.YESNO) == MessageBox.NO)
-			return(-1);
+//		if (MessageBox.showMessage("INIZIALIZZ. GIORNALE?", MessageBox.YESNO) == MessageBox.NO)
+//			return(-1);
 
 		try
 		{
@@ -346,16 +346,16 @@ public class Report extends PrinterCommands {
 		{
 			System.out.println ( "MAPOTO-r3InitJournal <"+jpe.getErrorCode()+"><"+jpe.getMessage()+">");
 			ret = jpe.getErrorCode();
-			if (ret == 111)
-			{
-				//BeepAlert();
-				ret = MessageBox.showMessage("ChangeEJ", MessageBox.YESNO);
-				if (ret == MessageBox.YES)
-					ret = 111;
-			}
-			else if (ret == 114)
-				MessageBox.showMessage("HardwareFailure EJFiscalDayOpen");
-			else
+//			if (ret == 111)
+//			{
+//				//BeepAlert();
+//				ret = MessageBox.showMessage("ChangeEJ", MessageBox.YESNO);
+//				if (ret == MessageBox.YES)
+//					ret = 111;
+//			}
+//			else if (ret == 114)
+//				MessageBox.showMessage("HardwareFailure EJFiscalDayOpen");
+//			else
 				MessageBox.showMessage(jpe.getMessage());
 			 return ret;
 		}

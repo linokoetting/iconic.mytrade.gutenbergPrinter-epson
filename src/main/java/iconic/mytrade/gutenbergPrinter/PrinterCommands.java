@@ -848,7 +848,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 						if (RTTxnType.isSaleTrx() || RTTxnType.isRefundTrx())
 							AutoVoidTrx();
 						else {
-							MessageBox.showMessage("OPERAZIONE ANNULLATA", null, MessageBox.OK);
+							MessageBox.showMessage(RTConsts.OPERAZIONEANNULLATA, null, MessageBox.OK);
 						}
 						
 	  	    			if (isFiscalAndSRTModel())

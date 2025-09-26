@@ -3600,7 +3600,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println("newModifierCommand - vat="+vat);
 			
 			String op = "01";
-			String amn = Sprint.f("%09d",amount/100);;
+			String amn = Sprint.f("%09d",amount/100);
 			String type = Sprint.f("%02d",cmd);
 			String department = Sprint.f("%02d",vat);
 			String alignment = "1";

@@ -869,28 +869,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			if (isNotRTModel())
 				return;
 			
-			try {
-				String s = "setVATtable - IvaVentilata: ";
-				System.out.println(s+"---------------------------------------------------------------------------------------------");
-				System.out.println(s+"LIVELLO DELLA STAMPANTE :");
-				System.out.println(s+"TIPOLOGIA - MATRICOLA   - FIRMWARE - LOTTERIA - RT2(XML7) - SMARTTICKET - LOTTERIA I. - IVA VENTILATA");
-				System.out.print(s+"Epson     - ");
-				String fw = Sprint.f("%04s", firmware);
-				System.out.print(matricola+" - "+fw+"     -    ");
-				System.out.print(lotteria == true ? "SI    -    " : "NO    -    ");
-				System.out.print(rt2 == true ? "SI     -      " : "NO     -      ");
-				System.out.print(smtk == true ? "SI     -      " : "NO     -      ");
-				System.out.print(ilotteria == true ? "SI     - " : "NO     - ");
-				if (rt2)
-					System.out.println("da configurare sul database");
-				else
-					System.out.println("da configurare sulla stampante");
-				System.out.println(s+"---------------------------------------------------------------------------------------------");
-			}
-			catch (Exception e)
-			{
-				System.out.println("LogPrinterLevel - errore : "+e.getMessage());
-			}
+			iconic.mytrade.gutenberg.jpos.printer.utils.LogPrinterLevel.log("Epson", matricola, firmware, lotteria, rt2, smtk, ilotteria);
 		}
 		
 	    public static int executeRTDirectIo (int Command, int pData, StringBuffer bjct)

@@ -4,11 +4,8 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +27,6 @@ import iconic.mytrade.gutenbergPrinter.mop.Mop;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxLoad;
 import iconic.mytrade.gutenbergPrinter.tax.DicoTaxObject;
 import jpos.FiscalPrinterConst;
-import jpos.JposException;
 import jpos.events.DirectIOEvent;
 
 public class MonitorRT extends PrinterCommands {

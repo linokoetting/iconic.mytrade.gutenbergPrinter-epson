@@ -348,7 +348,6 @@ public class Report extends PrinterCommands {
 			ret = jpe.getErrorCode();
 //			if (ret == 111)
 //			{
-//				//BeepAlert();
 //				ret = MessageBox.showMessage("ChangeEJ", MessageBox.YESNO);
 //				if (ret == MessageBox.YES)
 //					ret = 111;

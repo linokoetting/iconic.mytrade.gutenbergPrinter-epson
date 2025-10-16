@@ -79,6 +79,8 @@ public class SharedPrinterFields {
 	
 	public static String WorkingFolder = "";
     
+	public static String FwList = "";
+    
 	public static String lastticket = WorkingFolder+"/"+"LastTicket.out";
 	
 	public static boolean	inRetryFiscal;

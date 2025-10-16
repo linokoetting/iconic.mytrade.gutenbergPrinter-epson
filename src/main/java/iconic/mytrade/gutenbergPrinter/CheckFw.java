@@ -7,10 +7,10 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 public class CheckFw {
-	private static String list = "/bs2coop/epsonFw.lst";
 	
 	static boolean inList(String fw) {
 		boolean ret = false;
+		String list = SharedPrinterFields.FwList;
 		log("list : "+list);
 		log("fw : "+fw);
 		
@@ -32,7 +32,7 @@ public class CheckFw {
 					log("line : "+line);
 					break;
 				}
-			}	
+			}
 			in.close();
 		} catch (Exception e) {
 			log(e.getMessage());

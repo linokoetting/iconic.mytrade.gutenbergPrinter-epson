@@ -462,8 +462,6 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		LogPrinterLevel(SharedPrinterFields.RTPrinterId, fw, isfwLotteryenabled(), isfwRT2enabled(), isfwSMTKenabled(), isfwILotteryenabled());
 		PrinterInfo.LogPrinterInfo();
 		
-		System.out.println("LINO - SmartTicket.ERECEIPT_DESTIN_FOLDER="+SmartTicket.ERECEIPT_DESTIN_FOLDER);
-		
 		return fw;
 	}
 

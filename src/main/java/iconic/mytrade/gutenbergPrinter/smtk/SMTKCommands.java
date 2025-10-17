@@ -214,9 +214,9 @@ public class SMTKCommands extends PrinterCommands {
 		
 		boolean clean = receiptnumber == 1;
 		
-		File f = new File(SmartTicket.ERECEIPT_DESTIN_FOLDER);
+		File f = new File(SmartTicket.getERECEIPT_DESTIN_FOLDER());
 		if (!f.exists()) {
-			System.out.println("SMTK - moveSmartTicket - creating: "+SmartTicket.ERECEIPT_DESTIN_FOLDER);	   
+			System.out.println("SMTK - moveSmartTicket - creating: "+SmartTicket.getERECEIPT_DESTIN_FOLDER());	   
 			ret = f.mkdirs();
 			if (!ret)
 				System.out.println("SMTK - moveSmartTicket - ret: "+ret);	   
@@ -224,7 +224,7 @@ public class SMTKCommands extends PrinterCommands {
 		if (!ret)
 			return;
 		
-		String destinationfolder = SmartTicket.ERECEIPT_DESTIN_FOLDER + subfolder;
+		String destinationfolder = SmartTicket.getERECEIPT_DESTIN_FOLDER() + subfolder;
 		f = new File(destinationfolder);
 		if (!f.exists()) {
 			System.out.println("SMTK - moveSmartTicket - creating: "+destinationfolder);	   

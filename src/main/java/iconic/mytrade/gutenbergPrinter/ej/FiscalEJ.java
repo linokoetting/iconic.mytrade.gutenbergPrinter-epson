@@ -20,8 +20,6 @@ import jpos.services.EventCallbacks;
 public class FiscalEJ extends NullFiscalPrinter implements FiscalPrinterConst,JposConst
 {
 	private static final int MAX_LINES = 100;
-	public static final String BEANSTORE_PROPERTIES = "/bs2coop/beanstore.properties";
-	public static final String ERRLOG_OUT = "/bs2coop/pos/errlog.out";
 	public static final String[] strippedStrs = {"total=","qty=","price=","paid=","iva=","adjust=","amount="};
 	public static final String EJ_FILE_NAME = "ejfile.txt";
 	public static final long MAX_DIMENSION = 5000;

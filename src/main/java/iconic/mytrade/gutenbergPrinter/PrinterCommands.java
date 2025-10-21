@@ -64,6 +64,7 @@ import iconic.mytrade.gutenberg.jpos.printer.utils.RunShellScriptPoli20;
 import iconic.mytrade.gutenberg.jpos.printer.utils.SRTCheckInput;
 import iconic.mytrade.gutenberg.jpos.printer.utils.Sprint;
 import iconic.mytrade.gutenberg.jpos.printer.utils.String13Fix;
+import iconic.mytrade.gutenbergPrinter.barcodes.Barcodes;
 import iconic.mytrade.gutenbergPrinter.eftpos.EftPos;
 import iconic.mytrade.gutenbergPrinter.ej.EjCommands;
 import iconic.mytrade.gutenbergPrinter.ej.ForFiscalEJFile;
@@ -980,16 +981,19 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		System.out.println ( "MAPOTO-EXEC_ENDFISCAL" );
 		
-		SharedPrinterFields.resetInTicket();	    
+		SharedPrinterFields.resetInTicket();
+		
    		abilitaTaglioCarta(false);
         	
        	fiscalPrinterDriver.endFiscalReceipt(arg0);
-        	
+
+       	stampaBarcodes();
 		if (Cancello.getPosizione() == 1)
     		stampaBarcodeCancello();
 		stampaBarcodePerResi();
 		if (Cancello.getPosizione() == 2)
 			stampaBarcodeCancello();
+		
    		abilitaTaglioCarta(true);
         
         SharedPrinterFields.resetInTicket();	    
@@ -1067,7 +1071,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
     	fiscalPrinterDriver.beginNonFiscal( );
     	PrintLogo(LOGO_NUMBER);
-		initTicket();
 	}
 	
 	public void endNonFiscal() throws JposException {
@@ -2905,10 +2908,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return ( true );
 		}
 		
-		private void initTicket() throws JposException
-		{
-		}
-		
 	    private void space (int how) throws JposException
 	    {
 			for ( int i = 0 ; i < how; i++ )
@@ -3421,7 +3420,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 							break;
 						case R3define.fprintBarcode:
 							String bc = (String) M.getV().get(0);
-							printBarcode(bc);
+							stampaBarcode(bc);
 							break;
 						default:
 							System.out.println("stampaBarcodeCancello - Unhandled:"+M.getM());
@@ -4369,7 +4368,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return ret;
 		}
 
-		public void printBarcode(String bc) {
+		public void stampaBarcode(String bc) {
 			int[] data = new int[25];
 
 			System.out.println ( "MAPOTO-EXEC PRINT BARCODE "+bc );
@@ -4382,6 +4381,29 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			executeDirectIo(R3define.BARCODECOMMAND, bc);
 		}
 
+		public void printBarcode(String bc) {
+			if (SharedPrinterFields.inRetryFiscal) {
+				// scontrino fiscale
+				if (!PrintAfterSuspendedCutting)
+					Barcodes.rememberBarcode(bc);
+			}
+			else {
+				// scontrino non fiscale
+				stampaBarcode(bc);
+			}
+		}
+		
+		private void stampaBarcodes() {
+			ArrayList <String> barcodes = Barcodes.getBarcodes();
+			if (barcodes != null) {
+				for (int i=0; i<barcodes.size(); i++) {
+					String bc = barcodes.get(i);
+					stampaBarcode(bc);
+				}
+			}
+			Barcodes.resetBarcode();
+		}
+		
 		protected boolean MixedVat()
 		{
 			// controlla se siamo in regime di Iva Ventilata

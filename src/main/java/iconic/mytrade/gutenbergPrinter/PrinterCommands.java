@@ -86,6 +86,8 @@ import rtsTrxBuilder.support.scontiSEMPLICI;
 
 public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCommands {
 	
+	private final static int MyPrinterType = PrinterType.EFP90_F;		// oppure leggerlo dalla versione nel pom ?
+	
 	private static boolean versioned = false;
 	
 	public PrinterCommands() {
@@ -103,7 +105,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
             input = PrinterCommands.class.getClassLoader().getResourceAsStream("gutenbergPrinter.properties");
             if (input == null) {
                 System.out.println("Sorry, unable to find gutenbergPrinter.properties");
-                //return;
             }
             else {
 	            properties.load(input);
@@ -127,8 +128,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
         }
 	}
 	
-	private static int MyPrinterType = PrinterType.EFP90_F;		// oppure leggerlo dalla versione nel pom ?
-	
 	private static double fw = 0;
 	
 	static int staticMsgLen = 0;
@@ -141,7 +140,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	protected static final String ALINER = "                                         ";
 	
 	private static final String	R3_DELETELASTTICKET_R3 = "R3_NEWCMD01_R3";
-	private static	 final String	R3_DOUBLE_R3 = "R3double3R";
+	private static final String R3_DOUBLE_R3 = "R3double3R";
 	
 	private String CF = "C.F. Cliente ";
 	private String PI = "P.IVA. Cliente ";
@@ -177,22 +176,18 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	
 	private boolean	inReset;
 	
-//    static ICurrency discountedtaxamount = CurrencyInfo.newCurrency(null,0.0);	// prima era così
 	static BigDecimal discountedtaxamount = new BigDecimal(0.);
 	
     ArrayList SSCO = null;
-	private static double 	dailyTotal = 0.0;
-	private	static double 	currentTicket = 0.0;
-    private static boolean 	provaErrori = false;		// attenzione versione di test per prova errori
-	private static int	   	countErrori = 1;
-	private static long	totaleNonRiscosso = 0;
+	private static double dailyTotal = 0.0;
+	private	static double currentTicket = 0.0;
+    private static boolean provaErrori = false;		// attenzione versione di test per prova errori
+	private static int countErrori = 1;
+	private static long totaleNonRiscosso = 0;
 	
 	private static boolean progress_cash = true;
 	private static boolean progress_eft = true;
 	private static long progress_amount = 0;
-	private static int enabledLowerRoundedPay = -1;
-	
-	private boolean AtLeastOnePrintedItem = false;
 	
 	protected static double smtkamount = 0.;
 
@@ -327,9 +322,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	   
     public void setAdditionalTrailer(String text) throws JposException
     {
-    	/* TEMPORANEO */
     	return;
-    	/* TEMPORANEO */
     }
 	   
     public void setPOSID(String POSID, String cashierID) throws JposException {
@@ -480,7 +473,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		inReset = false;
 		
-//		discountedtaxamount = CurrencyInfo.newCurrency(null,0.0);	// prima era così
 		discountedtaxamount = new BigDecimal(0.);
 		discountedtaxamount = discountedtaxamount.setScale(2, RoundingMode.HALF_DOWN);
 		
@@ -517,7 +509,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    }
 
 		setFlagVoidRefund(false);
-		AtLeastOnePrintedItem = false;
 		SharedPrinterFields.inRetryFiscal = true;				// per le volte successive alla prima è una retry
 		cleanDailyTotal();
 		String Total = currentFiscalTotal(jpos.FiscalPrinterConst.FPTR_GD_DAILY_TOTAL);
@@ -634,8 +625,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				return;
 			}
 		}
-		
-	    AtLeastOnePrintedItem = true;
 		
 		int j = DicoTaxToPrinter.getFromPoliposToPrinter(jIvaPolipos);
 		if ((DicoTaxLoad.isIvaAllaPrinter()) && (j == SharedPrinterFields.VAT_N4_Index))
@@ -975,7 +964,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		
 		setFlagVoidRefund(false);
-		AtLeastOnePrintedItem = false;
 		int state=0;
 		SharedPrinterFields.resetprtDone();
 		
@@ -1375,7 +1363,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		SSCO = RoungickTax.getVatTable(true);
 		if (SSCO != null)
 		{
-//			discountedtaxamount = CurrencyInfo.newCurrency(null,0.0);	// prima era così
 			discountedtaxamount = new BigDecimal(0.);
 			discountedtaxamount = discountedtaxamount.setScale(2, RoundingMode.HALF_DOWN);
 			for (int index=0; index < SSCO.size(); index++)
@@ -1389,20 +1376,15 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					
 					printRecSubtotalAdjustment_I(arg0, vatInOutH.getFullDescription(), (long)(value*10000));
 
-//					ICurrency discamount = CurrencyInfo.newCurrency(null,value);	// prima era così
 					BigDecimal discamount = new BigDecimal(value);
 					discamount = discamount.setScale(2, RoundingMode.HALF_DOWN);
 
-//					ICurrency d = discamount.subtract((discamount.multiplyBy(100.0)).divideBy(100+vatInOutH.getRate()));	// prima era così
 					BigDecimal d = discamount.subtract(discamount.multiply(new BigDecimal(100.0)).divide(new BigDecimal(100.0+vatInOutH.getRate()),2,RoundingMode.HALF_DOWN));
 					d = d.setScale(2, RoundingMode.HALF_DOWN);
 					
-//					ICurrency dd = CurrencyInfo.newCurrency(null,Math.rint(d.doubleValue()*100)/100);						// prima era così
 					BigDecimal dd = d;
 					dd = dd.setScale(2, RoundingMode.HALF_DOWN);
 					
-//					discountedtaxamount = discountedtaxamount.add(dd);														// prima era così
-//					discountedtaxamount = discountedtaxamount.truncate(discountedtaxamount.minimumDisplayableValue());		// prima era così
 					discountedtaxamount = discountedtaxamount.add(dd);
 				}
 			}
@@ -1804,7 +1786,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			                   if (SharedPrinterFields.lineePagamento != null) {
 			                        for (Iterator iterator = SharedPrinterFields.lineePagamento.keySet().iterator(); iterator.hasNext();) {
 			                           String k = (String) iterator.next();
-			                           //Double valDouble = new Double(((ICurrency) SharedPrinterFields.lineePagamento.get(k)).doubleValue() * 10000);	// prima era così
 			                           BigDecimal bd = new BigDecimal((Double)SharedPrinterFields.lineePagamento.get(k));
 			                           bd = bd.setScale(2, RoundingMode.HALF_DOWN);
 			                           Double valDouble = new Double(bd.doubleValue() * 10000);
@@ -2616,7 +2597,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	                   if (SharedPrinterFields.lineePagamento != null) {
 	                        for (Iterator iterator = SharedPrinterFields.lineePagamento.keySet().iterator(); iterator.hasNext();) {
 	                           String k = (String) iterator.next();
-	                           //Double valDouble = new Double(((ICurrency) SharedPrinterFields.lineePagamento.get(k)).doubleValue() * 10000);	// prima era così
 	                           BigDecimal bd = new BigDecimal((Double)SharedPrinterFields.lineePagamento.get(k));
 	                           bd = bd.setScale(2, RoundingMode.HALF_DOWN);
 	                           Double valDouble = new Double(bd.doubleValue() * 10000);

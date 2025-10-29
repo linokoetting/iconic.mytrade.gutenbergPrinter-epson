@@ -56,6 +56,7 @@ public class SharedPrinterFields {
 	public static String VAT_N4_Dept = "20";
   
     static String ChangeCurrency	= "";
+    static final String euro		= "euro";
 	
     public static String RTPrinterId = null;
 	public static String Printer_IPAddress = "";

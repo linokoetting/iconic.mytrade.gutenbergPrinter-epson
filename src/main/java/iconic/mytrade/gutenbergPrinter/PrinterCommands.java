@@ -4624,6 +4624,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		protected String getZRepIdAnswer(int zrep)
 		{
 			String ZRepId = "";
+			int maxretry = 360;	// 3 minuti
 			
 			String zrepnum = Sprint.f("%04d", zrep);
 			StringBuffer sbcmd = new StringBuffer(zrepnum);
@@ -4660,11 +4661,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				}
 				
 				retry++;
-				if (retry == 360)	// dopo 3 minuti ci rinuncio
+				if (retry == maxretry)
 					break;
+				
+				monitorRT.logMRT("getZRepIdAnswer - retry : "+retry+"/"+maxretry);
 			}
 			
-			monitorRT.logMRT("getZRepIdAnswer - returning : "+ZRepId);
+			monitorRT.logMRT("getZRepIdAnswer - returning : <"+ZRepId+">");
 			return ZRepId;
 		}
 		

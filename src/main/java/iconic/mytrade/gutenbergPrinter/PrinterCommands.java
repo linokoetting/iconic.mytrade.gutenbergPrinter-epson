@@ -1091,7 +1091,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    setFlagVoidRefund(false);
 		System.out.println("printRecItemAdj. in - arg0=" + arg0 + " arg1=" + arg1 + " arg2="
                 + arg2 + " arg3=" + arg3);
-        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
+        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, RTConsts.SCONTO + arg1, arg2);
         System.out.println("printRecItemAdj. out");
 		
 		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
@@ -1318,7 +1318,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
         System.out.println("printRecSubtotalAdjustment in - arg0=" + arg0 + " arg1=" + arg1
                 + " arg2=" + arg2);
-        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, "Sconto " + arg1, arg2);
+        fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, RTConsts.SCONTO + arg1, arg2);
         System.out.println("printRecSubtotalAdjustment out");
 	}
 
@@ -2269,7 +2269,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     private String buildItemAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
-        String desc = "Sconto "+de;
+        String desc = RTConsts.SCONTO+de;
     	String lo =  ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     	return ( lo+"-" );
     }
@@ -2277,7 +2277,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     private String buildSubtotalAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFLENGTH();
-        String desc = "Sconto "+de;
+        String desc = RTConsts.SCONTO+de;
     	String lo =  ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     	return ( lo+"-" );
     }
@@ -2335,7 +2335,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
     private String buildSRTSubtotalAdjustment ( String de, long price )
     {
         int MAXLNGHOFLENGTH = RTConsts.setMAXLNGHOFDISCOUNT();
-        String desc = "Sconto "+de;
+        String desc = RTConsts.SCONTO+de;
     	String lo =  ( buildbuild(MAXLNGHOFLENGTH,desc,price ));
     	return ( lo+"-" );
     }

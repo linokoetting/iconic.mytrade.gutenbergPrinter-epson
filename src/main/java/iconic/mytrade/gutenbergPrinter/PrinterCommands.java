@@ -2369,7 +2369,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			catch ( JposException e )
 			{
 				System.out.println ( "MAPOTO-RESETAFTERCLEAR <"+e.toString()+">");
-				OperatorDisplay.pleaseDisplayWait( " VERIFICA STAMPANTE ", 400);
+				OperatorDisplay.pleaseDisplayWait(R3define.PRINTERVERIFY, 400);
 			}
 		}
 	}

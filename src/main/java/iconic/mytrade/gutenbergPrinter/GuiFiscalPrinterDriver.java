@@ -4,6 +4,7 @@ import java.util.GregorianCalendar;
 
 import iconic.mytrade.gutenberg.jpos.linedisplay.service.OperatorDisplay;
 import iconic.mytrade.gutenberg.jpos.printer.service.PrinterInfo;
+import iconic.mytrade.gutenberg.jpos.printer.service.R3define;
 import iconic.mytrade.gutenberg.jpos.printer.service.SmartTicket;
 import rtsTrxBuilder.hardTotals.HardTotals;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
@@ -58,7 +59,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 ////			System.out.println ( "Printer Exception <"+e.toString()+">");
 ////			return;
 ////		}
-//		OperatorDisplay.pleaseDisplay ( " VERIFICA STAMPANTE ");
+//		OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
 ////		System.out.println ("FP-1");
 ////	    while ( true ) 
 ////	    {
@@ -75,7 +76,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 ////	    	System.out.println ("FP-6");
 ////	    }
 ////		System.out.println ("FP-7");
-//		OperatorDisplay.pleaseDisplay ( "  STAMPANTE PRONTA  " );
+//		OperatorDisplay.pleaseDisplay (R3define.PRINTERREADY);
 //		
 //	    SharedPrinterFields.fiscalEJ = new FiscalEJFile ();
 //	    SharedPrinterFields.fiscalEJ.open("uk.co.datafit.wincor.system.device.FiscalEJFile", null);

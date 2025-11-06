@@ -294,7 +294,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			System.out.println ( "Printer Exception <"+e.toString()+">");
 			return fw;
 		}
-		OperatorDisplay.pleaseDisplay ( " VERIFICA STAMPANTE ");
+		OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
 		System.out.println ("FP-1");
 	    while ( true ) 
 	    {
@@ -312,7 +312,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    	System.out.println ("FP-6");
 	    }
 		System.out.println ("FP-7");
-		OperatorDisplay.pleaseDisplay ( "  STAMPANTE PRONTA  " );
+		OperatorDisplay.pleaseDisplay (R3define.PRINTERREADY);
 		
 	    SharedPrinterFields.fiscalEJ = new FiscalEJFile ();
 	    SharedPrinterFields.fiscalEJ.open("uk.co.datafit.wincor.system.device.FiscalEJFile", null);

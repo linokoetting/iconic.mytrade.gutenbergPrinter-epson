@@ -235,7 +235,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //		PrinterInfo.LogPrinterInfo();
 //	    
 //		if(PrinterGUI.isWindowOpen(PrinterGUI.getFrame()) == false) {
-//			PrinterGUI.createWindow();			
+//			PrinterGUI.createWindow();
+//			PrinterGUI.setTitle(PrinterName);
 //		}
 //		
 //		PrinterGUI.addText("-- open --"+PrinterName);
@@ -500,6 +501,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //			PrinterGUI.createWindow();			
 //		}
 //		
+//		PrinterGUI.addText(" ");	
 //		PrinterGUI.addText("-- beginFiscalReceipt --");	
 //	}
 //
@@ -523,6 +525,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //			PrinterGUI.createWindow();			
 //		}
 //		
+//		PrinterGUI.addText(" ");	
 //		PrinterGUI.addText("-- beginNonFiscal --");	
 //	}
 //
@@ -557,6 +560,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //		}
 //		
 //		PrinterGUI.addText("-- endFiscalReceipt --");	
+//		PrinterGUI.addText(" ");	
 //	}
 //
 //	public void endFixedOutput() throws JposException {
@@ -580,6 +584,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //		}
 //		
 //		PrinterGUI.addText("-- endNonFiscal --");	
+//		PrinterGUI.addText(" ");	
 //	}
 //
 //	public void endRemoval() throws JposException {

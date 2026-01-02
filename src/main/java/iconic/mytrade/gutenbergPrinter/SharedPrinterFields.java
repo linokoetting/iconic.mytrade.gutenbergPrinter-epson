@@ -51,6 +51,7 @@ public class SharedPrinterFields {
 	public static int INDICE_SCONTOAPAGARE = 0;
 	public static String DESCRIZIONE_CONTANTI = "";
 	public static String DESCRIZIONE_SCONTOAPAGARE = "";
+	public static String DESCRIZIONE_SCONTO = "Sconto IVA";
 	
 	public static int VAT_N4_Index = 0;
 	public static String VAT_N4_Dept = "20";

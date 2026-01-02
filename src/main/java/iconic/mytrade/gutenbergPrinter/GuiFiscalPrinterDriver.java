@@ -1443,6 +1443,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 //			((StringBuffer)bjct).replace(0, 0, "0");
 ////		else if (Command == 1078)
 ////			((StringBuffer)bjct).replace(0, 1, "5");	// reso ko
+//		else if (Command == 4205)
+//			((StringBuffer)bjct).append("1111");		// regime di ventilazione iva
 //		else
 //			((StringBuffer)bjct).append("12345678");
 //		

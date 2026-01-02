@@ -81,7 +81,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
     private static boolean fwSMTKenabled = false;	// abilita/disabilita i comandi per SmartTicket
     private static boolean fwILotteryenabled = false;
     
-	private boolean 	noReactionStatus = false;
+	private boolean noReactionStatus = false;
 	
 	public boolean getNoReactionStatus() {
 		return noReactionStatus;

@@ -647,21 +647,6 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
        	fiscalPrinterDriver.printRecItem(s2, l, 0, j, l1, s1);
         System.out.println("printRecItem out");
 		
-		if ( iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.isRoungickInLinePromo() )
-		{
-			System.out.println ( "MAPOTO-EXEC PRINT ITEM PLUS"+s1 );
-			ArrayList A = iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.getDiscountFromTable(s1);
-				
-			if ( A != null )
-			{
-				for ( int x = 0 ; x < A.size(); x++ )
-				{
-					String S = (String) A.get(x);
-					printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, S);
-				}
-			}	
-		}
-		
 		if (isFiscalAndSRTModel())
 		{
 			HardTotals.doPrintRecItem(l);
@@ -677,6 +662,21 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			s = addIva(s, RTConsts.getMAXITEMDESCRLENGTH()-1, ivadesc);
 			
 			scriviLastTicket(buildItem ( s, l ));
+		}
+		
+		if ( iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.isRoungickInLinePromo() )
+		{
+			System.out.println ( "MAPOTO-EXEC PRINT ITEM PLUS"+s1 );
+			ArrayList A = iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.getDiscountFromTable(s1);
+				
+			if ( A != null )
+			{
+				for ( int x = 0 ; x < A.size(); x++ )
+				{
+					String S = (String) A.get(x);
+					printNormal(jpos.FiscalPrinterConst.FPTR_S_RECEIPT, S);
+				}
+			}	
 		}
 	}
 

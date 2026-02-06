@@ -20,6 +20,7 @@ public class SharedPrinterFields {
 	
 	public static FiscalEJFile fiscalEJ = null;
 	private static boolean fiscalEJenabled = true;
+	private static boolean fiscalEJPdfenabled = true;
 	
 	public static boolean isfiscalEJenabled() {
 		return fiscalEJenabled;
@@ -29,6 +30,14 @@ public class SharedPrinterFields {
 		fiscalEJenabled = fiscalejenabled;
 	}
 	
+	public static boolean isfiscalEJPdfenabled() {
+		return fiscalEJPdfenabled;
+	}
+
+	public static void setfiscalEJPdfenabled(boolean fiscalEJPdfenabled) {
+		SharedPrinterFields.fiscalEJPdfenabled = fiscalEJPdfenabled;
+	}
+
 	public static int INDEX_A = 0;
 	
     public static RTLottery Lotteria = null;

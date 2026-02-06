@@ -2767,15 +2767,15 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		   
 		   private void cancellaFile()
 		   {
-				if (inout == null)
-			  		 inout = new File(SharedPrinterFields.lastticket);
+			   if (inout == null)
+				   inout = new File(SharedPrinterFields.lastticket);
 				
-		     	 try{
-		     		 inout.delete();
-		     	 }catch (Exception e) {
-		     		 System.out.println("cancellaFile - errore:"+e);
-		     	 }
-		      }
+			   try{
+				   inout.delete();
+			   }catch (Exception e) {
+				   System.out.println("cancellaFile - errore:"+e);
+			   }
+		   }
 		   
 			private boolean leggiFile()
 			{

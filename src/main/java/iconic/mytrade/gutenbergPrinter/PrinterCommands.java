@@ -1289,6 +1289,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	}
 
 	public void printRecSubtotalAdjustment(int arg0, String arg1, long arg2) throws JposException {
+		if (arg0 == 0) {
+			// from GutenbergHub
+			
+			printScontiByTax(arg1, arg2);
+			HardTotals.doSubtotalAdjustment(arg2);
+			return;
+		}
+		
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJUSTMENT" );
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJUSTMENT - arg0="+arg0 );
 		System.out.println ( "MAPOTO-EXEC PRINT SUBTOTAL ADJUSTMENT - arg1="+arg1 );
@@ -1451,6 +1459,42 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		else
 			System.out.println("printScontiByTax - SSCO is null");
+	}
+    
+    private void printScontiByTax(String vat, long value) throws JposException
+	{
+		// from GutenbergHub
+		
+		if (SRTPrinterExtension.isPRT()) {
+			if (value > 0) {
+				String myDepartment = "";
+				if (Integer.parseInt(vat) == SharedPrinterFields.VAT_N4_Index)
+					myDepartment = Sprint.f("%02d", SharedPrinterFields.VAT_N4_Dept);
+				else
+					myDepartment = Sprint.f("%02d", vat);
+				
+				StringBuffer sbcmd = new StringBuffer("");
+				sbcmd = new StringBuffer(myDepartment);
+		      	
+				String myOperator = "01";
+				String myDiscountDescription = SharedPrinterFields.DESCRIZIONE_SCONTO;
+				String myDiscountAmount = Sprint.f("%09d", Math.rint(value));
+				String myDiscountType = "3";
+				String myAlignment = "1";
+				
+				sbcmd = new StringBuffer(myOperator + myDiscountDescription + myDiscountAmount + myDiscountType + myDepartment + myAlignment);
+				System.out.println("printScontiByTax - sbcmd="+sbcmd);
+				fiscalPrinterDriver.executeRTDirectIo(1083, 0, sbcmd);
+			}
+		}
+		else if (isFiscalAndSRTModel()) {
+			if (value > 0.00) {
+				printRecSubtotalAdjustment_I(1, vat, (long)(value*100));
+			}
+		}
+		else {
+			printRecSubtotalAdjustment_I(1, vat, value/100);
+		}
 	}
     
 	public void printRecTotal(long arg0, long arg1, String arg2) throws JposException {

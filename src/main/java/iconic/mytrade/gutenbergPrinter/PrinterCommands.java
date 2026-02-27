@@ -1293,7 +1293,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			// from GutenbergHub
 			
 			printScontiByTax(arg1, arg2);
-			HardTotals.doSubtotalAdjustment(arg2);
+			if (SRTPrinterExtension.isPRT() || SRTPrinterExtension.isSRT())
+				HardTotals.doSubtotalAdjustment(arg2);
 			return;
 		}
 		
@@ -1493,7 +1494,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		else {
-			printRecSubtotalAdjustment_I(1, vat, value/100);
+			printRecSubtotalAdjustment_I(1, vat, value*100);
 		}
 	}
     

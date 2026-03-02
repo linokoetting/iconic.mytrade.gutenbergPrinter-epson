@@ -2750,6 +2750,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		
+		public static int  getSimulatedPrinterState() throws JposException
+		{
+			return ( SharedPrinterFields.getSimulateState() );
+		}
+		
 		private static int getFiscalPrinterState() throws JposException
 		{
 			return (fiscalPrinterDriver.getPrinterState());

@@ -50,6 +50,7 @@ import iconic.mytrade.gutenberg.jpos.printer.service.properties.PaperSavingPrope
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.PrinterType;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SRTPrinterExtension;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.SmartTicketProperties;
+import iconic.mytrade.gutenberg.jpos.printer.service.properties.UI;
 import iconic.mytrade.gutenberg.jpos.printer.service.properties.XRData;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.RoungickTax;
 import iconic.mytrade.gutenberg.jpos.printer.service.tax.VatInOutHandling;
@@ -3360,10 +3361,19 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
 			
 			StringBuffer objb = new StringBuffer("");
-			bc = convertiBarcodePerResi(bc);
-			String width = setwidth(SharedPrinterFields.Lotteria.getLotteryCode());
-			String subset = setsubset();
-			objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
+			
+			if (UI.isUIActivated()) {
+				bc = bc + SharedPrinterFields.RTPrinterId;
+				System.out.println ( "stampaBarcodePerResi printing qrcode  : <"+bc+">");
+				objb = new StringBuffer(R3define.getQRCODEHEADER()+bc);
+			}
+			else {
+				bc = convertiBarcodePerResi(bc);
+				String width = setwidth(SharedPrinterFields.Lotteria.getLotteryCode());
+				String subset = setsubset();
+				objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
+			}
+			
 			fiscalPrinterDriver.executeRTDirectIo(R3define.BARCODECOMMAND, 0, objb);
     		
     		SmartTicket.SMTKbarcodes_add(bc);
@@ -3382,10 +3392,18 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			System.out.println ( "stampaBarcodePerResi printing barcode : <"+bc+">");
 			
 			StringBuffer objb = new StringBuffer("");
-			bc = convertiBarcodePerResi(bc);
-			String width = setwidth(lott);
-			String subset = setsubset();
-			objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
+			
+			if (UI.isUIActivated()) {
+				System.out.println ( "stampaBarcodePerResi printing qrcode  : <"+bc+">");
+				objb = new StringBuffer(R3define.getQRCODEHEADER()+bc);
+			}
+			else {
+				bc = convertiBarcodePerResi(bc);
+				String width = setwidth(lott);
+				String subset = setsubset();
+				objb = new StringBuffer("01"+"901"+width+"150"+"2"+"0"+"00"+"73"+subset+bc);
+			}
+			
 			executeDirectIo(R3define.BARCODECOMMAND, objb.toString());
 		}
 

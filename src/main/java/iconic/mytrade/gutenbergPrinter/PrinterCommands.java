@@ -998,9 +998,14 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 	    	throw new JposException(9999);
 	    }
 		
-		if (SRTPrinterExtension.isPRT())
+		if (SRTPrinterExtension.isPRT()) {
+			if (RTTxnType.isRefundTrx()) {
+				if (R3define.getRefundResult() != R3define.INVALID)
+					R3define.setRefundResult(R3define.SUCCESS);
+			}
 			RTTxnType.setSaleTrx();
-
+		}
+		
 		SharedPrinterFields.setMonitorState();
 		SharedPrinterFields.a = new ArrayList();			// prova reset scontrino precedente
 		
@@ -2427,6 +2432,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		try {
 			printRecVoid(RTConsts.OPERAZIONEANNULLATA);
+			R3define.setRefundResult(R3define.INVALID);
 			endFiscalReceipt(true);
 		} catch (JposException e) {
 			System.out.println("AnnullaResoRT_Posponed - Exception : " + e.getMessage());
@@ -2436,6 +2442,8 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		if (!isFlagsVoidTicket())
 			MessageBox.showMessage(RTConsts.OPERAZIONEANNULLATA, null, MessageBox.OK);
+		
+		R3define.setRefundResult(R3define.FAILURE);
 	}
 	
 	public static String currentFiscalTotal(int what) throws JposException

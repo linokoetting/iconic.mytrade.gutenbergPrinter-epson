@@ -3384,6 +3384,17 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			
 			fiscalPrinterDriver.executeRTDirectIo(R3define.BARCODECOMMAND, 0, objb);
     		
+			if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+				try {
+					if (objb.toString().startsWith(R3define.getQRCODEHEADER()))
+						SharedPrinterFields.fiscalEJ.printQrcode(bc);
+					else
+						SharedPrinterFields.fiscalEJ.printBarcode(bc);
+				} catch (JposException e) {
+					   System.out.println("stampaBarcodePerResi - Exception : " + e.getMessage());
+				}
+			}
+    		
     		SmartTicket.SMTKbarcodes_add(bc);
 		}
 		
@@ -3413,6 +3424,17 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 			
 			executeDirectIo(R3define.BARCODECOMMAND, objb.toString());
+    		
+			if (SharedPrinterFields.isfiscalEJenabled() && !SharedPrinterFields.PosponedInError) {
+				try {
+					if (objb.toString().startsWith(R3define.getQRCODEHEADER()))
+						SharedPrinterFields.fiscalEJ.printQrcode(bc);
+					else
+						SharedPrinterFields.fiscalEJ.printBarcode(bc);
+				} catch (JposException e) {
+					   System.out.println("stampaBarcodePerResi - Exception : " + e.getMessage());
+				}
+			}
 		}
 
 		private static String convertiBarcodePerResi(String barcode)

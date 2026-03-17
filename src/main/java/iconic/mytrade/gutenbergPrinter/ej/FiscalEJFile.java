@@ -98,6 +98,11 @@ public class FiscalEJFile extends FiscalEJ {
 		ForFiscalEJFile.writeToFile("<Barcode>       "+data);
 	}
 	
+	public void printQrcode(String data) throws JposException
+	{
+		ForFiscalEJFile.writeToFile("<Qrcode>        "+data);
+	}
+	
 	//////////////////////////////////////////////
 	private String getDataOra(GregorianCalendar greg){
 		return new SimpleDateFormat("dd-MM-yy  HH:mm").format(greg.getTime());

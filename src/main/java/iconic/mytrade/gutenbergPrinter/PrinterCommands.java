@@ -2117,8 +2117,16 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		
-		if (SRTPrinterExtension.isPRT())
-			DummyServerRT.CurrentFiscalClosure++;
+		if (SRTPrinterExtension.isPRT()) {
+			if (DummyServerRT.CurrentFiscalClosure == 0) {
+		        int[] ai = new int[1];
+		        String[] as = new String[1];
+	            fiscalPrinterDriver.getData(FiscalPrinterConst.FPTR_GD_Z_REPORT, ai, as);
+	            DummyServerRT.CurrentFiscalClosure = Integer.parseInt(as[0])+1;
+			}
+			else
+				DummyServerRT.CurrentFiscalClosure++;
+		}
 	}
 
 	public void setDate(String arg0) throws JposException {

@@ -667,7 +667,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		if ( iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.isRoungickInLinePromo() )
 		{
-			System.out.println ( "MAPOTO-EXEC PRINT ITEM PLUS"+s1 );
+			System.out.println ( "MAPOTO-EXEC PRINT ITEM PLUS "+s1 );
 			ArrayList A = iconic.mytrade.gutenberg.jpos.printer.service.RoungickInLinePromo.getDiscountFromTable(s1);
 				
 			if ( A != null )

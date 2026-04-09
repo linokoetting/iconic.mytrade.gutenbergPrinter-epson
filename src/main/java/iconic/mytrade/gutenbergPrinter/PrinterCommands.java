@@ -87,7 +87,7 @@ import rtsTrxBuilder.support.scontiSEMPLICI;
 
 public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCommands {
 	
-	private final static int MyPrinterType = PrinterType.EFP90_F;		// oppure leggerlo dalla versione nel pom ?
+	private final static int MyPrinterType = PrinterType.DUMMY_PRT;		// oppure leggerlo dalla versione nel pom ?
 	
 	private static boolean versioned = false;
 	

@@ -399,7 +399,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 			
 		DummyServerRT.XMLfilePath = rtsTrxBuilder.storerecallticket.Default.getExchangeRtsName();
-		SharedPrinterFields.lastticket = rtsTrxBuilder.storerecallticket.Default.getExchangeName();
+		LastTicket.setLastticket(rtsTrxBuilder.storerecallticket.Default.getExchangeName());
 		lastticketsaved = rtsTrxBuilder.storerecallticket.Default.getsourcePath()+"LastTicket.sav";
 		
 		fiscalPrinterDriver = new GuiFiscalPrinterDriver();
@@ -922,7 +922,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 					monitorRT.logMRT("Exception : "+e.getMessage());
 				}
 		    	
-		        String textfile = readFile(SharedPrinterFields.lastticket, true);
+		        String textfile = readFile(LastTicket.getLastticket(), true);
 		        
 		        monitorRT.GetTicketDetails(SharedPrinterFields.RTPrinterId, date[0], DummyServerRT.CurrentFiscalClosure, DummyServerRT.CurrentReceiptNumber,
 		        						   currentTicket/100, monitorRT.AliquoteTicket, textfile);
@@ -2010,13 +2010,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		System.out.println ( "r3PrintSomeReceiptByDate in: "+startNum+"-"+endNum );
 		
-		Files.copyFile(SharedPrinterFields.lastticket,lastticketsaved);
+		Files.copyFile(LastTicket.getLastticket(),lastticketsaved);
 		
 		rtsTrxBuilder.storerecallticket.RecallTicket RT = new rtsTrxBuilder.storerecallticket.RecallTicket(startNum, endNum);
 		
 		leggiFile();
 		
-		Files.moveFile(lastticketsaved,SharedPrinterFields.lastticket);
+		Files.moveFile(lastticketsaved,LastTicket.getLastticket());
 		
 		System.out.println ( "r3PrintSomeReceiptByDate out" );
 	}
@@ -2793,7 +2793,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		private static void apriFile(){
 		  	 try{
-		  		 inout = new File(SharedPrinterFields.lastticket);
+		  		 inout = new File(LastTicket.getLastticket());
 		  		 fos = new FileOutputStream(inout,true);
 		  		 ps = new PrintStream(fos);
 		  	 }catch (Exception e) {
@@ -2835,7 +2835,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		   private void cancellaFile()
 		   {
 			   if (inout == null)
-				   inout = new File(SharedPrinterFields.lastticket);
+				   inout = new File(LastTicket.getLastticket());
 				
 			   try{
 				   inout.delete();
@@ -2849,7 +2849,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				char lastch;
 				
 				if (inout == null)
-			  		 inout = new File(SharedPrinterFields.lastticket);
+			  		 inout = new File(LastTicket.getLastticket());
 				
 				FileInputStream fis = null;
 				try {

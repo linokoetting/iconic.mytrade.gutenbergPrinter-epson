@@ -236,6 +236,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		return (SRTPrinterExtension.isSRT() && SRTPrinterExtension.isLikeNonFiscalMode());
 	}
 
+	private boolean isNotRTActivated()
+	{
+		return (!SRTPrinterExtension.isRTActivated());
+	}
+
 	public int getOpenTimeout() {
 		int timeout = fiscalPrinterDriver.getOpenTimeout();
 		System.out.println("getOpenTimeout: "+timeout+" msec.");
@@ -549,6 +554,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			s = LastTicket.getIntestazione5();
 			if (s.length() > 0) scriviLastTicket(s);
 		}
+		
+		if (isNotRTActivated())
+		{
+		    cancellaFile();
+			initTicketOnFile();
+		    HardTotals.doBeginFiscal();
+		}
 	}
 	
 	public void printNormal(int i, String s) throws JposException
@@ -585,7 +597,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			scriviLastTicket(s);
 		}
 		
-		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
+		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT() || isNotRTActivated())
 			lastwrittenstring = s;
 		
 		setFlagVoidRefund(false);
@@ -599,7 +611,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		lastwrittenstring = "";
 		
-		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
+		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT() || isNotRTActivated())
 		{
 			scriviLastTicket(s);
 		}
@@ -648,7 +660,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
        	fiscalPrinterDriver.printRecItem(s2, l, 0, j, l1, s1);
         System.out.println("printRecItem out");
 		
-		if (isFiscalAndSRTModel())
+		if (isFiscalAndSRTModel() || isNotRTActivated())
 		{
 			HardTotals.doPrintRecItem(l);
 			
@@ -907,6 +919,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			HardTotals.doEndFiscalSRT(RTTxnType.getTypeTrx());
 		}
 		
+		if (isNotRTActivated())
+		{
+			HardTotals.doEndFiscal();
+		}
+		
 		SMTKCommands.Base64_Ticket(PosApp.getTransactionNumber()-1, false);
 		SMTKCommands.Smart_Ticket(PosApp.getTransactionNumber()-1, false);
 		
@@ -1053,7 +1070,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			HardTotals.doBeginNonFiscal();
 		}
 		
-		if (SRTPrinterExtension.isPRT())
+		if (SRTPrinterExtension.isPRT() || isNotRTActivated())
 		{
 		    cancellaFile();
 			initTicketOnFile();	// rimette l'header nel file LastTicket.out appena cancellato
@@ -1083,6 +1100,11 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			HardTotals.doEndNonFiscal();
 		}
 		
+		if (isNotRTActivated())
+		{
+			HardTotals.doEndNonFiscal();
+		}
+		
 		setFlagVoidRefund(false);
 		SharedPrinterFields.resetInTicket();
 		SharedPrinterFields.resetprtDone();
@@ -1100,7 +1122,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
         fiscalPrinterDriver.printRecSubtotalAdjustment(arg0, RTConsts.SCONTO + arg1, arg2);
         System.out.println("printRecItemAdj. out");
 		
-		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
+		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT() || isNotRTActivated())
 		{
 	    	HardTotals.doSubtotalAdjustment(arg2);
 
@@ -1188,7 +1210,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
    			fiscalPrinterDriver.printRecMessage((msg[z].length() > i) ? msg[z].substring(0, i) : msg[z]);
 	    }
 	    
-		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
+		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT() || isNotRTActivated())
 		{
 	    	if (!arg0.equalsIgnoreCase(lastwrittenstring)){
 		    	scriviLastTicket(arg0);
@@ -1267,7 +1289,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			}
 		}
 		
-		if (isFiscalAndSRTModel())
+		if (isFiscalAndSRTModel() || isNotRTActivated())
 		{
 		  	HardTotals.doPrintRecRefund(l);
 		  	
@@ -1324,6 +1346,13 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		}
 		else
 			printRecSubtotalAdjustment_I(arg0, arg1, arg2);
+		
+		if (isNotRTActivated())
+		{
+			HardTotals.doSubtotalAdjustment(arg2);
+	        String out = buildSubtotalAdjustment ( arg1, arg2 );
+	        scriviLastTicket(out);
+		}
 	}
 	
 	private void printRecSubtotalAdjustment_I(int arg0, String arg1, long arg2) throws JposException {
@@ -1350,10 +1379,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return;
 		}
 		
-		if (SRTPrinterExtension.isSRT() || SRTPrinterExtension.isPRT())
-		{
+//		if (SRTPrinterExtension.isSRT() || SRTPrinterExtension.isPRT())
+//		{
 			scriviLastTicket(bf.toString());
-		}
+//		}
 		
 		setFlagVoidRefund(false);
 		
@@ -1386,6 +1415,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				double value = Math.rint(( vatInOutH.getLordo() - vatInOutH.getTotalAmount() ) * 100) / 100;
 				if (value > 0.00) {
 					String out = buildSRTSubtotalAdjustment ( vatInOutH.getFullDescription(), (long)(value*10000) );
+			        scriviLastTicket(out);
 					
 					EjCommands.Write(out, true);
 					
@@ -1554,7 +1584,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				arg2=s;
 		}
 		
-		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
+		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT() || isNotRTActivated())
 		{
 			if (HardTotals.TotalePagato.getLongX100() == 0)
 			{
@@ -1877,6 +1907,20 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 				}
 			}
 		}
+		
+		if (isNotRTActivated())
+		{
+			HardTotals.doPrintRecTotal(arg1);
+			String out = buildItem ( arg2, arg1 );
+			scriviLastTicket(out);
+			
+			if (HardTotals.TotalePagato.getLongX100() >= HardTotals.Totale.getLongX100())
+			{
+				out = buildChange ( "", (HardTotals.TotalePagato.getLongX100()-HardTotals.Totale.getLongX100()) );
+				scriviLastTicket(out);
+			}
+		}
+		
 	}
 	
 	public void printRecVoidItem(String s, long l, int i, int j, long l1, int kIvaPolipos) throws JposException {
@@ -1931,7 +1975,7 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 		
 		setFlagVoidRefund(false);
 		
-		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT())
+		if (isFiscalAndSRTModel() || SRTPrinterExtension.isPRT() || isNotRTActivated())
 		{
 			long chi = ( l ==  0 ) ? l1 : l;
 		    int quanti = i / 1000;

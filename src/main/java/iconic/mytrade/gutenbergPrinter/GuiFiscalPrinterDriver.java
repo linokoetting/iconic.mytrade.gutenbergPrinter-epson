@@ -31,10 +31,10 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 		setRTModel(SRTPrinterExtension.isPRT());
 		setSRTModel(SRTPrinterExtension.isSRT());
 		
-		if (isSRTModel() || isRTModel())
-		{
+//		if (isSRTModel() || isRTModel())
+//		{
 			HardTotals.init();
-		}
+//		}
 		
 		PrinterInfo.SavePrinterInfo("Model", ""+PrinterModel);
 		

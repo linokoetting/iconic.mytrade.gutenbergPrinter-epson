@@ -961,8 +961,8 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 			PrinterGUI.createWindow();			
 		}
 		
-		PrinterGUI.addText("-- getPrinterState --");	
-		return 0;
+		PrinterGUI.addText("-- getPrinterState -- "+PrinterCommands.getSimulatedPrinterState());
+		return PrinterCommands.getSimulatedPrinterState();
 	}
 
 	public int getQuantityDecimalPlaces() throws JposException {

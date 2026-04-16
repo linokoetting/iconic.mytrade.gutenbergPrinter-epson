@@ -678,8 +678,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapNonFiscalMode() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapOrderAdjustmentFirst() throws JposException {

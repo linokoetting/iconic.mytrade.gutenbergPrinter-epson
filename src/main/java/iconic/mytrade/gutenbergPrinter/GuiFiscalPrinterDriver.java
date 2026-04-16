@@ -265,8 +265,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapAdditionalTrailer() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapChangeDue() throws JposException {
@@ -608,8 +607,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapAdditionalLines() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapAmountAdjustment() throws JposException {
@@ -742,13 +740,11 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapSetHeader() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapSetPOSID() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapSetStoreFiscalID() throws JposException {
@@ -757,8 +753,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapSetTrailer() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapSetVatTable() throws JposException {
@@ -807,13 +802,11 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapSubtotal() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapTrainingMode() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCapValidateJournal() throws JposException {
@@ -822,8 +815,7 @@ public class GuiFiscalPrinterDriver extends FiscalPrinterDriver implements jpos.
 	}
 
 	public boolean getCapXReport() throws JposException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean getCheckTotal() throws JposException {

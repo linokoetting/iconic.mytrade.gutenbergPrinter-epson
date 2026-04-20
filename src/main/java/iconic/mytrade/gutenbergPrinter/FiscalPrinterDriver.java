@@ -284,7 +284,32 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 				fiscalPrinter = (jpos.FiscalPrinterControl17)new FiscalPrinter();
 			fiscalPrinter.addStatusUpdateListener(this);
 			
-			fiscalPrinter.open(PrinterName);
+			try {
+			    Thread.sleep(2000);   // stabilizza la seriale
+			} catch (InterruptedException ie) {
+			}
+
+			int _openAttempts = 0;
+			while (true) {
+			    try {
+			        fiscalPrinter.open(PrinterName);
+			        break;
+			    } catch (Throwable t) {
+
+			        _openAttempts++;
+
+			        if (_openAttempts >= 2) {
+			            throw new RuntimeException(t);
+			        }
+
+			        System.out.println("RETRY open of printer, attempt: " + _openAttempts);
+
+			        try {
+			            Thread.sleep(1500);
+			        } catch (InterruptedException ie2) {
+			        }
+			    }
+			}
 			
 			System.out.println ( "Prima di Claim" );
 			fiscalPrinter.claim(1000);
@@ -470,7 +495,19 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		  try
 		  {
 			  System.out.println ("FP-21");
-			  fiscalPrinter.setDeviceEnabled(true);
+			  int _devAttempts = 0;
+			  while (true) {
+				  try {
+					  fiscalPrinter.setDeviceEnabled(true);
+					  break;
+				  } catch (Throwable t) {
+					  if (++_devAttempts >= 2)
+						  throw t;
+					  Thread.sleep(1500);
+					  System.out.println("RETRY enable of printer, attempt: " + _devAttempts);
+				  }
+			  }
+
 			  System.out.println ("FP-22");
 			  return ( false );
 		  }
@@ -479,6 +516,11 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			  System.out.println ("FP-23 <"+e.toString()+">");
 			  System.out.println ("ERROR during enable of printer");
 			  e.printStackTrace();
+			  return ( true );
+		  }
+		  catch (Throwable e2)
+		  {
+			  System.out.println ("FP-23 <" + e2.toString() + ">");
 			  return ( true );
 		  }
 	}

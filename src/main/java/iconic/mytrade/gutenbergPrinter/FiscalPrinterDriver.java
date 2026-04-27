@@ -321,6 +321,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		}
 		OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
 		System.out.println ("FP-1");
+		
+		try {
+		    Thread.sleep(1500);
+		} catch (InterruptedException ie) {
+		}
+		
 	    while ( true ) 
 	    {
 	    	System.out.println ("FP-2");

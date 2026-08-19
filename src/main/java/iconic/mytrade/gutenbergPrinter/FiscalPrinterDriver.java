@@ -349,6 +349,12 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	    SharedPrinterFields.fiscalEJ.open("uk.co.datafit.wincor.system.device.FiscalEJFile", null);
 	    SharedPrinterFields.fiscalEJ.setDeviceEnabled(true);
 	    
+    	try {
+    		System.out.println ("RetailCube-R3printers getCapRecNearEndSensor <"+fiscalPrinter.getCapRecNearEndSensor()+">");
+    	}
+    	catch (Exception e) {
+    	}
+	    
 		if (RTchecks.checkSRT(fiscalPrinter)) {
 			// isRT è cambiato
 			
@@ -2530,6 +2536,7 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 	
 	private void xgetData(int i, int ai[], String as[]) throws JposException
 	{
+		int retry = 5;
 		int o = 0;
 		
 		if (SharedPrinterFields.getSimulateState() == jpos.FiscalPrinterConst.FPTR_PS_NONFISCAL)
@@ -2538,8 +2545,30 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 			{
 				if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
 		            as[0] = xgetDailyData("24");
-				else
-					fiscalPrinter.getData(i, ai, as);
+				else {
+					while (true) {
+						int errcode = 0;
+						retry--;
+						try {
+							fiscalPrinter.getData(i, ai, as);
+						}
+						catch ( JposException e) {
+							errcode = e.getErrorCode();
+							System.out.println("200726 - as[0] = "+as[0]+" - retry = "+retry);
+						}
+						if (as[0] != null || retry == 0) {
+							if (as[0] == null && retry == 0) {
+								OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
+						    	throw new JposException(errcode);
+							}
+							break;
+						}
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+						}
+					}
+				}
 			}
 			catch ( JposException e ) {
 		        System.out.println("Patch per Epson FP90/1 FW 1.03");
@@ -2550,8 +2579,30 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 		{
 			if (isRTModel() && (i == jpos.FiscalPrinterConst.FPTR_GD_FISCAL_REC || i == jpos.FiscalPrinterConst.FPTR_GD_RECEIPT_NUMBER) && !RTTxnType.isRefundTrx())
 	            as[0] = xgetDailyData("24");
-			else
-				fiscalPrinter.getData(i, ai, as);
+			else {
+				while (true) {
+					int errcode = 0;
+					retry--;
+					try {
+						fiscalPrinter.getData(i, ai, as);
+					}
+					catch ( JposException e) {
+						errcode = e.getErrorCode();
+						System.out.println("200726 - as[0] = "+as[0]+" - retry = "+retry);
+					}
+					if (as[0] != null || retry == 0) {
+						if (as[0] == null && retry == 0) {
+							OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
+					    	throw new JposException(errcode);
+						}
+						break;
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
 		}
 	}
 	private String xgetDailyData(String type) throws JposException

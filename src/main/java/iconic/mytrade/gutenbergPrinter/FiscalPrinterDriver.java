@@ -2558,6 +2558,8 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 						}
 						if (as[0] != null || retry == 0) {
 							if (as[0] == null && retry == 0) {
+								String code = Sprint.f("%02d", i);
+								OperatorDisplay.setText_error("GETDATA ERROR     "+code);
 								OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
 						    	throw new JposException(errcode);
 							}
@@ -2592,6 +2594,8 @@ public class FiscalPrinterDriver implements jpos.FiscalPrinterControl17, StatusU
 					}
 					if (as[0] != null || retry == 0) {
 						if (as[0] == null && retry == 0) {
+							String code = Sprint.f("%02d", i);
+							OperatorDisplay.setText_error("GETDATA ERROR     "+code);
 							OperatorDisplay.pleaseDisplay (R3define.PRINTERVERIFY);
 					    	throw new JposException(errcode);
 						}

@@ -4614,6 +4614,10 @@ public class PrinterCommands extends iconic.mytrade.gutenbergInterface.PrinterCo
 			return fiscalPrinterDriver.getNoReactionStatus();
 		}
 		
+		public static void clearError() throws JposException {
+			fiscalPrinterDriver.clearError();
+		}
+		
 		public void SMTKreadProperties()
 		{
 			SmartTicket.setSmart_Ticket(SmartTicketProperties.isSmartTicket());
